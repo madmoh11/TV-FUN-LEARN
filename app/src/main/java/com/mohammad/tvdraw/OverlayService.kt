@@ -19,6 +19,7 @@ class DrawView(c: Context) : View(c) {
     val game = Game(this)
     val hockey = Hockey(this)
     val snake = SnakeGame(this)
+    val cam = LiveCam(this)
 
     // ---- floating comments + emoji ----
     private val floats = mutableListOf<Floaty>()
@@ -389,6 +390,7 @@ class DrawView(c: Context) : View(c) {
                 "b" -> sfx?.play("beep", 1f, true)
                 "z" -> onPrayerCmd?.invoke(p)
                 "i" -> { if (p[1] == "0") showImage(null) else if (p[1] == "d") { imgDim = p[2] == "1"; invalidate() } }
+                "f" -> cam.command(p, cid)
                 "s" -> { sfx?.muted = p[1] == "0"; if (p[1] == "0") sfx?.buzz(false, false) }
             }
         } catch (e: Exception) { }
@@ -437,6 +439,7 @@ class DrawView(c: Context) : View(c) {
             }
             cv.drawText(u, l + 24f * s, y + 30f * s, cardTx)
         }
+        cam.draw(cv, now, s)
         val lasering = ink.drawLaser(cv, now)
         if (floats.isNotEmpty() || pranking || lasering || gaming) postInvalidateOnAnimation()
     }
@@ -445,6 +448,7 @@ class DrawView(c: Context) : View(c) {
 class OverlayService : Service() {
     private lateinit var view: DrawView
     private val ui = Handler(Looper.getMainLooper())
+    private val camBusy = java.util.concurrent.atomic.AtomicBoolean(false)
     override fun onBind(i: Intent?) = null
 
     override fun onCreate() {
@@ -479,7 +483,13 @@ class OverlayService : Service() {
                 { bytes, cid -> try {                                                    // selfie for a snake head
                     val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
                     if (bmp != null) ui.post { view.snake.setFace(cid, bmp); bmp.recycle() }
-                } catch (e: Throwable) { } }, { path -> if (path.startsWith("/p")) prayer.status()
+                } catch (e: Throwable) { } },
+                { bytes, cid -> if (camBusy.compareAndSet(false, true)) try {            // live camera frame; frames that arrive too fast are dropped
+                    val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                    ui.post { if (bmp != null) view.cam.frame(cid, bmp); camBusy.set(false) }
+                } catch (e: Throwable) { camBusy.set(false) } },
+                { path -> if (path.startsWith("/p")) prayer.status()
+                    else if (path.startsWith("/c")) view.cam.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/j")) view.snake.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/h")) view.hockey.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/g")) view.game.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))

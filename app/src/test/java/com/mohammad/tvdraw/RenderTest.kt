@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.Shader
 import android.os.Looper
 import android.view.View
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -247,5 +248,24 @@ class RenderTest {
             if (ms >= next && st.startsWith("3|") && n < 6) { shot("sreplay_" + n); n++; next = ms + 900 }
         }
         println("SREPLAY last status " + lastSt)
+    }
+
+    @Test fun liveCamera() {
+        val act = org.robolectric.Robolectric.buildActivity(android.app.Activity::class.java).setup().get()
+        v = DrawView(act); act.window.setContentView(v)
+        fill = { v.measure(View.MeasureSpec.makeMeasureSpec(1920, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(1080, View.MeasureSpec.EXACTLY)); v.layout(0, 0, 1920, 1080) }
+        fill()
+        fun pic(w: Int, h: Int): Bitmap { val b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888); val c = Canvas(b)
+            c.drawColor(0xFF3A6B4F.toInt()); val p = Paint().apply { color = 0xFFF2C9A0.toInt(); isAntiAlias = true }; c.drawCircle(w / 2f, h * 0.42f, minOf(w, h) * 0.24f, p); return b }
+        v.handle("f name Sam", "a"); v.handle("f pos br", "a"); v.handle("f size 1", "a")
+        v.cam.frame("a", pic(480, 360)); shot("cam_corner")
+        assertTrue(v.cam.status("a").startsWith("live=1|mine=1"))
+        v.cam.frame("b", pic(360, 480))                                   // a second phone cannot take over while the first is live
+        assertTrue(v.cam.status("b").startsWith("live=1|mine=0"))
+        v.handle("f pos tl", "a"); v.handle("f size 2", "a"); v.cam.frame("a", pic(360, 480)); shot("cam_tall_topleft")
+        v.handle("f size 3", "a"); v.cam.frame("a", pic(480, 360)); shot("cam_full")
+        tick(LiveCam.TIMEOUT + 200); shot("cam_gone")                     // frames stopped: the window goes away
+        assertTrue(v.cam.status("a").startsWith("live=0"))
+        v.cam.frame("b", pic(480, 360)); assertTrue(v.cam.status("b").startsWith("live=1|mine=1"))
     }
 }

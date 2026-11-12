@@ -33,6 +33,7 @@ and no account, and nothing leaves your home network.
 | 🔦 **Pointer** | A laser dot or a spotlight, moved by finger or by tilting the phone. |
 | 💬 **Family comments** | Names, messages and emoji float across the screen. |
 | 🎤 **Microphone** | Talk into your phone and be heard from the TV speakers. |
+| 📹 **Live camera** | Your phone camera in a corner of the TV, like a reporter at home. |
 | 🖼️ **Pictures** | Show a photo from your phone on the TV. |
 | 😈 **Pranks** | Cracked screen, a fly that walks around, a lion that jumps out of the screen, a fake shutdown message. |
 | 🕌 **Prayer alert** | A banner before each prayer, calculated on the device with no internet. |
@@ -61,7 +62,7 @@ The second command in step 3 matters: without that permission the app closes as 
 
 ## Good to know
 
-- **The secure link.** Browsers only allow the microphone and the tilt sensors on `https`. The page offers a secure
+- **The secure link.** Browsers only allow the microphone, the camera and the tilt sensors on `https`. The page offers a secure
   link; your browser will warn that the connection is "not private" because the TV signs its own certificate.
   Choose *Advanced → Proceed*. Each TV creates its own key the first time the app runs.
 - **Who can control the TV.** Anyone on the same Wi-Fi who opens the address. Use it on a home network you trust.

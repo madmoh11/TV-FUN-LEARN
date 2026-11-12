@@ -63,6 +63,7 @@ select{flex:1;min-width:0;font-size:16px;padding:12px 8px;border-radius:12px;bor
 #hpad{position:relative;border-radius:16px;background:#f1f4f7;border:3px solid #2a2d33;touch-action:none;overflow:hidden;flex:none}
 #hpad b{position:absolute;top:0;bottom:0;width:6px;background:#d9363e}#hpad.s0 b{right:0}#hpad.s1 b{left:0}
 #hpad i{position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px 0 0 -38px;border-radius:50%;background:#e53935;box-shadow:0 4px 10px #0006,inset 0 0 0 9px #0003;pointer-events:none}
+#camfloat{position:fixed;bottom:84px;inset-inline-end:10px;width:92px;z-index:20;border-radius:12px;border:3px solid #d92d20;overflow:hidden;background:#000;line-height:0}#camfloat video{width:100%}
 #jcrop{margin-top:12px}#jcv{display:block;width:280px;height:auto;aspect-ratio:1;max-width:100%;margin:0 auto 10px;border-radius:12px;touch-action:none}</style></head><body><main>
 <header id=top><b>TV Draw</b><span><span data-i=tagline>Control the TV from your phone</span></span><select id=lang aria-label="Language"></select></header>
 
@@ -116,6 +117,15 @@ select{flex:1;min-width:0;font-size:16px;padding:12px 8px;border-radius:12px;bor
 <p class=hint id=mich><span data-i=mic_hint>Your voice comes out of the TV speakers. Keep the phone away from the TV to avoid echo.</span></p></div>
 <div id=micno hidden><p class=hint style="margin-top:0"><span data-i=mic_secure>The browser allows the microphone only on the secure link. Open it, and when the “connection is not private” warning appears choose “Advanced”, then “Proceed”.</span></p>
 <a id=sec class=btn><span data-i=open_secure>🔒 Open the secure link</span></a></div></div>
+<div class=card><h3><span data-i=cam_title>x</span></h3>
+<div id=cambox><button class=go id=cam style="width:100%;padding:22px;font-size:19px"></button>
+<div class=row3><button class=g id=camflip><span data-i=cam_flip>x</span></button></div>
+<div class=row2 style="margin-top:12px"><span data-i=cam_place>x</span><select id=campos><option value=br data-i=pos_br>x<option value=bl data-i=pos_bl>x<option value=tr data-i=pos_tr>x<option value=tl data-i=pos_tl>x</select></div>
+<div class=row2><span data-i=cam_size>x</span><select id=camsize><option value=0 data-i=size_s>x<option value=1 selected data-i=size_m>x<option value=2 data-i=size_l>x<option value=3 data-i=size_full>x</select></div>
+<label class=ck><input type=checkbox id=camvoice><span data-i=cam_voice>x</span></label>
+<p class=hint id=camh><span data-i=cam_hint>x</span></p></div>
+<div id=camno hidden><p class=hint style="margin-top:0"><span data-i=cam_secure>x</span></p>
+<a id=sec2 class=btn><span data-i=open_secure>x</span></a></div></div>
 <div class=card><h3><span data-i=pic_title>🖼️ Picture on the TV</span></h3>
 <label class=btn for=pic id=picl><span data-i=pic_pick>📷 Choose a picture and show it</span></label><input type=file id=pic accept="image/*" hidden>
 <div class=row3><button class=g id=pich><span data-i=pic_hide>Hide the picture</span></button></div>
@@ -148,6 +158,7 @@ select{flex:1;min-width:0;font-size:16px;padding:12px 8px;border-radius:12px;bor
 </section>
 </main>
 
+<div id=camfloat hidden><video id=camv playsinline muted autoplay style="transform:scaleX(-1)"></video></div>
 <nav id=tabs><button data-t=play><b>🎮</b><span data-i=tab_play>Games</span></button><button data-t=draw><b>✏️</b><span data-i=tab_draw>Draw</span></button><button data-t=chat><b>💬</b><span data-i=tab_chat>Interact</span></button><button data-t=prank><b>😈</b><span data-i=tab_prank>Pranks</span></button><button data-t=set><b>⚙️</b><span data-i=tab_set>Settings</span></button></nav>
 
 <div class=ctl id=gplay hidden>
@@ -256,6 +267,24 @@ im.onload=()=>{const k=Math.min(1,1920/Math.max(im.width,im.height)),c=document.
 c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(im.src);const png=/png|webp|gif/.test(f.type);
 c.toBlob(b=>{E('pics').textContent=T('pic_sending');fetch('/i',{method:'POST',body:b}).then(()=>{E('pics').textContent=T('pic_done')}).catch(()=>{E('pics').textContent=T('pic_failed')});E('pic').value=''},png?'image/png':'image/jpeg',0.88)};
 im.onerror=()=>{E('pics').textContent=T('pic_open_failed')};im.src=URL.createObjectURL(f)};
+const camB=E('cam'),camV=E('camv'),camC=document.createElement('canvas');let camS=null,camOn=false,camFace='user',camN=0,camT=0;
+if(!(window.isSecureContext&&navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)){E('cambox').hidden=true;E('camno').hidden=false;if(HP==='0')E('sec2').hidden=true;else E('sec2').href='https://'+location.hostname+':'+HP+'/'}
+function camLabel(){camB.textContent=camOn?T('cam_stop'):T('cam_start');camB.style.background=camOn?'#d92d20':''}
+async function camOpen(){if(camS)camS.getTracks().forEach(t=>t.stop());camS=await navigator.mediaDevices.getUserMedia({video:{facingMode:camFace,width:{ideal:640},height:{ideal:480}},audio:false});camV.srcObject=camS;await camV.play().catch(()=>{})}
+function camFrame(){if(!camOn)return;const t0=Date.now(),vw=camV.videoWidth,vh=camV.videoHeight;if(!vw){setTimeout(camFrame,150);return}
+const k=Math.min(1,480/Math.max(vw,vh)),c=camC,x=c.getContext('2d');c.width=Math.round(vw*k);c.height=Math.round(vh*k);
+if(camFace==='user'){x.setTransform(-1,0,0,1,c.width,0)}x.drawImage(camV,0,0,c.width,c.height);x.setTransform(1,0,0,1,0,0);
+c.toBlob(b=>{if(!camOn||!b)return;fetch('/v?c='+CID,{method:'POST',body:b}).then(()=>{camN++}).catch(()=>{}).then(()=>setTimeout(camFrame,Math.max(0,100-(Date.now()-t0))))},'image/jpeg',0.6)}
+function camSet(){send('f pos '+E('campos').value);send('f size '+E('camsize').value);send('f name '+enc(nm.value.trim()))}
+async function camStart(){try{await camOpen()}catch(e){E('camh').textContent=T('cam_denied');return}
+camOn=true;camN=0;camLabel();camSet();E('camfloat').hidden=false;if(navigator.wakeLock)navigator.wakeLock.request('screen').then(l=>{wl=l}).catch(()=>{});
+if(E('camvoice').checked&&!E('micbox').hidden){E('lock').checked=true;talk(true)}
+camFrame();camT=setInterval(()=>{fetch('/c?c='+CID).then(r=>r.text()).then(t=>{if(!camOn)return;if(/live=1/.test(t)&&/mine=0/.test(t)){camStop();E('camh').textContent=T('cam_busy')}else E('camh').textContent=T('cam_on',camN)}).catch(()=>{})},1000)}
+function camStop(){camOn=false;clearInterval(camT);send('f off');if(camS){camS.getTracks().forEach(t=>t.stop());camS=null}camV.srcObject=null;E('camfloat').hidden=true;camLabel();E('camh').textContent=T('cam_hint');
+if(E('camvoice').checked&&talking)talk(false);if(wl){wl.release().catch(()=>{});wl=null}}
+camB.onclick=()=>{camOn?camStop():camStart()};E('camfloat').onclick=()=>tab('chat');camLabel();
+E('camflip').onclick=async()=>{camFace=camFace==='user'?'environment':'user';camV.style.transform=camFace==='user'?'scaleX(-1)':'';if(camOn)try{await camOpen()}catch(e){}};
+E('campos').onchange=E('camsize').onchange=()=>{if(camOn)camSet()};nm.addEventListener('change',()=>{if(camOn)camSet()});
 const PN=['fajr','dhuhr','asr','maghrib','isha'].map(k=>T(k));
 function zload(){fetch('/p').then(r=>r.text()).then(t=>{const o={};t.split('|').forEach(x=>{const i=x.indexOf('=');o[x.slice(0,i)]=x.slice(i+1)});
 E('zon').checked=o.on==='1';E('zat').checked=o.at==='1';E('zbef').value=o.before;let c='';

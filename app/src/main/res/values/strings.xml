@@ -10,6 +10,9 @@
     <string name="shutdown_in">The TV will turn off in %d seconds</string>
     <string name="pranked">Gotcha! 😄</string>
 
+    <!-- Live camera -->
+    <string name="live">LIVE</string>
+
     <!-- Shared by the games -->
     <string name="lvl_easy">easy</string>
     <string name="lvl_medium">medium</string>

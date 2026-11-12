@@ -8,6 +8,8 @@
     <string name="shutdown_in">سيتم إغلاق التلفزيون بعد %d ثواني</string>
     <string name="pranked">تم خداعك 😄</string>
 
+    <string name="live">مباشر</string>
+
     <string name="lvl_easy">سهل</string>
     <string name="lvl_medium">متوسط</string>
     <string name="lvl_hard">صعب</string>

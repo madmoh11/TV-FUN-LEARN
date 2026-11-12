@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.1
+
+- Live camera: a phone shows its camera in a corner of the TV, like a reporter at home. Choose the corner and the
+  size (up to full screen), switch between front and back camera, and optionally send your voice too.
+
 ## 3.0
 
 First public release.

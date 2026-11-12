@@ -10,10 +10,10 @@ import kotlin.concurrent.thread
 /**
  * Tiny HTTP + HTTPS server for the phone page.
  * GET / = the page, POST /e = command lines, POST /a = 16 kHz mono PCM16 voice, POST /i = picture to show,
- * POST /f = selfie for the snake, GET /s /p /g /h /j = sound, prayer and game status.
+ * POST /f = selfie for the snake, POST /v = live camera frame, GET /s /p /g /h /j = sound, prayer and game status.
  */
 class Server(private val page: () -> String, private val keyDir: java.io.File, private val onLines: (List<String>, String) -> Unit, private val onAudio: (ByteArray) -> Unit,
-             private val onImage: (ByteArray) -> Unit, private val onFace: (ByteArray, String) -> Unit, private val status: (String) -> String) {
+             private val onImage: (ByteArray) -> Unit, private val onFace: (ByteArray, String) -> Unit, private val onVideo: (ByteArray, String) -> Unit, private val status: (String) -> String) {
     var httpPort = 0; private set
     var httpsPort = 0; private set
 
@@ -63,7 +63,8 @@ class Server(private val page: () -> String, private val keyDir: java.io.File, p
                 if (parts[0] == "POST" && path.startsWith("/a")) onAudio(body)
                 else if (parts[0] == "POST" && path.startsWith("/i")) onImage(body)
                 else if (parts[0] == "POST" && path.startsWith("/f")) onFace(body, path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12).ifEmpty { "x" })
-                else if (path.startsWith("/s") || path.startsWith("/p") || path.startsWith("/g") || path.startsWith("/h") || path.startsWith("/j")) resp = status(path).toByteArray(Charsets.UTF_8)
+                else if (parts[0] == "POST" && path.startsWith("/v")) onVideo(body, path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12).ifEmpty { "x" })
+                else if (path.startsWith("/c") || path.startsWith("/s") || path.startsWith("/p") || path.startsWith("/g") || path.startsWith("/h") || path.startsWith("/j")) resp = status(path).toByteArray(Charsets.UTF_8)
                 else if (parts[0] == "POST") onLines(String(body, Charsets.UTF_8).split("\n").filter { it.isNotBlank() },
                     path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12).ifEmpty { "x" })
                 else { type = "text/html; charset=utf-8"; resp = page().replace("__HTTPS__", httpsPort.toString()).toByteArray(Charsets.UTF_8) }
