@@ -1,0 +1,63 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'com.mohammad.tvdraw'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.mohammad.tvdraw'
+        minSdk 26
+        // 33 on purpose: the overlay runs as a plain foreground service, which newer targets no longer allow without a declared type.
+        targetSdk 33
+        versionCode 14
+        versionName '3.0'
+    }
+
+    // Release builds are signed with your own key when these are set (see docs/BUILDING.md); otherwise with the debug key.
+    def ksFile = System.getenv('TVDRAW_KEYSTORE')
+    signingConfigs {
+        if (ksFile) {
+            release {
+                storeFile file(ksFile)
+                storePassword System.getenv('TVDRAW_KEYSTORE_PASSWORD')
+                keyAlias System.getenv('TVDRAW_KEY_ALIAS')
+                keyPassword System.getenv('TVDRAW_KEY_PASSWORD')
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig ksFile ? signingConfigs.release : signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions { jvmTarget = '17' }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            all {
+                it.systemProperty 'robolectric.graphicsMode', 'NATIVE'
+                // Optional inputs for the render tests: where to write PNGs, a recorded command log, a face photo.
+                it.systemProperty 'renderOut', System.getProperty('renderOut', "${buildDir}/renders")
+                it.systemProperty 'renderLang', System.getProperty('renderLang', '')
+                it.systemProperty 'cmdLog', System.getProperty('cmdLog', '/dev/null')
+                it.systemProperty 'faceFile', System.getProperty('faceFile', '')
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.google.zxing:core:3.5.3'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.robolectric:robolectric:4.13'
+}

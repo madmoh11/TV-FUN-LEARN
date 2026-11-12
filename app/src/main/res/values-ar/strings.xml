@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- العربية -->
+<resources>
+    <string name="running">TV Draw شغّال</string>
+    <string name="no_port">TV Draw: ما في منفذ فاضي</string>
+
+    <string name="sys_alert">تنبيه النظام</string>
+    <string name="shutdown_in">سيتم إغلاق التلفزيون بعد %d ثواني</string>
+    <string name="pranked">تم خداعك 😄</string>
+
+    <string name="lvl_easy">سهل</string>
+    <string name="lvl_medium">متوسط</string>
+    <string name="lvl_hard">صعب</string>
+    <string name="goal">هدف!</string>
+    <string name="draw">تعادل</string>
+    <string name="press_start_match">اضغطوا «ابدأ المباراة» من التليفون</string>
+    <string name="red_ready">الأحمر جاهز ✓</string>
+    <string name="red_bot">الأحمر: الكمبيوتر 🤖 (%s)</string>
+    <string name="red_wins">فاز الأحمر 🏆</string>
+
+    <string name="basketball">كرة السلة</string>
+    <string name="blue_ready">الأزرق جاهز ✓</string>
+    <string name="blue_bot">الأزرق: الكمبيوتر 🤖 (%s)</string>
+    <string name="blue_wins">فاز الأزرق 🏆</string>
+    <string name="second_can_join">لاعب ثاني بيقدر ينضم بأي وقت بدل الكمبيوتر</string>
+
+    <string name="hockey">هوكي الطاولة</string>
+    <string name="black_ready">الأسود جاهز ✓</string>
+    <string name="black_bot">الأسود: الكمبيوتر 🤖 (%s)</string>
+    <string name="black_wins">فاز الأسود 🏆</string>
+    <string name="hockey_first_to">أول واحد بيوصل %d أهداف بيفوز</string>
+
+    <string name="snake">لعبة الثعبان 🐍</string>
+    <string name="green">الأخضر</string>
+    <string name="orange">البرتقالي</string>
+    <string name="seat_ready">%s جاهز ✓</string>
+    <string name="seat_empty">%s: مكان فاضي</string>
+    <string name="snake_level_line">المستوى: %1$s  •  %2$d ثانية</string>
+    <string name="press_start">اضغطوا «ابدأ» من التليفون</string>
+    <string name="snake_rules">كُل الحبات لتطول، ولا تخبط بنفسك ولا بالثعبان الثاني</string>
+    <string name="wins_fmt">فاز %s 🏆</string>
+    <string name="hit_self">%s خبط بنفسه</string>
+    <string name="hit_other">%s خبط بالثعبان الثاني</string>
+    <string name="head_on">تصادم راس براس</string>
+    <string name="time_equal">انتهى الوقت والطول متساوي</string>
+    <string name="time_longest">انتهى الوقت: الأطول فاز</string>
+    <string name="solo_time">انتهى الوقت 🎉</string>
+    <string name="solo_hit">خبطت بنفسك!</string>
+    <string name="score_fmt">النتيجة: %d</string>
+
+    <string name="fajr">الفجر</string>
+    <string name="dhuhr">الظهر</string>
+    <string name="asr">العصر</string>
+    <string name="maghrib">المغرب</string>
+    <string name="isha">العشاء</string>
+    <string name="jumuah">الجمعة</string>
+    <string name="prayer_before">باقي %1$d دقيقة على أذان %2$s  •  %3$s</string>
+    <string name="prayer_now">حان الآن موعد أذان %s</string>
+    <string name="prayer_test">تجربة</string>
+</resources>

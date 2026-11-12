@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- English (default). To add a language, copy this file to res/values-xx/strings.xml and translate the text. -->
+<resources>
+    <string name="app_name" translatable="false">TV Draw</string>
+    <string name="running">TV Draw is running</string>
+    <string name="no_port">TV Draw: no free port</string>
+
+    <!-- Pranks -->
+    <string name="sys_alert">System alert</string>
+    <string name="shutdown_in">The TV will turn off in %d seconds</string>
+    <string name="pranked">Gotcha! 😄</string>
+
+    <!-- Shared by the games -->
+    <string name="lvl_easy">easy</string>
+    <string name="lvl_medium">medium</string>
+    <string name="lvl_hard">hard</string>
+    <string name="goal">GOAL!</string>
+    <string name="draw">Draw</string>
+    <string name="press_start_match">Press “Start match” on the phone</string>
+    <string name="red_ready">Red is ready ✓</string>
+    <string name="red_bot">Red: computer 🤖 (%s)</string>
+    <string name="red_wins">Red wins 🏆</string>
+
+    <!-- Basketball -->
+    <string name="basketball">Basketball</string>
+    <string name="blue_ready">Blue is ready ✓</string>
+    <string name="blue_bot">Blue: computer 🤖 (%s)</string>
+    <string name="blue_wins">Blue wins 🏆</string>
+    <string name="second_can_join">A second player can join at any time and replace the computer</string>
+
+    <!-- Air hockey -->
+    <string name="hockey">Air Hockey</string>
+    <string name="black_ready">Black is ready ✓</string>
+    <string name="black_bot">Black: computer 🤖 (%s)</string>
+    <string name="black_wins">Black wins 🏆</string>
+    <string name="hockey_first_to">First to %d goals wins</string>
+
+    <!-- Snake -->
+    <string name="snake">Snake 🐍</string>
+    <string name="green">Green</string>
+    <string name="orange">Orange</string>
+    <string name="seat_ready">%s is ready ✓</string>
+    <string name="seat_empty">%s: empty seat</string>
+    <string name="snake_level_line">Level: %1$s  •  %2$d seconds</string>
+    <string name="press_start">Press “Start” on the phone</string>
+    <string name="snake_rules">Eat to grow. Do not hit yourself or the other snake</string>
+    <string name="wins_fmt">%s wins 🏆</string>
+    <string name="hit_self">%s hit itself</string>
+    <string name="hit_other">%s hit the other snake</string>
+    <string name="head_on">Head-on crash</string>
+    <string name="time_equal">Time is up, same length</string>
+    <string name="time_longest">Time is up: the longest snake wins</string>
+    <string name="solo_time">Time is up 🎉</string>
+    <string name="solo_hit">You hit yourself!</string>
+    <string name="score_fmt">Score: %d</string>
+
+    <!-- Prayer alert -->
+    <string name="fajr">Fajr</string>
+    <string name="dhuhr">Dhuhr</string>
+    <string name="asr">Asr</string>
+    <string name="maghrib">Maghrib</string>
+    <string name="isha">Isha</string>
+    <string name="jumuah">Jumu\'ah</string>
+    <string name="prayer_before">%2$s prayer in %1$d minutes  •  %3$s</string>
+    <string name="prayer_now">It is time for %s prayer</string>
+    <string name="prayer_test">test</string>
+</resources>
