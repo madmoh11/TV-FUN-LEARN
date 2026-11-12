@@ -30,8 +30,8 @@ export TVDRAW_KEYSTORE=$PWD/my.jks TVDRAW_KEYSTORE_PASSWORD=... TVDRAW_KEY_ALIAS
 Keep the keystore file and its passwords private and backed up. Never commit them.
 
 The GitHub workflow uses the same key when these repository secrets exist: `KEYSTORE_BASE64` (the output of
-`base64 -w0 my.jks`), `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`. Pushing a tag such as `v3.1` then publishes
-a release with the APK attached.
+`base64 -w0 my.jks`), `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`. To publish a release with the APK attached, push a tag such as `v3.1`, or open
+**Actions → Build → Run workflow** and type the tag there.
 
 ## How the code is organised
 
