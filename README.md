@@ -32,7 +32,7 @@ and no account, and nothing leaves your home network.
 | 📄 **Pages** | Draw over the picture, or on ruled paper, a calligraphy sheet, squares, dots or a blackboard. |
 | 🔦 **Pointer** | A laser dot or a spotlight, moved by finger or by tilting the phone. |
 | 💬 **Family comments** | Names, messages and emoji float across the screen. |
-| 🎤 **Microphone** | Talk into your phone and be heard from the TV speakers. |
+| 🎤 **Microphone** | Talk into your phone and be heard from the TV speakers, in your own voice or as a monster, a child, a robot and more. |
 | 📹 **Live camera** | Your phone camera in a corner of the TV, like a reporter at home. |
 | 🖼️ **Pictures** | Show a photo from your phone on the TV. |
 | 😈 **Pranks** | Cracked screen, a fly that walks around, a lion that jumps out of the screen, a fake shutdown message. |

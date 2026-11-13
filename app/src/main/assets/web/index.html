@@ -112,7 +112,8 @@ select{flex:1;min-width:0;font-size:16px;padding:12px 8px;border-radius:12px;bor
 <div id=emo></div></div>
 <div class=card><h3><span data-i=mic_title>🎤 Microphone</span></h3>
 <div id=micbox><button id=mic><span data-i=mic_hold>🎤 Hold and talk</span></button>
-<label class=ck><input type=checkbox id=lock><span data-i=mic_lock>Lock the microphone (tap to start, tap to stop)</span></label>
+<label style="margin-top:12px"><span data-i=fx_title>x</span></label><div class=sc id=fx><button data-fx=normal class=on><span data-i=fx_normal>x</span></button><button data-fx=monster><span data-i=fx_monster>x</span></button><button data-fx=deep><span data-i=fx_deep>x</span></button><button data-fx=woman><span data-i=fx_woman>x</span></button><button data-fx=child><span data-i=fx_child>x</span></button><button data-fx=chipmunk><span data-i=fx_chipmunk>x</span></button><button data-fx=robot><span data-i=fx_robot>x</span></button><button data-fx=alien><span data-i=fx_alien>x</span></button><button data-fx=cave><span data-i=fx_cave>x</span></button></div>
+<label class=ck style="margin-top:4px"><input type=checkbox id=lock><span data-i=mic_lock>Lock the microphone (tap to start, tap to stop)</span></label>
 <div id=lvl><i></i></div>
 <p class=hint id=mich><span data-i=mic_hint>Your voice comes out of the TV speakers. Keep the phone away from the TV to avoid echo.</span></p></div>
 <div id=micno hidden><p class=hint style="margin-top:0"><span data-i=mic_secure>The browser allows the microphone only on the secure link. Open it, and when the “connection is not private” warning appears choose “Advanced”, then “Proceed”.</span></p>
@@ -151,6 +152,8 @@ select{flex:1;min-width:0;font-size:16px;padding:12px 8px;border-radius:12px;bor
 <p class=hint id=zt></p>
 <button class=g id=ztest style="width:100%;margin-top:10px"><span data-i=prayer_try>Try the alert on the TV</span></button></div>
 <div class=card><h3><span data-i=sound_title>🔊 Sound and connection</span></h3>
+<label><span data-i=vol_title>x</span></label><div class=row3 style="margin:0 0 6px"><button class=g data-vol=down>🔉 −</button><button class=g data-vol=mute>🔇</button><button class=g data-vol=up>🔊 +</button></div>
+<p class=hint id=volt style="margin:0 0 12px"></p>
 <button class=g id=beep style="width:100%"><span data-i=sound_test>🔊 Test the TV sound</span></button>
 <p class=hint id=sst></p>
 <button class=g id=qr style="width:100%;margin-top:12px"><span data-i=show_qr>Show the QR code on the TV</span></button>
@@ -259,6 +262,9 @@ mic.oncontextmenu=e=>e.preventDefault();E('lock').onchange=()=>talk(false);
 function st(cb){fetch('/s').then(r=>r.text()).then(cb).catch(()=>cb(''))}
 function stShow(t){const ok=t.indexOf('out=ok')>=0,er=t.indexOf('ERR')>=0||t.indexOf('FAILED')>=0,mu=/vol=0\/|MUTED/.test(t);
 E('sst').textContent=(er?T('snd_err')+' ':mu?T('snd_muted')+' ':ok?T('snd_ok')+' ':'')+'['+t+']'}
+document.querySelectorAll('[data-fx]').forEach(b=>b.onclick=()=>{send('fx '+b.dataset.fx);document.querySelectorAll('[data-fx]').forEach(x=>x.classList.toggle('on',x===b))});
+function volShow(t){const m=/vol=(\d+)\/(\d+)/.exec(t);E('volt').textContent=!m?'':/FIXED/.test(t)?T('vol_fixed'):T('vol_level',m[1],m[2])+(/MUTED/.test(t)?' '+T('vol_muted'):'')}
+document.querySelectorAll('[data-vol]').forEach(b=>b.onclick=()=>{send('vol '+b.dataset.vol);setTimeout(()=>st(volShow),350)});st(volShow);
 E('beep').onclick=()=>{send('b');E('sst').textContent='…';setTimeout(()=>st(stShow),1300)};
 setInterval(()=>{if(talking)st(t=>{const m=/voiceIn=([0-9.]+)/.exec(t);E('mich').textContent=m?T('voice_got',m[1])+(t.indexOf('out=ok')<0?' '+T('voice_not_played'):''):T('tv_no_reply')})},1000);
 E('picd').onchange=()=>send('i d '+(E('picd').checked?1:0));E('pich').onclick=()=>send('i 0');

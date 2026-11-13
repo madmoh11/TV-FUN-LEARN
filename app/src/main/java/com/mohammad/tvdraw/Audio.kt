@@ -47,9 +47,17 @@ class Sfx(ctx: Context) {
     fun status(): String {
         var vol = "?"
         try { vol = "" + am.getStreamVolume(AudioManager.STREAM_MUSIC) + "/" + am.getStreamMaxVolume(AudioManager.STREAM_MUSIC) +
-            (if (am.isStreamMute(AudioManager.STREAM_MUSIC)) " MUTED" else "") } catch (e: Throwable) { }
+            (if (am.isStreamMute(AudioManager.STREAM_MUSIC)) " MUTED" else "") + (if (am.isVolumeFixed) " FIXED" else "") } catch (e: Throwable) { }
         return "out=$trackInfo played=${framesOut / 4800 / 10.0}s voiceIn=${voiceIn / 1600 / 10.0}s vol=$vol" +
             (if (muted) " sfxOff" else "") + (if (lastError.isEmpty()) "" else " ERR $lastError")
+    }
+
+    /** Volume of the TV box itself, from the phone: up, down or mute. Shows the system volume bar on the TV. */
+    fun volume(what: String) {
+        try {
+            val dir = when (what) { "up" -> AudioManager.ADJUST_RAISE; "down" -> AudioManager.ADJUST_LOWER; "mute" -> AudioManager.ADJUST_TOGGLE_MUTE; else -> return }
+            am.adjustStreamVolume(AudioManager.STREAM_MUSIC, dir, AudioManager.FLAG_SHOW_UI)
+        } catch (e: Throwable) { fail("volume", e) }
     }
 
     /** name: glass, beep, thump, roar. force = play even when prank sounds are switched off. */
@@ -76,9 +84,13 @@ class Sfx(ctx: Context) {
     private var voiceHead: ShortArray? = null
     private var voicePos = 0
     private var voiceBuffered = 0
+    private val fx = VoiceFx()
+    /** Voice changer for the microphone: one of VoiceFx.PRESETS. */
+    fun voiceEffect(name: String) { fx.set(name) }
+
     fun voice(b: ByteArray) {
         val n = b.size / 2; if (n == 0) return
-        val s = ShortArray(n) { ((b[2 * it + 1].toInt() shl 8) or (b[2 * it].toInt() and 0xff)).toShort() }
+        val s = fx.process(ShortArray(n) { ((b[2 * it + 1].toInt() shl 8) or (b[2 * it].toInt() and 0xff)).toShort() })
         synchronized(lock) {
             if (voiceBuffered > 14000) { voice.clear(); voiceHead = null; voicePos = 0; voiceBuffered = 0 }  // too far behind: skip ahead
             voice.add(s); voiceBuffered += n; voiceIn += n

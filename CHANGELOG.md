@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.2
+
+- Voice changer for the microphone: monster, deep man, woman, child, chipmunk, robot, alien and cave echo.
+- TV box volume from the phone: up, down and mute.
+
 ## 3.1
 
 - Live camera: a phone shows its camera in a corner of the TV, like a reporter at home. Choose the corner and the

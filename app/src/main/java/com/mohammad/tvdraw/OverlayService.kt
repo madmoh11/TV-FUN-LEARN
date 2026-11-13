@@ -391,6 +391,8 @@ class DrawView(c: Context) : View(c) {
                 "z" -> onPrayerCmd?.invoke(p)
                 "i" -> { if (p[1] == "0") showImage(null) else if (p[1] == "d") { imgDim = p[2] == "1"; invalidate() } }
                 "f" -> cam.command(p, cid)
+                "fx" -> sfx?.voiceEffect(p[1])
+                "vol" -> sfx?.volume(p[1])
                 "s" -> { sfx?.muted = p[1] == "0"; if (p[1] == "0") sfx?.buzz(false, false) }
             }
         } catch (e: Exception) { }

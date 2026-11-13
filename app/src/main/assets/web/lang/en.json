@@ -193,5 +193,19 @@
   "cam_secure": "The browser allows the camera only on the secure link. Open it, and when the “connection is not private” warning appears choose “Advanced”, then “Proceed”.",
   "cam_denied": "Could not open the camera: allow this site to use it and try again.",
   "cam_busy": "Another phone is live right now. Try again when it stops.",
-  "cam_on": "🔴 Live on the TV • {0} frames sent"
+  "cam_on": "🔴 Live on the TV • {0} frames sent",
+  "fx_title": "Voice changer",
+  "fx_normal": "🙂 Normal",
+  "fx_monster": "👹 Monster",
+  "fx_deep": "🧔 Deep man",
+  "fx_woman": "👩 Woman",
+  "fx_child": "🧒 Child",
+  "fx_chipmunk": "🐿️ Chipmunk",
+  "fx_robot": "🤖 Robot",
+  "fx_alien": "👽 Alien",
+  "fx_cave": "🏔️ Cave echo",
+  "vol_title": "TV box volume",
+  "vol_level": "Volume {0} of {1}",
+  "vol_muted": "(muted)",
+  "vol_fixed": "This device has a fixed volume: use the TV remote instead."
 }

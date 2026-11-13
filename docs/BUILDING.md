@@ -42,7 +42,7 @@ The GitHub workflow uses the same key when these repository secrets exist: `KEYS
 | `Game.kt`, `Hockey.kt`, `SnakeGame.kt`, `SnakeCore.kt` | The three games |
 | `LiveCam.kt` | The live camera window |
 | `Server.kt`, `Tls.kt` | The small HTTP and HTTPS server the phones talk to |
-| `Audio.kt`, `Synth.kt` | Sound mixer and synthesised effects |
+| `Audio.kt`, `Synth.kt`, `VoiceFx.kt` | Sound mixer, synthesised effects and the voice changer |
 | `Prayer.kt`, `PrayerAlerts.kt` | Prayer-time calculation and alerts |
 | `assets/web/index.html` | The phone page |
 | `assets/web/lang/*.json`, `res/values*/strings.xml` | Translations |
