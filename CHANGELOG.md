@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.5
+
+- A shared look for the whole app: one cartoon font for Arabic and English on the TV and on the phone page, one colour
+  palette, the same title ribbon, start button, countdown and winner confetti in every game.
+- Space Race redrawn in a colourful cartoon style: painted space background, cartoon spacecraft and planet, drifting
+  stars, shooting stars, animated flames and a stretch when a rocket is pushed.
+- New app icon and TV banner.
+
 ## 3.4
 
 - New game: Space Race, a vocabulary race for up to 6 players. An English word appears on the phone and the player

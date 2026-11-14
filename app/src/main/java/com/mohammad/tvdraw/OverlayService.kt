@@ -26,7 +26,7 @@ class DrawView(c: Context) : View(c) {
     // ---- floating comments + emoji ----
     private val floats = mutableListOf<Floaty>()
     private val laneFree = LongArray(6)
-    private val txt = Paint().apply { color = Color.WHITE; isAntiAlias = true; typeface = Typeface.DEFAULT_BOLD }
+    private val txt = Paint().apply { color = Color.WHITE; isAntiAlias = true; typeface = Ui.font(context) }
     private val pill = Paint().apply { color = Color.argb(170, 0, 0, 0); isAntiAlias = true }
     private val edge = Paint().apply { style = Paint.Style.STROKE; isAntiAlias = true }
     private val emo = Paint().apply { isAntiAlias = true }
@@ -228,7 +228,7 @@ class DrawView(c: Context) : View(c) {
     private val noticeMs = 25000f
     private val noticeBg = Paint().apply { color = Color.argb(240, 12, 74, 50); isAntiAlias = true }
     private val noticeEdge = Paint().apply { color = Color.argb(255, 212, 175, 55); style = Paint.Style.STROKE; isAntiAlias = true }
-    private val noticeTx = Paint().apply { color = Color.WHITE; isAntiAlias = true; typeface = Typeface.DEFAULT_BOLD; textAlign = Paint.Align.CENTER }
+    private val noticeTx = Paint().apply { color = Color.WHITE; isAntiAlias = true; typeface = Ui.font(context); textAlign = Paint.Align.CENTER }
     fun showNotice(text: String) { notice = "🕌  $text"; noticeStart = SystemClock.uptimeMillis(); invalidate() }
     private fun drawNotice(cv: Canvas, now: Long): Boolean {
         val t = notice ?: return false
@@ -311,7 +311,7 @@ class DrawView(c: Context) : View(c) {
             anim = true
         }
         if (now < revealUntil) {
-            dlgTx.typeface = Typeface.DEFAULT_BOLD; dlgTx.textSize = 120f * s
+            dlgTx.typeface = Ui.font(context); dlgTx.textSize = 120f * s
             val msg = context.getString(R.string.pranked)
             val tw = dlgTx.measureText(msg)
             dlg.color = Color.argb(240, 255, 214, 10)
@@ -327,7 +327,7 @@ class DrawView(c: Context) : View(c) {
     private var qr: Bitmap? = null
     private var infoUntil = 0L
     private val cardBg = Paint().apply { color = Color.WHITE; isAntiAlias = true }
-    private val cardTx = Paint().apply { color = Color.BLACK; isAntiAlias = true; typeface = Typeface.DEFAULT_BOLD }
+    private val cardTx = Paint().apply { color = Color.BLACK; isAntiAlias = true; typeface = Ui.font(context) }
     fun setUrl(u: String, withQr: Boolean) {
         url = u
         if (quietStart) { withQrOnly(u, withQr); return }
@@ -478,7 +478,7 @@ class OverlayService : Service() {
         val sfx = Sfx(this); view.sfx = sfx; view.game.sfx = sfx; view.hockey.sfx = sfx; view.snake.sfx = sfx; view.tug.sfx = sfx; view.space.sfx = sfx; view.space.speak = { say(it) }
         val prayer = PrayerAlerts(this, view, sfx); view.onPrayerCmd = { prayer.command(it) }; prayer.start()
         thread {
-            val server = Server({ page }, { words }, filesDir, { lines, cid -> ui.post { lines.forEach { view.handle(it, cid) }; view.invalidate() } }, { sfx.voice(it) },
+            val server = Server({ page }, { words }, { font }, filesDir, { lines, cid -> ui.post { lines.forEach { view.handle(it, cid) }; view.invalidate() } }, { sfx.voice(it) },
                 { bytes -> try {
                     val o = BitmapFactory.Options().apply { inJustDecodeBounds = true }
                     BitmapFactory.decodeByteArray(bytes, 0, bytes.size, o)
@@ -521,6 +521,9 @@ class OverlayService : Service() {
         }
         assets.open("web/index.html").use { it.readBytes().toString(Charsets.UTF_8) }.replace("__LANGS__", "{$langs}")
     }
+
+    /** The app font, served to the phones so the page looks like the TV. */
+    private val font: ByteArray by lazy { try { assets.open("fonts/BalooBhaijaan2-Bold.ttf").use { it.readBytes() } } catch (e: Throwable) { ByteArray(0) } }
 
     /** The vocabulary bank of the space race, served to the phones as it is. */
     private val words: ByteArray by lazy { try { assets.open("data/words_bank.json").use { it.readBytes() } } catch (e: Throwable) { "[]".toByteArray() } }

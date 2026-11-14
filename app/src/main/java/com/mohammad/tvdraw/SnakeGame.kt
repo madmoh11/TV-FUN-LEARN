@@ -27,7 +27,7 @@ class SnakeGame(private val view: View) {
 
     private val p = Paint(Paint.ANTI_ALIAS_FLAG)
     private val bp = Paint(Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG)
-    private val tx = Paint(Paint.ANTI_ALIAS_FLAG).apply { typeface = Typeface.DEFAULT_BOLD; textAlign = Paint.Align.CENTER }
+    private val tx = Paint(Paint.ANTI_ALIAS_FLAG).apply { typeface = Ui.font(view.context); textAlign = Paint.Align.CENTER }
     private fun w() = view.width.toFloat()
     private fun h() = view.height.toFloat()
     private fun sc() = (if (view.height > 0) view.height else 1080) / 1080f
@@ -192,16 +192,16 @@ class SnakeGame(private val view: View) {
         else { val me = if (c.s[0].playing) 0 else 1; text(cv, c.s[me].score.toString(), w / 2 - 80f * k, top + 72f * k, 72f * k, TEAM[me], false); text(cv, clock, w / 2 + 60f * k, top + 66f * k, 54f * k, cc, false) }
 
         when (state) {
-            LOBBY -> { cv.drawColor(Color.argb(140, 0, 0, 0))
-                text(cv, s(R.string.snake), w / 2, h * 0.34f, 110f * k, Color.WHITE)
+            LOBBY -> { Ui.dim(cv, 150)
+                Ui.title(cv, view, s(R.string.snake), w / 2, h * 0.34f, 100f * k)
                 text(cv, if (seat[0] != null) s(R.string.seat_ready, name(0)) else s(R.string.seat_empty, name(0)), w * 0.27f, h * 0.52f, 50f * k, TEAM[0])
                 text(cv, if (seat[1] != null) s(R.string.seat_ready, name(1)) else s(R.string.seat_empty, name(1)), w * 0.73f, h * 0.52f, 50f * k, TEAM[1])
                 text(cv, s(R.string.snake_level_line, lvl(), MATCH_SECONDS.toInt()), w / 2, h * 0.66f, 46f * k, Color.WHITE)
-                text(cv, s(R.string.press_start), w / 2, h * 0.66f + 70f * k, 44f * k, 0xFFFFD60A.toInt())
-                text(cv, s(R.string.snake_rules), w / 2, h * 0.66f + 132f * k, 34f * k, Color.WHITE) }
+                Ui.pill(cv, view, s(R.string.press_start), w / 2, h * 0.66f + 74f * k, 42f * k, now)
+                text(cv, s(R.string.snake_rules), w / 2, h * 0.66f + 146f * k, 34f * k, Color.WHITE) }
             COUNT -> { val n = 3 - ((now - stateAt) / 1000f).toInt().coerceIn(0, 2); val f = ((now - stateAt) % 1000) / 1000f
-                text(cv, n.toString(), w / 2, h * 0.5f + 90f * k, (300f - 90f * f) * k, Color.WHITE) }
-            END -> { cv.drawColor(Color.argb(150, 0, 0, 0))
+                Ui.countdown(cv, view, n, f, w / 2, h * 0.5f, k) }
+            END -> { Ui.dim(cv, 150); Ui.confetti(cv, view, now - stateAt)
                 var title: String; var sub: String; var col = Color.WHITE
                 if (two) {
                     when (c.winner) { 0, 1 -> { title = s(R.string.wins_fmt, name(c.winner)); col = TEAM[c.winner] } else -> title = s(R.string.draw) }

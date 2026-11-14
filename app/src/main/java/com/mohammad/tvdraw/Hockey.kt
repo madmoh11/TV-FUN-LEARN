@@ -35,7 +35,7 @@ class Hockey(private val view: View) {
     val active get() = state != OFF
 
     private val p = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val tx = Paint(Paint.ANTI_ALIAS_FLAG).apply { typeface = Typeface.DEFAULT_BOLD; textAlign = Paint.Align.CENTER }
+    private val tx = Paint(Paint.ANTI_ALIAS_FLAG).apply { typeface = Ui.font(view.context); textAlign = Paint.Align.CENTER }
     private fun w() = view.width.toFloat()
     private fun h() = view.height.toFloat()
     private fun sc() = (if (view.height > 0) view.height else 1080) / 1080f
@@ -246,17 +246,17 @@ class Hockey(private val view: View) {
         text(cv, score[1].toString(), w / 2 + 95f * k, top + 70f * k, 70f * k, Color.WHITE, 0)
         val white = Color.argb(235, 255, 255, 255); val dark = 0xFF26282C.toInt()
         when (state) {
-            LOBBY -> { cv.drawColor(Color.argb(150, 0, 0, 0)); val lv = lvl()
-                text(cv, s(R.string.hockey), w / 2, h * 0.36f, 110f * k, Color.WHITE)
+            LOBBY -> { Ui.dim(cv, 150); val lv = lvl()
+                Ui.title(cv, view, "🏒 " + s(R.string.hockey), w / 2, h * 0.36f, 100f * k)
                 text(cv, if (pl[0].cid != null) s(R.string.red_ready) else s(R.string.red_bot, lv), w * 0.27f, h * 0.56f, 50f * k, 0xFFFF5A4F.toInt())
                 text(cv, if (pl[1].cid != null) s(R.string.black_ready) else s(R.string.black_bot, lv), w * 0.73f, h * 0.56f, 50f * k, Color.WHITE)
-                text(cv, s(R.string.press_start_match), w / 2, h * 0.74f, 44f * k, 0xFFFFD60A.toInt())
+                Ui.pill(cv, view, s(R.string.press_start_match), w / 2, h * 0.74f, 42f * k, now)
                 text(cv, s(R.string.hockey_first_to, WIN), w / 2, h * 0.74f + 62f * k, 34f * k, Color.WHITE) }
             COUNT -> { val n = 3 - ((now - stateAt) / (countMs / 3f)).toInt().coerceIn(0, 2); val f = ((now - stateAt) % (countMs / 3f)) / (countMs / 3f)
-                text(cv, n.toString(), w / 2, h * 0.5f + 90f * k, (300f - 90f * f) * k, Color.WHITE) }
+                Ui.countdown(cv, view, n, f, w / 2, h * 0.5f, k) }
             GOAL -> { val f = ((now - stateAt) / 300f).coerceIn(0f, 1f)
                 if (lastScorer == 0) text(cv, s(R.string.goal), w / 2, h * 0.5f + 50f * k, (120f + 70f * f) * k, TEAM[0]) else text(cv, s(R.string.goal), w / 2, h * 0.5f + 50f * k, (120f + 70f * f) * k, dark, white) }
-            END -> { cv.drawColor(Color.argb(150, 0, 0, 0))
+            END -> { Ui.dim(cv, 150); Ui.confetti(cv, view, now - stateAt)
                 text(cv, if (score[0] > score[1]) s(R.string.red_wins) else s(R.string.black_wins), w / 2, h * 0.46f, 150f * k, if (score[0] > score[1]) 0xFFFF5A4F.toInt() else Color.WHITE)
                 text(cv, score[0].toString() + "  :  " + score[1].toString(), w / 2, h * 0.46f + 170f * k, 120f * k, Color.WHITE) }
         }

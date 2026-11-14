@@ -23,7 +23,7 @@ class LiveCam(private val view: View) {
     private var size = 1                   // 0 small, 1 medium, 2 large, 3 full screen
     private var name = ""
     private val paint = Paint().apply { isAntiAlias = true; isFilterBitmap = true }
-    private val tx = Paint().apply { isAntiAlias = true; color = Color.WHITE; typeface = Typeface.DEFAULT_BOLD }
+    private val tx = Paint().apply { isAntiAlias = true; color = Color.WHITE; typeface = Ui.font(view.context) }
     private val clip = Path()
 
     private fun live(now: Long) = bmp != null && now - at < TIMEOUT

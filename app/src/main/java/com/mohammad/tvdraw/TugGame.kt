@@ -21,7 +21,7 @@ class TugGame(private val view: View) {
     val active get() = state != OFF
 
     private val p = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val tx = Paint(Paint.ANTI_ALIAS_FLAG).apply { typeface = Typeface.DEFAULT_BOLD; textAlign = Paint.Align.CENTER }
+    private val tx = Paint(Paint.ANTI_ALIAS_FLAG).apply { typeface = Ui.font(view.context); textAlign = Paint.Align.CENTER }
     private fun w() = view.width.toFloat()
     private fun h() = view.height.toFloat()
     private fun sc() = (if (view.height > 0) view.height else 1080) / 1080f
@@ -156,18 +156,18 @@ class TugGame(private val view: View) {
         if (state == PLAY && core.sudden) text(cv, s(R.string.tug_sudden), w / 2, 190f * k, 54f * k, 0xFFFFD60A.toInt())
         cv.restore()
         when (state) {
-            LOBBY -> { cv.drawColor(Color.argb(165, 0, 0, 0))
-                text(cv, s(R.string.tug_title), w / 2, h * 0.2f, 104f * k, Color.WHITE)
+            LOBBY -> { Ui.dim(cv, 165)
+                Ui.title(cv, view, s(R.string.tug_title), w / 2, h * 0.2f, 96f * k)
                 for (t in 0..1) { val x = w * (if (t == 0) 0.27f else 0.73f)
                     text(cv, s(if (t == 0) R.string.team_left else R.string.team_right), x, h * 0.34f, 58f * k, TEAM[t])
                     if (teams[t].isEmpty()) text(cv, s(R.string.tug_bot), x, h * 0.34f + 70f * k, 44f * k, Color.WHITE)
                     else teams[t].forEachIndexed { i, pl -> text(cv, pl.name + " ✓", x, h * 0.34f + (70f + i * 58f) * k, 44f * k, Color.WHITE) } }
                 val lv = s(intArrayOf(R.string.lvl_easy, R.string.lvl_medium, R.string.lvl_hard, R.string.lvl_graded)[core.level])
                 text(cv, s(R.string.snake_level_line, lv, core.duration), w / 2, h * 0.76f, 46f * k, Color.WHITE)
-                text(cv, s(R.string.press_start), w / 2, h * 0.76f + 68f * k, 44f * k, 0xFFFFD60A.toInt())
-                text(cv, s(R.string.tug_join_hint), w / 2, h * 0.76f + 126f * k, 34f * k, Color.WHITE) }
-            COUNT -> { val n = 3 - ((now - stateAt) / 1000).toInt(); text(cv, "" + n.coerceAtLeast(1), w / 2, h * 0.5f, 300f * k, Color.WHITE) }
-            END -> { cv.drawColor(Color.argb(150, 0, 0, 0))
+                Ui.pill(cv, view, s(R.string.press_start), w / 2, h * 0.76f + 74f * k, 42f * k, now)
+                text(cv, s(R.string.tug_join_hint), w / 2, h * 0.76f + 142f * k, 34f * k, Color.WHITE) }
+            COUNT -> { val el = now - stateAt; Ui.countdown(cv, view, 3 - (el / 1000).toInt(), (el % 1000) / 1000f, w / 2, h * 0.5f, k) }
+            END -> { Ui.dim(cv, 160); Ui.confetti(cv, view, now - stateAt)
                 val win = core.winner.coerceIn(0, 1)
                 text(cv, s(R.string.wins_fmt, s(if (win == 0) R.string.team_left else R.string.team_right)), w / 2, h * 0.34f, 130f * k, TEAM[win])
                 text(cv, s(when (core.reason) { TugCore.KNOCKOUT -> R.string.tug_ko; TugCore.SUDDEN -> R.string.tug_sudden_win; else -> R.string.tug_time }), w / 2, h * 0.34f + 84f * k, 50f * k, Color.WHITE)

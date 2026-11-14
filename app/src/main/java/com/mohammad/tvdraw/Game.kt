@@ -43,7 +43,7 @@ class Game(private val view: View) {
 
     private val p = Paint(Paint.ANTI_ALIAS_FLAG)
     private val bp = Paint(Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG)
-    private val tx = Paint(Paint.ANTI_ALIAS_FLAG).apply { typeface = Typeface.DEFAULT_BOLD; textAlign = Paint.Align.CENTER }
+    private val tx = Paint(Paint.ANTI_ALIAS_FLAG).apply { typeface = Ui.font(view.context); textAlign = Paint.Align.CENTER }
 
     private fun w() = view.width.toFloat()
     private fun h() = view.height.toFloat()
@@ -280,20 +280,20 @@ class Game(private val view: View) {
             text(cv, "+$pts", w / 2, top + bh + 46f * k, 36f * k, if (pts == 3) 0xFFFFD60A.toInt() else if (pts == 2) 0xFFFFFFFF.toInt() else 0xFFB0B6C2.toInt(), false) }
 
         when (state) {
-            LOBBY -> { cv.drawColor(Color.argb(120, 0, 0, 0))
-                text(cv, s(R.string.basketball), w / 2, h * 0.36f, 110f * k, Color.WHITE)
+            LOBBY -> { Ui.dim(cv, 130)
+                Ui.title(cv, view, "🏀 " + s(R.string.basketball), w / 2, h * 0.36f, 100f * k)
                 val lv = lvl()
                 text(cv, if (pl[0].cid != null) s(R.string.red_ready) else s(R.string.red_bot, lv), w * 0.27f, h * 0.56f, 50f * k, TEAM[0])
                 text(cv, if (pl[1].cid != null) s(R.string.blue_ready) else s(R.string.blue_bot, lv), w * 0.73f, h * 0.56f, 50f * k, TEAM[1])
-                text(cv, s(R.string.press_start_match), w / 2, h * 0.74f, 44f * k, 0xFFFFD60A.toInt())
+                Ui.pill(cv, view, s(R.string.press_start_match), w / 2, h * 0.74f, 42f * k, now)
                 text(cv, s(R.string.second_can_join), w / 2, h * 0.74f + 62f * k, 34f * k, Color.WHITE) }
             COUNT -> { val n = 3 - ((now - stateAt) / (countMs / 3f)).toInt().coerceIn(0, 2)
                 val f = ((now - stateAt) % (countMs / 3f)) / (countMs / 3f)
-                text(cv, n.toString(), w / 2, h * 0.5f + 90f * k, (300f - 90f * f) * k, Color.WHITE) }
+                Ui.countdown(cv, view, n, f, w / 2, h * 0.5f, k) }
             GOAL -> { val f = ((now - stateAt) / 300f).coerceIn(0f, 1f)
                 text(cv, s(R.string.goal), w / 2, h * 0.47f, (120f + 70f * f) * k, TEAM[lastScorer.coerceIn(0, 1)])
                 text(cv, "+$lastPts", w / 2, h * 0.47f + 150f * k, 110f * k, 0xFFFFD60A.toInt()) }
-            END -> { cv.drawColor(Color.argb(140, 0, 0, 0))
+            END -> { Ui.dim(cv, 150); Ui.confetti(cv, view, now - stateAt)
                 val msg = if (score[0] > score[1]) s(R.string.red_wins) else if (score[1] > score[0]) s(R.string.blue_wins) else s(R.string.draw)
                 text(cv, msg, w / 2, h * 0.46f, 150f * k, if (score[0] > score[1]) TEAM[0] else if (score[1] > score[0]) TEAM[1] else Color.WHITE)
                 text(cv, score[0].toString() + "  :  " + score[1].toString(), w / 2, h * 0.46f + 170f * k, 120f * k, Color.WHITE) }

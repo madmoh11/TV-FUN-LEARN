@@ -41,6 +41,7 @@ The GitHub workflow uses the same key when these repository secrets exist: `KEYS
 | `Ink.kt` | Drawing engine shared by all phones, laser pointer and spotlight |
 | `Game.kt`, `Hockey.kt`, `SnakeGame.kt`, `SnakeCore.kt`, `TugGame.kt`, `TugCore.kt`, `SpaceGame.kt`, `SpaceCore.kt` | The five games |
 | `LiveCam.kt` | The live camera window |
+| `Ui.kt` | The shared look: font, colours, title ribbon, countdown, confetti |
 | `Server.kt`, `Tls.kt` | The small HTTP and HTTPS server the phones talk to |
 | `Audio.kt`, `Synth.kt`, `VoiceFx.kt` | Sound mixer, synthesised effects and the voice changer |
 | `Prayer.kt`, `PrayerAlerts.kt` | Prayer-time calculation and alerts |

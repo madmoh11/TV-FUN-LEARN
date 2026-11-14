@@ -12,7 +12,7 @@ import kotlin.concurrent.thread
  * GET / = the page, POST /e = command lines, POST /a = 16 kHz mono PCM16 voice, POST /i = picture to show,
  * GET /w = the word bank of the space race, POST /f = selfie for the snake, POST /v = live camera frame, GET /s /p /g /h /j = sound, prayer and game status.
  */
-class Server(private val page: () -> String, private val words: () -> ByteArray, private val keyDir: java.io.File, private val onLines: (List<String>, String) -> Unit, private val onAudio: (ByteArray) -> Unit,
+class Server(private val page: () -> String, private val words: () -> ByteArray, private val font: () -> ByteArray, private val keyDir: java.io.File, private val onLines: (List<String>, String) -> Unit, private val onAudio: (ByteArray) -> Unit,
              private val onImage: (ByteArray) -> Unit, private val onFace: (ByteArray, String) -> Unit, private val onVideo: (ByteArray, String) -> Unit, private val status: (String) -> String) {
     var httpPort = 0; private set
     var httpsPort = 0; private set
@@ -59,18 +59,19 @@ class Server(private val page: () -> String, private val words: () -> ByteArray,
                 if (r < len) break
                 val parts = req.split(" ")
                 val path = if (parts.size > 1) parts[1] else "/"
-                var type = "text/plain"; var resp = ByteArray(0)
+                var type = "text/plain"; var resp = ByteArray(0); var cache = false
                 if (parts[0] == "POST" && path.startsWith("/a")) onAudio(body)
                 else if (parts[0] == "POST" && path.startsWith("/i")) onImage(body)
                 else if (parts[0] == "POST" && path.startsWith("/f")) onFace(body, path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12).ifEmpty { "x" })
                 else if (parts[0] == "POST" && path.startsWith("/v")) onVideo(body, path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12).ifEmpty { "x" })
+                else if (parts[0] == "GET" && path.startsWith("/font.ttf")) { type = "font/ttf"; cache = true; resp = font() }
                 else if (parts[0] == "GET" && path.startsWith("/w")) { type = "application/json; charset=utf-8"; resp = words() }
                 else if (path.startsWith("/c") || path.startsWith("/t") || path.startsWith("/q") || path.startsWith("/s") || path.startsWith("/p") || path.startsWith("/g") || path.startsWith("/h") || path.startsWith("/j")) resp = status(path).toByteArray(Charsets.UTF_8)
                 else if (parts[0] == "POST") onLines(String(body, Charsets.UTF_8).split("\n").filter { it.isNotBlank() },
                     path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12).ifEmpty { "x" })
                 else { type = "text/html; charset=utf-8"; resp = page().replace("__HTTPS__", httpsPort.toString()).toByteArray(Charsets.UTF_8) }
                 out.write(("HTTP/1.1 200 OK\r\nContent-Type: $type\r\nContent-Length: ${resp.size}\r\n" +
-                    "Cache-Control: no-store\r\n\r\n").toByteArray())
+                    (if (cache) "Cache-Control: max-age=604800\r\n\r\n" else "Cache-Control: no-store\r\n\r\n")).toByteArray())
                 out.write(resp); out.flush()
                 if (close) break
             }
