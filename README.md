@@ -1,6 +1,8 @@
 <div align="center">
 
-# TV Draw: fun and learning on your TV
+<img src="docs/images/logo.png" width="170" alt="Lamma mascot: a smiling cartoon TV">
+
+# Lamma (لمّة): fun and learning on your TV
 
 **Turn any Android TV into a shared family screen, controlled from your phone's browser.**
 Family games, learning games for maths and English, drawing, Arabic calligraphy, a live camera and microphone,
@@ -18,7 +20,7 @@ harmless pranks and prayer alerts.
 
 ## What is it?
 
-TV Draw is a small app for Android TV and TV boxes. It draws on top of whatever is on the screen: a film, a football
+Lamma (Arabic for a family get-together) is a small app for Android TV and TV boxes. It draws on top of whatever is on the screen: a film, a football
 match, the home screen. Everyone in the room controls it from their own phone by opening a web page. Phones need no app
 and no account, and nothing leaves your home network.
 
@@ -85,16 +87,16 @@ to the TV: a computer with [platform-tools](https://developer.android.com/tools/
 app on your phone.
 
 1. On the TV, turn on **Developer options → USB debugging** (or **Network debugging**).
-2. Download `tv-draw.apk` from the [latest release](https://github.com/madmoh11/TV-FUN-LEARN/releases/latest).
+2. Download `lamma.apk` from the [latest release](https://github.com/madmoh11/TV-FUN-LEARN/releases/latest).
 3. Install it and allow it to draw over other apps. Replace the address with your TV's IP address:
 
    ```bash
    adb connect 192.168.1.50
-   adb install tv-draw.apk
+   adb install lamma.apk
    adb shell appops set com.mohammad.tvdraw SYSTEM_ALERT_WINDOW allow
    ```
 
-4. Open **TV Draw** from the TV's app list. A card appears with an address and a QR code.
+4. Open **Lamma** from the TV's app list. A card appears with an address and a QR code.
 5. Open that address in your phone's browser, or scan the QR code.
 
 The second command in step 3 matters: without that permission the app closes as soon as it starts.

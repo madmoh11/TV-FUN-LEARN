@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- العربية -->
 <resources>
-    <string name="running">TV Draw شغّال</string>
-    <string name="no_port">TV Draw: ما في منفذ فاضي</string>
+    <string name="app_name">لمّة</string>
+    <string name="running">لمّة شغّالة</string>
+    <string name="no_port">لمّة: ما في منفذ فاضي</string>
 
     <string name="sys_alert">تنبيه النظام</string>
     <string name="shutdown_in">سيتم إغلاق التلفزيون بعد %d ثواني</string>

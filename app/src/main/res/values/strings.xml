@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- English (default). To add a language, copy this file to res/values-xx/strings.xml and translate the text. -->
 <resources>
-    <string name="app_name" translatable="false">TV Draw</string>
-    <string name="running">TV Draw is running</string>
-    <string name="no_port">TV Draw: no free port</string>
+    <string name="app_name">Lamma</string>
+    <string name="running">Lamma is running</string>
+    <string name="no_port">Lamma: no free port</string>
 
     <!-- Pranks -->
     <string name="sys_alert">System alert</string>

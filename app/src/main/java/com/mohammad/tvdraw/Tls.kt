@@ -49,7 +49,7 @@ object Tls {
     private val SHA256_RSA = seq(tlv(0x06, byteArrayOf(0x2A, 0x86.toByte(), 0x48, 0x86.toByte(), 0xF7.toByte(), 0x0D, 0x01, 0x01, 0x0B)), tlv(0x05, ByteArray(0)))
 
     private fun selfSigned(key: PrivateKey, publicKeyInfo: ByteArray): ByteArray {
-        val name = seq(tlv(0x31, seq(tlv(0x06, byteArrayOf(0x55, 0x04, 0x03)), tlv(0x0C, "TV Draw".toByteArray()))))
+        val name = seq(tlv(0x31, seq(tlv(0x06, byteArrayOf(0x55, 0x04, 0x03)), tlv(0x0C, "Lamma".toByteArray()))))
         // Fixed dates on purpose: a TV box with a wrong clock must still produce a usable certificate.
         val validity = seq(tlv(0x17, "200101000000Z".toByteArray()), tlv(0x17, "491231235959Z".toByteArray()))
         val serial = tlv(0x02, BigInteger(62, SecureRandom()).add(BigInteger.ONE).toByteArray())

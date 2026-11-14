@@ -1,6 +1,6 @@
 # Credits
 
-**TV Draw** is designed and developed by **Mohammad Aljaouni** ([@madmoh11](https://github.com/madmoh11)).
+**Lamma (لمّة)** is designed and developed by **Mohammad Aljaouni** ([@madmoh11](https://github.com/madmoh11)).
 
 ## Thank you
 

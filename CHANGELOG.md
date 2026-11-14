@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.7
+
+- The app has a new name: **Lamma** (لمّة, a family get-together), with a new mascot icon and TV banner.
+  Earlier versions were called TV Draw. It installs over them as an update.
+
 ## 3.6
 
 - New Family tab on the phone page.
