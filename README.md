@@ -3,7 +3,8 @@
 # TV Draw: fun and learning on your TV
 
 **Turn any Android TV into a shared family screen, controlled from your phone's browser.**
-Games, drawing, Arabic calligraphy, comments, a live microphone, harmless pranks and prayer alerts.
+Family games, learning games for maths and English, drawing, Arabic calligraphy, a live camera and microphone,
+harmless pranks and prayer alerts.
 
 [![Build](https://github.com/madmoh11/TV-FUN-LEARN/actions/workflows/build.yml/badge.svg)](https://github.com/madmoh11/TV-FUN-LEARN/actions/workflows/build.yml)
 [![Licence: MIT](https://img.shields.io/badge/licence-MIT-blue.svg)](LICENSE)
@@ -11,7 +12,7 @@ Games, drawing, Arabic calligraphy, comments, a live microphone, harmless pranks
 
 **English** | [العربية](README.ar.md)
 
-![TV screens: basketball, air hockey, snake, drawing, lion prank, calligraphy sheet](docs/images/tv.jpg)
+![TV screens: basketball, air hockey, snake, math tug of war, space race, drawing, lion prank, live camera](docs/images/tv.jpg)
 
 </div>
 
@@ -21,23 +22,58 @@ TV Draw is a small app for Android TV and TV boxes. It draws on top of whatever 
 match, the home screen. Everyone in the room controls it from their own phone by opening a web page. Phones need no app
 and no account, and nothing leaves your home network.
 
-![The phone page: games, drawing, comments and pranks](docs/images/phone-en.jpg)
+![The phone page: games, drawing, comments, and the controllers of the two learning games](docs/images/phone-en.jpg)
 
 ## Features
 
 | | |
 | --- | --- |
-| 🎮 **Games** | Basketball, air hockey and snake for one or two players, a math tug of war and an English vocabulary space race for up to six. |
+| 🎮 **Games** | Five games played on the TV with phones as controllers: see [the games](#the-games) below. |
 | ✏️ **Drawing** | Several phones draw at once. Pen, brush, highlighter, neon, eraser, shapes and an Arabic calligraphy nib. |
 | 📄 **Pages** | Draw over the picture, or on ruled paper, a calligraphy sheet, squares, dots or a blackboard. |
 | 🔦 **Pointer** | A laser dot or a spotlight, moved by finger or by tilting the phone. |
 | 💬 **Family comments** | Names, messages and emoji float across the screen. |
-| 🎤 **Microphone** | Talk into your phone and be heard from the TV speakers, in your own voice or as a monster, a child, a robot and more. |
-| 📹 **Live camera** | Your phone camera in a corner of the TV, like a reporter at home. |
+| 🎤 **Microphone** | Talk into your phone and be heard from the TV speakers. |
+| 🎭 **Voice changer** | Speak as a monster, a deep-voiced man, a woman, a child, a chipmunk, a robot, an alien, or with a cave echo. |
+| 📹 **Live camera** | Your phone camera in a corner of the TV, like a reporter at home. Pick the corner and the size, up to full screen. |
 | 🖼️ **Pictures** | Show a photo from your phone on the TV. |
+| 🔊 **Volume** | Turn the TV box volume up, down or mute it from your phone. |
 | 😈 **Pranks** | Cracked screen, a fly that walks around, a lion that jumps out of the screen, a fake shutdown message. |
 | 🕌 **Prayer alert** | A banner before each prayer, calculated on the device with no internet. |
 | 🌍 **Languages** | English and Arabic, with [an easy way to add more](docs/TRANSLATING.md). |
+
+## The games
+
+| Game | Players | How it works |
+| --- | --- | --- |
+| 🏀 **Basketball** | 1 or 2 | Move your ball with a joystick or by tilting the phone and score in the far hoop. Faster goals are worth more points. |
+| 🏒 **Air hockey** | 1 or 2 | Slide the mallet with your finger and hit the puck into the other goal. First to 7 wins. |
+| 🐍 **Snake** | 1 or 2 | Eat to grow and avoid crashing. Leave one edge and come back from the other. You can put your own face on the snake. |
+| 🪢 **Math tug of war** | 1 to 6 | Two teams solve sums on their phones; every correct answer pulls the rope. Easy, medium, hard, or a level that gets harder. Knockout, time limit and sudden death. |
+| 🚀 **Space race** | 1 to 6 | An English word appears on the phone and you pick its Arabic meaning. Correct answers fly your rocket to the planet. |
+
+Every game can be played alone: the computer takes the empty side.
+
+### Learning games in detail
+
+**Math tug of war.** Easy sums are worth 1 point, multiplying and dividing 2, and two-step sums 3 or 4. A wrong answer
+freezes your screen for a moment and lets the rope slip. Five correct answers in a row double your pull for five
+seconds. A smaller team pulls harder, so one fast player can stand against several. The end screen names the player
+with the most correct answers and the fastest one.
+
+**Space race.** The game ships with 1,000 English words in ten "galaxies": animals and nature, action verbs, school and
+objects, food and drinks, adjectives and feelings, home and family, jobs and places, time and weather, space and
+technology, and a master challenge. It is built to teach, not only to score:
+
+- A word you answered correctly does not come back until you finish its galaxy.
+- A word you got wrong keeps coming back until you answer it right twice.
+- The wrong choices come from the same galaxy and difficulty, so guessing is hard.
+- The phone can say each word aloud.
+- After the race the TV shows the words that were missed, with their meanings.
+- Answering within 2.5 seconds gives a bonus, three in a row charge a turbo, and every fifth question is a golden meteor.
+- Every 50 mastered words unlock a new spacecraft. Progress is saved on each phone.
+
+The words live in [`words_bank.json`](app/src/main/assets/data/words_bank.json) and can be extended without touching the code.
 
 ## Install
 
@@ -66,8 +102,8 @@ The second command in step 3 matters: without that permission the app closes as 
   link; your browser will warn that the connection is "not private" because the TV signs its own certificate.
   Choose *Advanced → Proceed*. Each TV creates its own key the first time the app runs.
 - **Who can control the TV.** Anyone on the same Wi-Fi who opens the address. Use it on a home network you trust.
-- **Privacy.** No accounts, no analytics, no internet access needed. Voice and pictures go from the phone straight
-  to the TV and are not saved.
+- **Privacy.** No accounts, no analytics, no internet access needed. Voice, camera and pictures go from the phone
+  straight to the TV and are not saved. Learning progress stays in the phone's browser.
 - **Browsers.** If the page does not open in one browser, try another one (Samsung Internet, Chrome, Firefox).
 - **Tested on** a Xiaomi Mi Box running Android 9. Other devices should work; please
   [report](https://github.com/madmoh11/TV-FUN-LEARN/issues) what you find.
