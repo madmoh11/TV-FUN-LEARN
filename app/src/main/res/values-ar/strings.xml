@@ -50,6 +50,19 @@
     <string name="solo_hit">خبطت بنفسك!</string>
     <string name="score_fmt">النتيجة: %d</string>
 
+    <string name="tug_title">شد الحبل الحسابية</string>
+    <string name="team_left">الفريق الأزرق</string>
+    <string name="team_right">الفريق الأحمر</string>
+    <string name="tug_bot">الكمبيوتر 🤖</string>
+    <string name="lvl_graded">متدرّج</string>
+    <string name="tug_join_hint">لحد 6 لاعبين: كل واحد يختار فريقه من تليفونه</string>
+    <string name="tug_sudden">الموت المفاجئ: أول إجابة صحيحة بتفوز!</string>
+    <string name="tug_ko">ضربة قاضية!</string>
+    <string name="tug_time">انتهى الوقت والحبل بجهتهم</string>
+    <string name="tug_sudden_win">فوز بالموت المفاجئ</string>
+    <string name="tug_most">أكثر إجابات صحيحة: %1$s (%2$d)</string>
+    <string name="tug_fastest">الأسرع: %1$s (%2$s ثانية للإجابة)</string>
+
     <string name="fajr">الفجر</string>
     <string name="dhuhr">الظهر</string>
     <string name="asr">العصر</string>

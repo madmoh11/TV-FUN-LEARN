@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.3
+
+- New game: Math Tug of War for up to 6 players in two teams. Solve sums on your phone to pull the rope;
+  easy, medium, hard or a level that gets harder; knockout, time limit and sudden death; the computer plays for an empty team.
+
 ## 3.2
 
 - Voice changer for the microphone: monster, deep man, woman, child, chipmunk, robot, alien and cave echo.

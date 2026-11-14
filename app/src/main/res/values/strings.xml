@@ -57,6 +57,20 @@
     <string name="solo_hit">You hit yourself!</string>
     <string name="score_fmt">Score: %d</string>
 
+    <!-- Math tug of war -->
+    <string name="tug_title">Math Tug of War</string>
+    <string name="team_left">Blue team</string>
+    <string name="team_right">Red team</string>
+    <string name="tug_bot">Computer 🤖</string>
+    <string name="lvl_graded">gets harder</string>
+    <string name="tug_join_hint">Up to 6 players: pick a team on your phone</string>
+    <string name="tug_sudden">Sudden death: the next correct answer wins!</string>
+    <string name="tug_ko">Knockout!</string>
+    <string name="tug_time">Time is up: the rope was on their side</string>
+    <string name="tug_sudden_win">Won in sudden death</string>
+    <string name="tug_most">Most correct answers: %1$s (%2$d)</string>
+    <string name="tug_fastest">Fastest: %1$s (%2$s seconds an answer)</string>
+
     <!-- Prayer alert -->
     <string name="fajr">Fajr</string>
     <string name="dhuhr">Dhuhr</string>

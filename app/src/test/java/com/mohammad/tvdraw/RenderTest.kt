@@ -268,4 +268,28 @@ class RenderTest {
         assertTrue(v.cam.status("a").startsWith("live=0"))
         v.cam.frame("b", pic(480, 360)); assertTrue(v.cam.status("b").startsWith("live=1|mine=1"))
     }
+
+    @Test fun tugOfWar() {
+        val act = org.robolectric.Robolectric.buildActivity(android.app.Activity::class.java).setup().get()
+        v = DrawView(act); act.window.setContentView(v)
+        fill = { v.measure(View.MeasureSpec.makeMeasureSpec(1920, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(1080, View.MeasureSpec.EXACTLY)); v.layout(0, 0, 1920, 1080) }
+        fill()
+        v.handle("tug join l Sara", "a"); shot("tug_lobby_solo")
+        v.handle("tug join r Omar", "b"); v.handle("tug join l Lina", "c"); v.handle("tug join r Ali", "d"); v.handle("tug join r Noor", "e"); v.handle("tug join l Zaid", "f")
+        v.handle("tug join r Late", "g")                                   // a seventh player does not fit
+        assertTrue(v.tug.status("g").split("|")[8] == "-1"); assertTrue(v.tug.status("a").startsWith("1|0|90|"))
+        v.handle("tug level 2", "a"); shot("tug_lobby")
+        v.handle("tug start", "a"); tick(1200); shot("tug_count"); tick(2000); shot("tug_go")       // the game only moves on when it is drawn
+        assertTrue(v.tug.status("a").startsWith("3|"))
+        repeat(5) { v.handle("tug hit 3 800", "a") }; v.handle("tug miss", "b"); tick(700); shot("tug_play_left_ahead")
+        assertTrue(v.tug.status("a").split("|")[9] == "1")               // five in a row: boosted
+        repeat(4) { v.handle("tug hit 4 600", "b"); v.handle("tug hit 4 600", "d") }; tick(900); shot("tug_play_right_ahead")
+        repeat(3) { v.handle("tug hit 4 500", "e") }; tick(600); shot("tug_end")
+        assertTrue("right team should have won: " + v.tug.status("a"), v.tug.status("a").startsWith("5|1000|") && v.tug.status("a").split("|")[11] == "1")
+        // phones that stop asking for the status lose their place; the last one leaving closes the game
+        for (c in listOf("a", "b", "c", "d", "e")) v.tug.status(c); tick(5000); shot("tug_x1"); for (c in listOf("a", "b", "c", "d", "e")) v.tug.status(c); tick(5000); shot("tug_x2")
+        assertTrue("the phone that went away should be gone: " + v.tug.status("a"), v.tug.status("a").split("|")[6] == "2")
+        v.handle("tug join l Late", "g"); assertTrue(v.tug.status("g").split("|")[8] == "0")
+        v.handle("j join g", "a"); assertTrue("joining another game closes this one", !v.tug.active)
+    }
 }

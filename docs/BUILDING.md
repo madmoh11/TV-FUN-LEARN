@@ -39,7 +39,7 @@ The GitHub workflow uses the same key when these repository secrets exist: `KEYS
 | --- | --- |
 | `OverlayService.kt` | The full-screen overlay on the TV: comments, pranks, pictures, the address card |
 | `Ink.kt` | Drawing engine shared by all phones, laser pointer and spotlight |
-| `Game.kt`, `Hockey.kt`, `SnakeGame.kt`, `SnakeCore.kt` | The three games |
+| `Game.kt`, `Hockey.kt`, `SnakeGame.kt`, `SnakeCore.kt`, `TugGame.kt`, `TugCore.kt` | The four games |
 | `LiveCam.kt` | The live camera window |
 | `Server.kt`, `Tls.kt` | The small HTTP and HTTPS server the phones talk to |
 | `Audio.kt`, `Synth.kt`, `VoiceFx.kt` | Sound mixer, synthesised effects and the voice changer |

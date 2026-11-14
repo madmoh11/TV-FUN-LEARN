@@ -207,5 +207,22 @@
   "vol_title": "TV box volume",
   "vol_level": "Volume {0} of {1}",
   "vol_muted": "(muted)",
-  "vol_fixed": "This device has a fixed volume: use the TV remote instead."
+  "vol_fixed": "This device has a fixed volume: use the TV remote instead.",
+  "k_title": "🪢 Math Tug of War",
+  "k_players": "1 to 6 players",
+  "k_desc": "Two teams pull a rope by solving sums on their phones. Every correct answer pulls the rope your way; harder sums pull harder.",
+  "k_left": "🔵 Blue team",
+  "k_right": "🔴 Red team",
+  "k_hint": "A wrong answer freezes your screen for a few seconds and lets the rope slip. Five correct answers in a row double your pull for 5 seconds. If one team is empty, the computer plays for it. Your name comes from the comments box.",
+  "k_time": "Round time",
+  "k_t60": "60 seconds",
+  "k_t90": "90 seconds",
+  "k_t120": "2 minutes",
+  "lvl_graded": "Gets harder",
+  "k_opt_hint": "Easy: adding and subtracting, 1 point. Medium: multiplying and dividing, 2 points. Hard: two steps, 3 or 4 points. The level and time can be changed before the round starts.",
+  "k_wait": "Waiting to start • {0} of 6 players",
+  "k_frozen": "Wrong! Wait {0}…",
+  "k_boost": "⚡ Double power!",
+  "k_streak": "🔥 {0} in a row ({1} doubles your pull)",
+  "k_full": "The game is full: 6 players are already in."
 }
