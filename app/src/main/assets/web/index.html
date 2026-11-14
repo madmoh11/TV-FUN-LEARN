@@ -75,6 +75,19 @@ select{flex:1;min-width:0;font-size:16px;padding:12px 8px;border-radius:12px;bor
 #kinfo{flex:none;min-height:24px;text-align:center;font-size:16px;color:#ffd60a;font-weight:600}
 #kstart{flex:none;padding:22px 8px;font-size:20px;font-weight:600}
 @media (orientation:landscape){#kmain{grid-column:1/3;grid-row:3;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr auto}#krope,#kinfo,#kstart{grid-column:1/3}#kq{grid-column:1}#kans{grid-column:2;align-content:center}}
+#qmain{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px;margin-top:8px}
+#qbar{position:relative;height:14px;border-radius:7px;background:#262c38;flex:none;margin:8px 14px 4px}#qbar i{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:7px;background:linear-gradient(90deg,#7a3fd8,#ffd60a);transition:width .3s}
+#qbar b{position:absolute;top:-11px;left:0;margin-left:-12px;font-size:24px;font-weight:400;transform:rotate(45deg);transition:left .3s}
+#qw{flex:1;min-height:60px;display:flex;align-items:center;justify-content:center;gap:12px;border-radius:18px;background:#171b23;border:4px solid transparent;padding:4px 10px;font-size:min(12vw,11vh);font-weight:800;text-align:center}
+#qw.gold{border-color:#ffd60a;box-shadow:0 0 22px #ffd60a88 inset}#qw.msg{font-size:22px;font-weight:600;color:#c9ced8;line-height:1.5}#qw.msg #qspk{display:none}
+#qspk{flex:none;padding:8px 10px;font-size:22px;background:#262c38}
+#qans{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:10px}#qans button{padding:4px;height:min(15vh,110px);font-size:min(6.2vw,5.4vh);font-weight:800;line-height:1.25}
+#qans button.ok{outline:5px solid #fff}#qans button.no{opacity:.25}#qans.frozen button:not(.ok){opacity:.25}
+#qturbo{flex:none;display:flex;align-items:center;gap:6px;min-height:26px}#qturbo i{flex:none;width:34px;height:12px;border-radius:6px;background:#262c38}#qturbo i.on{background:#ff9f0a}#qturbo.full i{background:#40b4ff;box-shadow:0 0 10px #40b4ff}
+#qinfo{flex:1;text-align:center;font-size:16px;color:#ffd60a;font-weight:600}
+#qstart{flex:none;padding:22px 8px;font-size:20px;font-weight:600}
+#qrk button{font-size:26px;padding:8px 12px;position:relative}#qrk button[disabled]{opacity:.4}#qrk small{display:block;font-size:10px;color:#9aa3b2}
+@media (orientation:landscape){#qmain{grid-column:1/3;grid-row:3;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr auto}#qbar,#qturbo,#qstart{grid-column:1/3}#qw{grid-column:1}#qans{grid-column:2;align-content:center}}
 #jcrop{margin-top:12px}#jcv{display:block;width:280px;height:auto;aspect-ratio:1;max-width:100%;margin:0 auto 10px;border-radius:12px;touch-action:none}</style></head><body><main>
 <header id=top><b>TV Draw</b><span><span data-i=tagline>Control the TV from your phone</span></span><select id=lang aria-label="Language"></select></header>
 
@@ -95,6 +108,11 @@ select{flex:1;min-width:0;font-size:16px;padding:12px 8px;border-radius:12px;bor
 <p class=cd><span data-i=k_desc>x</span></p>
 <div class=two id=kjoin><button id=kl style="background:#1f6fff"><span data-i=k_left>x</span></button><button id=kr style="background:#d92d20"><span data-i=k_right>x</span></button></div>
 <p class=hint id=kh><span data-i=k_hint>x</span></p></div>
+<div class=card><h3><span data-i=q_title>x</span><small><span data-i=k_players>x</span></small></h3>
+<p class=cd><span data-i=q_desc>x</span></p>
+<div class=sc id=qrk></div>
+<button id=qjoin style="width:100%;padding:18px;font-size:18px;font-weight:600;background:#7a3fd8"><span data-i=q_join>x</span></button>
+<p class=hint id=qh></p></div>
 </section>
 
 <section class=tab id=t-draw hidden>
@@ -189,6 +207,21 @@ select{flex:1;min-width:0;font-size:16px;padding:12px 8px;border-radius:12px;bor
 <div id=kans dir=ltr><button></button><button></button><button></button><button></button></div>
 <div id=kinfo></div>
 <button class=go id=kstart><span data-i=start_match>x</span></button>
+</div></div>
+<div class=ctl id=qplay hidden>
+<div class=cbar><button class=cx id=qleave data-ia=exit aria-label="Exit">✕</button><div class=chud id=qhud></div><button class=cset data-o=qopt data-ia=options aria-label="Options">⚙️</button></div>
+<div class=copt id=qopt hidden>
+<div class=row2 style="margin-top:0"><span data-i=q_galaxy>x</span><select id=qcat><option value=0 data-i=cat_all>x<option value=1 data-i=cat_animals>x<option value=2 data-i=cat_verbs>x<option value=3 data-i=cat_school>x<option value=4 data-i=cat_food>x<option value=5 data-i=cat_adjectives>x<option value=6 data-i=cat_home>x<option value=7 data-i=cat_jobs>x<option value=8 data-i=cat_time>x<option value=9 data-i=cat_space>x<option value=10 data-i=cat_master>x</select></div>
+<div class=row2><span data-i=q_len>x</span><select id=qlen><option value=10 data-i=q_l10>x<option value=15 data-i=q_l15>x<option value=20 data-i=q_l20>x</select></div>
+<div class=row2><span>Robo-X</span><select id=qrobo><option value=0 data-i=q_r_auto>x<option value=1 data-i=q_r_on>x<option value=2 data-i=q_r_off>x</select><select id=qspd><option value=0 data-i=lvl_easy>x<option value=1 data-i=lvl_medium>x<option value=2 data-i=lvl_hard>x</select></div>
+<label class=ck><input type=checkbox id=qsay checked><span data-i=q_say>x</span></label>
+<button class=g id=qstop style="width:100%;margin-top:12px"><span data-i=end_all>x</span></button></div>
+<div id=qmain>
+<div id=qbar><i></i><b>🚀</b></div>
+<div id=qw dir=ltr><span id=qwt></span><button id=qspk aria-label="🔊">🔊</button></div>
+<div id=qans dir=rtl><button style="background:#d92d20"></button><button style="background:#1f6fff"></button><button style="background:#e0a800;color:#111"></button><button style="background:#1f9d46"></button></div>
+<div id=qturbo><i></i><i></i><i></i><span id=qinfo></span></div>
+<button class=go id=qstart><span data-i=q_start>x</span></button>
 </div></div>
 <div id=camfloat hidden><video id=camv playsinline muted autoplay style="transform:scaleX(-1)"></video></div>
 <nav id=tabs><button data-t=play><b>🎮</b><span data-i=tab_play>Games</span></button><button data-t=draw><b>✏️</b><span data-i=tab_draw>Draw</span></button><button data-t=chat><b>💬</b><span data-i=tab_chat>Interact</span></button><button data-t=prank><b>😈</b><span data-i=tab_prank>Pranks</span></button><button data-t=set><b>⚙️</b><span data-i=tab_set>Settings</span></button></nav>
@@ -381,7 +414,7 @@ function gori(e){if(e.beta==null||e.gamma==null)return;ggot=true;if(!gbase)gbase
 E('gtilt').onchange=async()=>{if(!E('gtilt').checked){removeEventListener('deviceorientation',gori);gv=[0,0];gst.classList.remove('act');return}
 try{if(window.DeviceOrientationEvent&&DeviceOrientationEvent.requestPermission)await DeviceOrientationEvent.requestPermission()}catch(e){}
 gbase=null;ggot=false;addEventListener('deviceorientation',gori);setTimeout(()=>{if(!ggot&&E('gtilt').checked){E('gtilt').checked=false;E('gh').textContent=T('no_motion_play')}},1500)};
-function gjoin(s){if(hside>=0){send('h leave');hout()}if(jside>=0){send('j leave');jout()}if(kside>=0){send('tug leave');kout()}gwant=s;fs(true);send('y join '+(s?'b':'r'));if(!gt)gt=setInterval(gpoll,250);setTimeout(gpoll,150)}
+function gjoin(s){if(hside>=0){send('h leave');hout()}if(jside>=0){send('j leave');jout()}if(kside>=0){send('tug leave');kout()}if(qin){send('sr leave');qout()}gwant=s;fs(true);send('y join '+(s?'b':'r'));if(!gt)gt=setInterval(gpoll,250);setTimeout(gpoll,150)}
 E('gr').onclick=()=>gjoin(0);E('gb').onclick=()=>gjoin(1);
 E('glev').onchange=()=>send('y level '+E('glev').value);E('gdash').onclick=()=>send('y dash');E('gstart').onclick=()=>send('y start');E('gstop').onclick=()=>{send('y stop');gout()};E('gleave').onclick=()=>{send('y leave');gout()};
 function gout(){fs(false);E('gopt').hidden=true;gside=-1;gwant=-1;clearInterval(gt);gt=0;gv=null;E('gplay').hidden=true;if(E('gtilt').checked){E('gtilt').checked=false;removeEventListener('deviceorientation',gori)}}
@@ -396,7 +429,7 @@ function hfit(){const z=E('hzone');if(!z||E('hplay').hidden)return;const w=Math.
 addEventListener('resize',hfit);let hside=-1,hwant=-1,ht=0,hseen=null;
 function hp(e){const r=hpad.getBoundingClientRect(),x=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)),y=Math.min(1,Math.max(0,(e.clientY-r.top)/r.height));hpos=[x,y];hkn.style.left=(x*100)+'%';hkn.style.top=(y*100)+'%'}
 hpad.onpointerdown=e=>{e.preventDefault();try{hpad.setPointerCapture(e.pointerId)}catch(_){}hpad.dataset.on=1;hp(e)};hpad.onpointermove=e=>{if(hpad.dataset.on)hp(e)};hpad.onpointerup=hpad.onpointercancel=()=>{delete hpad.dataset.on};
-function hjoin(s){if(gside>=0){send('y leave');gout()}if(jside>=0){send('j leave');jout()}if(kside>=0){send('tug leave');kout()}hwant=s;fs(true);send('h join '+(s?'k':'r'));if(!ht)ht=setInterval(hpoll,250);setTimeout(hpoll,150)}
+function hjoin(s){if(gside>=0){send('y leave');gout()}if(jside>=0){send('j leave');jout()}if(kside>=0){send('tug leave');kout()}if(qin){send('sr leave');qout()}hwant=s;fs(true);send('h join '+(s?'k':'r'));if(!ht)ht=setInterval(hpoll,250);setTimeout(hpoll,150)}
 E('hr').onclick=()=>hjoin(0);E('hk').onclick=()=>hjoin(1);
 E('hlev').onchange=()=>send('h level '+E('hlev').value);E('hstart').onclick=()=>send('h start');E('hstop').onclick=()=>{send('h stop');hout()};E('hleave').onclick=()=>{send('h leave');hout()};
 function hout(){fs(false);E('hopt').hidden=true;hside=-1;hwant=-1;clearInterval(ht);ht=0;hpos=null;E('hplay').hidden=true}
@@ -412,7 +445,7 @@ function jori(e){if(e.beta==null||e.gamma==null)return;jgot=true;if(!jbaseO)jbas
 E('jtilt').onchange=async()=>{if(!E('jtilt').checked){removeEventListener('deviceorientation',jori);sv=null;jst.classList.remove('act');return}
 try{if(window.DeviceOrientationEvent&&DeviceOrientationEvent.requestPermission)await DeviceOrientationEvent.requestPermission()}catch(e){}
 jbaseO=null;jgot=false;addEventListener('deviceorientation',jori);setTimeout(()=>{if(!jgot&&E('jtilt').checked){E('jtilt').checked=false;E('jh').textContent=T('no_motion_play')}},1500)};
-function jjoin(s){if(gside>=0){send('y leave');gout()}if(hside>=0){send('h leave');hout()}if(kside>=0){send('tug leave');kout()}jwant=s;fs(true);send('j join '+(s?'o':'g'));if(!jt)jt=setInterval(jpoll,250);setTimeout(jpoll,150)}
+function jjoin(s){if(gside>=0){send('y leave');gout()}if(hside>=0){send('h leave');hout()}if(kside>=0){send('tug leave');kout()}if(qin){send('sr leave');qout()}jwant=s;fs(true);send('j join '+(s?'o':'g'));if(!jt)jt=setInterval(jpoll,250);setTimeout(jpoll,150)}
 E('jg').onclick=()=>jjoin(0);E('jo').onclick=()=>jjoin(1);
 E('jlev').onchange=()=>send('j level '+E('jlev').value);E('jstart').onclick=()=>send('j start');E('jstop').onclick=()=>{send('j stop');jout()};E('jleave').onclick=()=>{send('j leave');jout()};
 function jout(){fs(false);E('jopt').hidden=true;jside=-1;jwant=-1;clearInterval(jt);jt=0;sv=null;E('jplay').hidden=true;if(E('jtilt').checked){E('jtilt').checked=false;removeEventListener('deviceorientation',jori)}}
@@ -439,7 +472,7 @@ if(kcur.c[i]===kcur.v){send('tug hit '+kcur.p+' '+(Date.now()-kT0));if(navigator
 else{send('tug miss');if(navigator.vibrate)navigator.vibrate([90,50,90]);b.className='no';kab[kcur.c.indexOf(kcur.v)].className='ok';kfrozen=Date.now()+2500;E('kans').classList.add('frozen');
 const tick=()=>{const l=kfrozen-Date.now();if(l<=0||kside<0){E('kans').classList.remove('frozen');if(kst===3&&kside>=0)knext();kshowinfo();return}E('kinfo').textContent=T('k_frozen',Math.ceil(l/1000));setTimeout(tick,200)};tick()}});
 let kboost=0,kstreak=0;function kshowinfo(){if(Date.now()<kfrozen)return;E('kinfo').textContent=kst!==3?'':kboost?T('k_boost'):kstreak>=2?T('k_streak',kstreak,5):''}
-function kjoin(s){if(gside>=0){send('y leave');gout()}if(hside>=0){send('h leave');hout()}if(jside>=0){send('j leave');jout()}kwant=s;fs(true);send('tug join '+(s?'r':'l')+' '+enc(nm.value.trim()));if(!kt)kt=setInterval(kpoll,250);setTimeout(kpoll,150)}
+function kjoin(s){if(gside>=0){send('y leave');gout()}if(hside>=0){send('h leave');hout()}if(jside>=0){send('j leave');jout()}if(qin){send('sr leave');qout()}kwant=s;fs(true);send('tug join '+(s?'r':'l')+' '+enc(nm.value.trim()));if(!kt)kt=setInterval(kpoll,250);setTimeout(kpoll,150)}
 E('kl').onclick=()=>kjoin(0);E('kr').onclick=()=>kjoin(1);
 E('klev').onchange=()=>send('tug level '+E('klev').value);E('ktime').onchange=()=>send('tug time '+E('ktime').value);
 E('kstart').onclick=()=>send('tug start');E('kstop').onclick=()=>{send('tug stop');kout()};E('kleave').onclick=()=>{send('tug leave');kout()};
@@ -456,6 +489,51 @@ if(st!==kst){const was=kst;kst=st;if(st===3){kfrozen=0;E('kans').classList.remov
 else if(st===5){kmsg(a[11]===me?T('you_win'):T('you_lose'));if(navigator.vibrate)navigator.vibrate(a[11]===me?[120,60,200]:200)}}
 else if(st===1)kmsg(T('k_wait',a[6]+a[7]));
 if(a[12]&&kseen!==1&&st===3){kseen=1;if(navigator.vibrate)navigator.vibrate([60,40,60,40,60])}if(!a[12])kseen=0;kshowinfo()}).catch(()=>{})}
+const qw=E('qw'),qwt=E('qwt'),qab=[...E('qans').children],QR=['🚀','🌟','🛸','✈️','🔥'];
+let qin=false,qt=0,qst=0,qcat=0,qcur=null,qT0=0,qfrozen=0,qn=0,qlast=0,qbank=null,qM=[],qRv={},qrocket=0;
+try{qM=JSON.parse(localStorage.getItem('srM')||'[]');qRv=JSON.parse(localStorage.getItem('srR')||'{}');qrocket=+localStorage.getItem('srK')||0}catch(e){}
+function qsave(){try{localStorage.setItem('srM',JSON.stringify(qM));localStorage.setItem('srR',JSON.stringify(qRv));localStorage.setItem('srK',qrocket)}catch(e){}}
+function qunlocked(){return Math.min(QR.length-1,Math.floor(qM.length/50))}
+function qcard(){const u=qunlocked();if(qrocket>u)qrocket=u;E('qrk').innerHTML='';QR.forEach((r,i)=>{const b=document.createElement('button');b.innerHTML=r+(i>u?'<small>🔒 '+i*50+'</small>':'');b.disabled=i>u;b.classList.toggle('on',i===qrocket);
+b.onclick=()=>{qrocket=i;qsave();qcard();if(qin)send('sr rocket '+i)};E('qrk').appendChild(b)});E('qh').textContent=T('q_mastered',qM.length,qbank?qbank.length:1000)+(u<QR.length-1?' • '+T('q_next_rocket',(u+1)*50-qM.length):'')}
+function qload(){return qbank?Promise.resolve():fetch('/w').then(r=>r.json()).then(b=>{qbank=b;qcard()})}
+/* Which word comes next: words answered wrongly come back first, then words not mastered yet; a finished galaxy starts again. */
+function qpick(){let pool=qbank.filter(w=>qcat===0||w.category===QC[qcat]);const rev=pool.filter(w=>qRv[w.id]!=null&&w.id!==qlast),fresh=pool.filter(w=>!qM.includes(w.id)&&qRv[w.id]==null&&w.id!==qlast);
+if(rev.length&&(Math.random()<.5||!fresh.length))return rev[Math.floor(Math.random()*rev.length)];
+if(!fresh.length){const ids=new Set(pool.map(w=>w.id));qM=qM.filter(i=>!ids.has(i));qsave();pool=pool.filter(w=>w.id!==qlast);return pool[Math.floor(Math.random()*pool.length)]}
+return fresh[Math.floor(Math.random()*fresh.length)]}
+/* Three wrong choices from the same galaxy and, when possible, the same difficulty, so they cannot be ruled out at a glance. */
+function qchoices(w){const same=qbank.filter(x=>x.category===w.category&&x.id!==w.id&&x.ar!==w.ar);let c=same.filter(x=>x.difficulty===w.difficulty);if(c.length<3)c=same;
+const out=[];while(out.length<3){const x=c[Math.floor(Math.random()*c.length)];if(!out.some(o=>o.ar===x.ar))out.push(x)}return[w,...out].sort(()=>Math.random()-.5)}
+const QC=['','animals','verbs','school','food','adjectives','home','jobs','time','space','master'];
+function qspeak(){if(!qcur||!E('qsay').checked||!window.speechSynthesis)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(qcur.w.en);u.lang='en-US';u.rate=.9;speechSynthesis.speak(u)}catch(e){}}
+function qnext(){if(!qbank)return;qn++;const w=qpick();qlast=w.id;qcur={w:w,c:qchoices(w),gold:qn%5===0};qw.className=qcur.gold?'gold':'';qwt.textContent=w.en;E('qans').style.visibility='';E('qans').classList.remove('frozen');
+qab.forEach((b,i)=>{b.className='';b.textContent=qcur.c[i].ar});qT0=Date.now();qspeak();qinfoShow()}
+function qmsg(t){qcur=null;qw.className='msg';qwt.textContent=t;E('qans').style.visibility='hidden'}
+let qturbo=0,qstreak=0;function qinfoShow(){E('qturbo').className=qturbo?'full':'';[...E('qturbo').querySelectorAll('i')].forEach((x,i)=>x.classList.toggle('on',i<qstreak||qturbo));
+if(Date.now()>=qfrozen)E('qinfo').textContent=qst!==3?'':qturbo?T('q_turbo'):qcur&&qcur.gold?T('q_gold'):''}
+E('qspk').onclick=qspeak;
+qab.forEach((b,i)=>b.onclick=()=>{if(!qcur||qst!==3||Date.now()<qfrozen)return;const w=qcur.w;
+if(qcur.c[i].id===w.id){if(qRv[w.id]!=null){qRv[w.id]++;if(qRv[w.id]>=2){delete qRv[w.id];if(!qM.includes(w.id))qM.push(w.id)}}else if(!qM.includes(w.id))qM.push(w.id);qsave();
+send('sr hit '+w.id+' '+(Date.now()-qT0)+' '+(qcur.gold?1:0));if(navigator.vibrate)navigator.vibrate(20);qnext()}
+else{qRv[w.id]=0;qM=qM.filter(x=>x!==w.id);qsave();send('sr miss '+w.id);if(navigator.vibrate)navigator.vibrate([90,50,90]);b.className='no';qab[qcur.c.findIndex(x=>x.id===w.id)].className='ok';
+qfrozen=Date.now()+2500;E('qans').classList.add('frozen');E('qinfo').textContent=T('q_focus');setTimeout(()=>{if(qin&&qst===3)qnext();else E('qans').classList.remove('frozen')},2500)}});
+E('qjoin').onclick=()=>{if(gside>=0){send('y leave');gout()}if(hside>=0){send('h leave');hout()}if(jside>=0){send('j leave');jout()}if(kside>=0){send('tug leave');kout()}
+fs(true);qload().catch(()=>{});send('sr join '+(enc(nm.value.trim())||'%20')+' '+qrocket+' '+qM.length);if(!qt)qt=setInterval(qpoll,250);setTimeout(qpoll,150)};
+E('qcat').onchange=()=>send('sr cat '+E('qcat').value);E('qlen').onchange=()=>send('sr len '+E('qlen').value);E('qrobo').onchange=()=>send('sr robo '+E('qrobo').value);E('qspd').onchange=()=>send('sr speed '+E('qspd').value);
+E('qstart').onclick=()=>send('sr start');E('qstop').onclick=()=>{send('sr stop');qout()};E('qleave').onclick=()=>{send('sr leave');qout()};
+function qout(){fs(false);E('qopt').hidden=true;qin=false;clearInterval(qt);qt=0;qst=0;qcur=null;qfrozen=0;E('qplay').hidden=true;try{if(window.speechSynthesis)speechSynthesis.cancel()}catch(e){}qcard()}
+function qpoll(){fetch('/q?c='+CID).then(r=>r.text()).then(t=>{const a=t.split('|').map(Number);if(a.length<13)return;const st=a[0];
+if(!a[6]){if(qin||st===0){qout();return}if(a[5]>=6)E('qh').textContent=T('k_full');return}
+if(!qin){qin=true;E('qplay').hidden=false;document.body.classList.add('playing')}qcat=a[1];qturbo=a[8];qstreak=a[9];
+[['qcat',1],['qlen',2],['qrobo',3],['qspd',4]].forEach(x=>{if(document.activeElement!==E(x[0]))E(x[0]).value=a[x[1]]});
+E('qbar').firstChild.style.width=a[7]+'%';E('qbar').lastChild.style.left=a[7]+'%';
+E('qhud').innerHTML=a[7]+'% &nbsp;•&nbsp; #'+a[10]+' &nbsp;•&nbsp; ⭐ '+qM.length;
+E('qstart').hidden=!(st===1||st===5);
+if(st!==qst){qst=st;if(st===3){qfrozen=0;qn=0;if(qbank)qnext();else qload().then(()=>{if(qst===3)qnext()})}else if(st===2)qmsg(T('st_ready'));
+else if(st===5){qmsg(a[11]===1?T('you_win'):T('q_finished',a[10]));if(navigator.vibrate)navigator.vibrate(a[11]===1?[120,60,200]:200)}}
+if(st===1)qmsg(T('q_wait',a[5]));qinfoShow()}).catch(()=>{})}
+qcard();
 let jimg=null,jz=1,jox=0,joy=0,jb=1,jdrag=null;const jcv=E('jcv'),jc=jcv.getContext('2d');
 function jdraw(){jc.fillStyle='#000';jc.fillRect(0,0,280,280);if(!jimg)return;const s=jb*jz;jc.drawImage(jimg,140+jox-jimg.width*s/2,140+joy-jimg.height*s/2,jimg.width*s,jimg.height*s);
 jc.fillStyle='rgba(0,0,0,.6)';jc.beginPath();jc.rect(0,0,280,280);jc.arc(140,140,120,0,6.2832,true);jc.fill('evenodd');jc.strokeStyle='#fff';jc.lineWidth=3;jc.beginPath();jc.arc(140,140,120,0,6.2832);jc.stroke()}

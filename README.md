@@ -27,7 +27,7 @@ and no account, and nothing leaves your home network.
 
 | | |
 | --- | --- |
-| 🎮 **Games** | Basketball, air hockey and snake for one or two players, and a math tug of war for up to six. |
+| 🎮 **Games** | Basketball, air hockey and snake for one or two players, a math tug of war and an English vocabulary space race for up to six. |
 | ✏️ **Drawing** | Several phones draw at once. Pen, brush, highlighter, neon, eraser, shapes and an Arabic calligraphy nib. |
 | 📄 **Pages** | Draw over the picture, or on ruled paper, a calligraphy sheet, squares, dots or a blackboard. |
 | 🔦 **Pointer** | A laser dot or a spotlight, moved by finger or by tilting the phone. |

@@ -63,6 +63,24 @@
     <string name="tug_most">أكثر إجابات صحيحة: %1$s (%2$d)</string>
     <string name="tug_fastest">الأسرع: %1$s (%2$s ثانية للإجابة)</string>
 
+    <string name="space_title">سباق الصواريخ</string>
+    <string name="sr_settings">%1$s  •  %2$d كلمة  •  Robo-X: %3$s</string>
+    <string name="sr_robo_off">متوقف</string>
+    <string name="sr_join_hint">كلمات إنجليزية: اختار المعنى العربي من تليفونك. لحد 6 لاعبين</string>
+    <string name="sr_review">كلمات للمراجعة السريعة</string>
+    <string name="sr_perfect">ولا غلطة: سباق مثالي!</string>
+    <string name="cat_all">كل المجرات</string>
+    <string name="cat_animals">الحيوانات والطبيعة</string>
+    <string name="cat_verbs">الأفعال والحركة</string>
+    <string name="cat_school">المدرسة والأدوات</string>
+    <string name="cat_food">الطعام والشراب</string>
+    <string name="cat_adjectives">الصفات والمشاعر</string>
+    <string name="cat_home">المنزل والعائلة</string>
+    <string name="cat_jobs">المهن والأماكن</string>
+    <string name="cat_time">الوقت والطقس</string>
+    <string name="cat_space">الفضاء والتكنولوجيا</string>
+    <string name="cat_master">التحدي الشامل</string>
+
     <string name="fajr">الفجر</string>
     <string name="dhuhr">الظهر</string>
     <string name="asr">العصر</string>

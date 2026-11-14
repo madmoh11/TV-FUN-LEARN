@@ -20,6 +20,7 @@ class DrawView(c: Context) : View(c) {
     val hockey = Hockey(this)
     val snake = SnakeGame(this)
     val tug = TugGame(this)
+    val space = SpaceGame(this)
     val cam = LiveCam(this)
 
     // ---- floating comments + emoji ----
@@ -366,12 +367,13 @@ class DrawView(c: Context) : View(c) {
                 "m" -> ink.move(cid, p[1].toFloat() * getWidth(), p[2].toFloat() * height)
                 "x" -> ink.end(cid)
                 "v" -> game.tilt(cid, p[1].toFloat(), p[2].toFloat())
-                "y" -> { if (p[1] == "join") { if (hockey.active) hockey.stopNow(); if (snake.active) snake.stopNow(); if (tug.active) tug.stopNow() }; game.command(p, cid) }
-                "j" -> { if (p[1] == "join") { if (hockey.active) hockey.stopNow(); if (game.active) game.stopNow(); if (tug.active) tug.stopNow() }; snake.command(p, cid) }
+                "y" -> { if (p[1] == "join") { if (hockey.active) hockey.stopNow(); if (snake.active) snake.stopNow(); if (tug.active) tug.stopNow(); if (space.active) space.stopNow() }; game.command(p, cid) }
+                "j" -> { if (p[1] == "join") { if (hockey.active) hockey.stopNow(); if (game.active) game.stopNow(); if (tug.active) tug.stopNow(); if (space.active) space.stopNow() }; snake.command(p, cid) }
                 "r" -> snake.steer(cid, p[1].toFloat(), p[2].toFloat())
                 "o" -> hockey.pos(cid, p[1].toFloat(), p[2].toFloat())
-                "h" -> { if (p[1] == "join") { if (game.active) game.stopNow(); if (snake.active) snake.stopNow(); if (tug.active) tug.stopNow() }; hockey.command(p, cid) }
-                "tug" -> { if (p[1] == "join") { if (game.active) game.stopNow(); if (snake.active) snake.stopNow(); if (hockey.active) hockey.stopNow() }; tug.command(p, cid) }
+                "h" -> { if (p[1] == "join") { if (game.active) game.stopNow(); if (snake.active) snake.stopNow(); if (tug.active) tug.stopNow(); if (space.active) space.stopNow() }; hockey.command(p, cid) }
+                "tug" -> { if (p[1] == "join") { if (game.active) game.stopNow(); if (snake.active) snake.stopNow(); if (hockey.active) hockey.stopNow(); if (space.active) space.stopNow() }; tug.command(p, cid) }
+                "sr" -> { if (p[1] == "join") { if (game.active) game.stopNow(); if (snake.active) snake.stopNow(); if (hockey.active) hockey.stopNow(); if (tug.active) tug.stopNow() }; space.command(p, cid) }
                 "c" -> ink.clearAll()
                 "u" -> ink.undo(cid)
                 "k" -> ink.pen(cid).color = Color.parseColor(p[1])
@@ -402,7 +404,7 @@ class DrawView(c: Context) : View(c) {
 
     override fun onDraw(cv: Canvas) {
         val now = SystemClock.uptimeMillis()
-        val gaming = game.draw(cv, now) or hockey.draw(cv, now) or snake.draw(cv, now) or tug.draw(cv, now)
+        val gaming = game.draw(cv, now) or hockey.draw(cv, now) or snake.draw(cv, now) or tug.draw(cv, now) or space.draw(cv, now)
         ink.draw(cv)
         val s = sc()
         val it = floats.iterator()
@@ -473,10 +475,10 @@ class OverlayService : Service() {
             PixelFormat.TRANSLUCENT)
         getSystemService(WindowManager::class.java).addView(view, lp)
 
-        val sfx = Sfx(this); view.sfx = sfx; view.game.sfx = sfx; view.hockey.sfx = sfx; view.snake.sfx = sfx; view.tug.sfx = sfx
+        val sfx = Sfx(this); view.sfx = sfx; view.game.sfx = sfx; view.hockey.sfx = sfx; view.snake.sfx = sfx; view.tug.sfx = sfx; view.space.sfx = sfx; view.space.speak = { say(it) }
         val prayer = PrayerAlerts(this, view, sfx); view.onPrayerCmd = { prayer.command(it) }; prayer.start()
         thread {
-            val server = Server({ page }, filesDir, { lines, cid -> ui.post { lines.forEach { view.handle(it, cid) }; view.invalidate() } }, { sfx.voice(it) },
+            val server = Server({ page }, { words }, filesDir, { lines, cid -> ui.post { lines.forEach { view.handle(it, cid) }; view.invalidate() } }, { sfx.voice(it) },
                 { bytes -> try {
                     val o = BitmapFactory.Options().apply { inJustDecodeBounds = true }
                     BitmapFactory.decodeByteArray(bytes, 0, bytes.size, o)
@@ -494,6 +496,7 @@ class OverlayService : Service() {
                 } catch (e: Throwable) { camBusy.set(false) } },
                 { path -> if (path.startsWith("/p")) prayer.status()
                     else if (path.startsWith("/c")) view.cam.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
+                    else if (path.startsWith("/q")) view.space.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/t")) view.tug.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/j")) view.snake.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/h")) view.hockey.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
@@ -517,6 +520,20 @@ class OverlayService : Service() {
             "\"" + it.removeSuffix(".json") + "\":" + assets.open("web/lang/$it").use { s -> s.readBytes().toString(Charsets.UTF_8) }
         }
         assets.open("web/index.html").use { it.readBytes().toString(Charsets.UTF_8) }.replace("__LANGS__", "{$langs}")
+    }
+
+    /** The vocabulary bank of the space race, served to the phones as it is. */
+    private val words: ByteArray by lazy { try { assets.open("data/words_bank.json").use { it.readBytes() } } catch (e: Throwable) { "[]".toByteArray() } }
+
+    // English speech for the review board. Not every TV box has a speech engine, so this is best effort.
+    private var tts: android.speech.tts.TextToSpeech? = null
+    private var ttsReady = false
+    private fun say(text: String) {
+        try {
+            if (tts == null) tts = android.speech.tts.TextToSpeech(this) { status ->
+                if (status == android.speech.tts.TextToSpeech.SUCCESS) { tts?.language = java.util.Locale.US; ttsReady = true; tts?.speak(text, android.speech.tts.TextToSpeech.QUEUE_ADD, null, "w") } }
+            else if (ttsReady) tts?.speak(text, android.speech.tts.TextToSpeech.QUEUE_ADD, null, "w")
+        } catch (e: Throwable) { }
     }
 
     private fun localIp(): String {

@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.4
+
+- New game: Space Race, a vocabulary race for up to 6 players. An English word appears on the phone and the player
+  picks its Arabic meaning; correct answers move a rocket across the TV.
+- A bank of 1,000 words in ten "galaxies", kept in `app/src/main/assets/data/words_bank.json`.
+- Words answered wrongly come back until they are answered right twice; mastered words do not repeat until the galaxy is finished.
+- Speed bonus, turbo after three in a row, a golden meteor every fifth question, Robo-X for a lone player,
+  new rockets every 50 mastered words, and a review board of missed words at the end.
+
 ## 3.3
 
 - New game: Math Tug of War for up to 6 players in two teams. Solve sums on your phone to pull the rope;

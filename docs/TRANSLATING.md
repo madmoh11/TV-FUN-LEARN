@@ -27,3 +27,16 @@ The TV shows the language of its Android system settings.
 
 This draws the TV screens in your language into `app/build/renders/`. Look for text that is too long for its place.
 Then open a pull request.
+
+## Adding words to the space race
+
+The vocabulary game reads its words from `app/src/main/assets/data/words_bank.json`. Each word is one line:
+
+```json
+{"id": 419, "en": "brave", "ar": "شجاع", "category": "adjectives", "difficulty": 1}
+```
+
+- `id` must be unique and must never change, because phones remember mastered words by id.
+- `category` is one of the ten galaxies already in the file.
+- `difficulty` is 1, 2 or 3. Wrong choices are taken from the same galaxy and difficulty.
+- Inside one galaxy, two words must not share the same Arabic meaning.

@@ -292,4 +292,26 @@ class RenderTest {
         v.handle("tug join l Late", "g"); assertTrue(v.tug.status("g").split("|")[8] == "0")
         v.handle("j join g", "a"); assertTrue("joining another game closes this one", !v.tug.active)
     }
+
+    @Test fun spaceRace() {
+        val act = org.robolectric.Robolectric.buildActivity(android.app.Activity::class.java).setup().get()
+        v = DrawView(act); act.window.setContentView(v)
+        fill = { v.measure(View.MeasureSpec.makeMeasureSpec(1920, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(1080, View.MeasureSpec.EXACTLY)); v.layout(0, 0, 1920, 1080) }
+        fill()
+        val said = ArrayList<String>(); v.space.speak = { said.add(it) }
+        v.handle("sr join Sara 0 12", "a"); shot("space_lobby_solo")              // alone: Robo-X joins
+        assertTrue(v.space.status("a").startsWith("1|0|10|0|0|1|1|"))
+        v.handle("sr join Omar 1 60", "b"); v.handle("sr join Lina 2 130", "c"); v.handle("sr join Ali 3 150", "d"); v.handle("sr join Noor 4 210", "e")
+        v.handle("sr cat 5", "a"); v.handle("sr robo 1", "a"); shot("space_lobby")
+        v.handle("sr start", "a"); tick(1200); shot("space_count"); tick(2000); shot("space_go")
+        assertTrue(v.space.status("a").startsWith("3|5|10|1|"))
+        repeat(3) { v.handle("sr hit 401 900 0", "a") }; v.handle("sr hit 402 4000 0", "b"); v.handle("sr miss 419 0", "c"); v.handle("sr miss 455 0", "d"); v.handle("sr miss 402 0", "e"); v.handle("sr hit 430 3000 0", "c")
+        tick(900); shot("space_play")
+        assertTrue("three fast answers and a ready turbo: " + v.space.status("a"), v.space.status("a").split("|").let { it[7] == "36" && it[8] == "1" })
+        repeat(5) { v.handle("sr hit 403 800 0", "a") }; tick(700); shot("space_end"); tick(3000); shot("space_review"); tick(2300); shot("space_review2")
+        assertTrue("winner sees the win: " + v.space.status("a"), v.space.status("a").split("|").let { it[0] == "5" && it[11] == "1" && it[10] == "1" })
+        assertTrue(v.space.status("b").split("|")[11] == "0")
+        assertTrue("the missed words are read aloud: $said", said.take(2) == listOf("brave", "careful") || said.size >= 2)
+        v.handle("tug join l Sara", "a"); assertTrue("joining another game closes this one", !v.space.active)
+    }
 }

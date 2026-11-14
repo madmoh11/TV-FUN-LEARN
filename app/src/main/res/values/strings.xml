@@ -71,6 +71,25 @@
     <string name="tug_most">Most correct answers: %1$s (%2$d)</string>
     <string name="tug_fastest">Fastest: %1$s (%2$s seconds an answer)</string>
 
+    <!-- Space race -->
+    <string name="space_title">Space Race</string>
+    <string name="sr_settings">%1$s  •  %2$d words  •  Robo-X: %3$s</string>
+    <string name="sr_robo_off">off</string>
+    <string name="sr_join_hint">English words: pick the Arabic meaning on your phone. Up to 6 players</string>
+    <string name="sr_review">Words to review</string>
+    <string name="sr_perfect">No mistakes: a perfect race!</string>
+    <string name="cat_all">All galaxies</string>
+    <string name="cat_animals">Animals &amp; Nature</string>
+    <string name="cat_verbs">Action Verbs</string>
+    <string name="cat_school">School &amp; Objects</string>
+    <string name="cat_food">Food &amp; Drinks</string>
+    <string name="cat_adjectives">Adjectives &amp; Feelings</string>
+    <string name="cat_home">Home &amp; Family</string>
+    <string name="cat_jobs">Jobs &amp; Places</string>
+    <string name="cat_time">Time &amp; Weather</string>
+    <string name="cat_space">Space &amp; Tech</string>
+    <string name="cat_master">Master Challenge</string>
+
     <!-- Prayer alert -->
     <string name="fajr">Fajr</string>
     <string name="dhuhr">Dhuhr</string>
