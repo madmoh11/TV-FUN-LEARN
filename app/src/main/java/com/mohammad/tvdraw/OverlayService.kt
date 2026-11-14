@@ -21,6 +21,8 @@ class DrawView(c: Context) : View(c) {
     val snake = SnakeGame(this)
     val tug = TugGame(this)
     val space = SpaceGame(this)
+    val family = Family(this)
+    init { val give: (List<GameResult>) -> Unit = { family.award(it) }; game.onEnd = give; hockey.onEnd = give; snake.onEnd = give; tug.onEnd = give; space.onEnd = give }
     val cam = LiveCam(this)
 
     // ---- floating comments + emoji ----
@@ -374,6 +376,7 @@ class DrawView(c: Context) : View(c) {
                 "h" -> { if (p[1] == "join") { if (game.active) game.stopNow(); if (snake.active) snake.stopNow(); if (tug.active) tug.stopNow(); if (space.active) space.stopNow() }; hockey.command(p, cid) }
                 "tug" -> { if (p[1] == "join") { if (game.active) game.stopNow(); if (snake.active) snake.stopNow(); if (hockey.active) hockey.stopNow(); if (space.active) space.stopNow() }; tug.command(p, cid) }
                 "sr" -> { if (p[1] == "join") { if (game.active) game.stopNow(); if (snake.active) snake.stopNow(); if (hockey.active) hockey.stopNow(); if (tug.active) tug.stopNow() }; space.command(p, cid) }
+                "nm", "poll", "tm", "hof" -> family.command(p, cid)
                 "c" -> ink.clearAll()
                 "u" -> ink.undo(cid)
                 "k" -> ink.pen(cid).color = Color.parseColor(p[1])
@@ -446,6 +449,7 @@ class DrawView(c: Context) : View(c) {
             cv.drawText(u, l + 24f * s, y + 30f * s, cardTx)
         }
         cam.draw(cv, now, s)
+        family.draw(cv, now)
         val lasering = ink.drawLaser(cv, now)
         if (floats.isNotEmpty() || pranking || lasering || gaming) postInvalidateOnAnimation()
     }
@@ -475,7 +479,7 @@ class OverlayService : Service() {
             PixelFormat.TRANSLUCENT)
         getSystemService(WindowManager::class.java).addView(view, lp)
 
-        val sfx = Sfx(this); view.sfx = sfx; view.game.sfx = sfx; view.hockey.sfx = sfx; view.snake.sfx = sfx; view.tug.sfx = sfx; view.space.sfx = sfx; view.space.speak = { say(it) }
+        val sfx = Sfx(this); view.sfx = sfx; view.game.sfx = sfx; view.hockey.sfx = sfx; view.snake.sfx = sfx; view.tug.sfx = sfx; view.family.sfx = sfx; view.space.sfx = sfx; view.space.speak = { say(it) }
         val prayer = PrayerAlerts(this, view, sfx); view.onPrayerCmd = { prayer.command(it) }; prayer.start()
         thread {
             val server = Server({ page }, { words }, { font }, filesDir, { lines, cid -> ui.post { lines.forEach { view.handle(it, cid) }; view.invalidate() } }, { sfx.voice(it) },
@@ -496,6 +500,7 @@ class OverlayService : Service() {
                 } catch (e: Throwable) { camBusy.set(false) } },
                 { path -> if (path.startsWith("/p")) prayer.status()
                     else if (path.startsWith("/c")) view.cam.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
+                    else if (path.startsWith("/u")) view.family.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/q")) view.space.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/t")) view.tug.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/j")) view.snake.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))

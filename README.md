@@ -37,6 +37,9 @@ and no account, and nothing leaves your home network.
 | 🎭 **Voice changer** | Speak as a monster, a deep-voiced man, a woman, a child, a chipmunk, a robot, an alien, or with a cave echo. |
 | 📹 **Live camera** | Your phone camera in a corner of the TV, like a reporter at home. Pick the corner and the size, up to full screen. |
 | 🖼️ **Pictures** | Show a photo from your phone on the TV. |
+| 🏆 **Hall of fame** | Every named player collects points from all the games, with weekly champions. Saved on the TV. |
+| 🗳️ **Quick vote** | Ask a question, everyone votes from their phone, and the result appears on the TV. |
+| ⏱️ **Family timer** | A countdown in the corner of the TV with a big alert when time is up. |
 | 🔊 **Volume** | Turn the TV box volume up, down or mute it from your phone. |
 | 😈 **Pranks** | Cracked screen, a fly that walks around, a lion that jumps out of the screen, a fake shutdown message. |
 | 🕌 **Prayer alert** | A banner before each prayer, calculated on the device with no internet. |

@@ -13,6 +13,7 @@ class SnakeGame(private val view: View) {
     companion object { const val OFF = 0; const val LOBBY = 1; const val COUNT = 2; const val PLAY = 3; const val END = 5
         val TEAM = intArrayOf(0xFF34C759.toInt(), 0xFFFF9F0A.toInt()); const val MATCH_SECONDS = 90f }
     var sfx: Sfx? = null
+    var onEnd: ((List<GameResult>) -> Unit)? = null
     private var core: SnakeCore? = null
     private var state = OFF
     private val seat = arrayOfNulls<String>(2)
@@ -84,7 +85,7 @@ class SnakeGame(private val view: View) {
                 c.step(dt); timeLeft -= dt
                 for (i in 0..1) if (c.eats[i] != eatSeen[i]) { eatSeen[i] = c.eats[i]; sfx?.play(if (c.lastEatGold) "chime" else "blip", 0.8f) }
                 if (!c.over && timeLeft <= 0f) { timeLeft = 0f; c.timeUp() }
-                if (c.over) { state = END; stateAt = now; ends++; if (c.reason == SnakeCore.TIME) sfx?.play("buzzer", 1f) else { sfx?.play("thump", 1f); sfx?.play("buzzer", 0.6f) } } }
+                if (c.over) { state = END; stateAt = now; ends++; onEnd?.invoke((0..1).mapNotNull { i -> seat[i]?.let { GameResult(it, seat[1 - i] != null && c.winner == i) } }); if (c.reason == SnakeCore.TIME) sfx?.play("buzzer", 1f) else { sfx?.play("thump", 1f); sfx?.play("buzzer", 0.6f) } } }
             END -> if (now - stateAt > 10000) { state = LOBBY; stateAt = now; timeLeft = MATCH_SECONDS; fresh() }
         }
         if (state != OFF && now - lastActive > 120000) { stopNow(); return }

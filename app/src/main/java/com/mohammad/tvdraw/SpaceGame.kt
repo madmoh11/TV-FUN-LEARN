@@ -14,6 +14,7 @@ class SpaceGame(private val view: View) {
         val CATEGORIES = intArrayOf(R.string.cat_all, R.string.cat_animals, R.string.cat_verbs, R.string.cat_school, R.string.cat_food, R.string.cat_adjectives,
             R.string.cat_home, R.string.cat_jobs, R.string.cat_time, R.string.cat_space, R.string.cat_master) }
     var sfx: Sfx? = null
+    var onEnd: ((List<GameResult>) -> Unit)? = null
     /** Says an English word aloud on the TV, when the device has a speech engine. */
     var speak: ((String) -> Unit)? = null
     private val core = SpaceCore()
@@ -77,7 +78,7 @@ class SpaceGame(private val view: View) {
                 if (now - stateAt >= 3000) { state = PLAY; sfx?.play("blip", 1f) } }
             PLAY -> { core.step(dt)
                 if (core.boosts != boostsSeen) { boostsSeen = core.boosts; sfx?.play("thump", 0.6f) }
-                if (core.over) { state = END; stateAt = now; sfx?.play("chime", 1f) } }
+                if (core.over) { state = END; stateAt = now; sfx?.play("chime", 1f); onEnd?.invoke(core.racers.values.filter { !it.robot }.map { GameResult(it.cid, it === core.winner, words = it.correct) }) } }
             END -> { val i = ((now - stateAt - 2500) / 2200).toInt()          // read the review words aloud, one at a time
                 val list = review()
                 if (now - stateAt >= 2500 && i != spoken && i < list.size) { spoken = i; speak?.invoke(list[i].first) }

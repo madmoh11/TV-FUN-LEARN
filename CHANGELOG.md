@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.6
+
+- New Family tab on the phone page.
+- Family hall of fame: every named player collects points from all five games, with weekly champions
+  (player of the week, math champion, word champion). The board is saved on the TV.
+- Quick vote: ask a question with two to four choices; everyone votes from their phone and the result shows on the TV.
+- Family timer: a countdown in the corner of the TV with a big alert and a chime when time is up.
+
 ## 3.5
 
 - A shared look for the whole app: one cartoon font for Arabic and English on the TV and on the phone page, one colour

@@ -12,6 +12,7 @@ class TugGame(private val view: View) {
     companion object { const val OFF = 0; const val LOBBY = 1; const val COUNT = 2; const val PLAY = 3; const val END = 5
         val TEAM = intArrayOf(0xFF2F80FF.toInt(), 0xFFFF5A4F.toInt()); const val GONE_MS = 8000L }
     var sfx: Sfx? = null
+    var onEnd: ((List<GameResult>) -> Unit)? = null
     private val core = TugCore()
     private var state = OFF
     private var stateAt = 0L; private var countShown = -1; private var last = 0L
@@ -69,7 +70,7 @@ class TugGame(private val view: View) {
                     sfx?.play(if (strong) "thump" else "swish", if (strong) 0.9f else 0.5f)
                     if (strong) { shakeUntil = now + 350; shake = 14f } }
                 if (core.sudden && !suddenSeen) { suddenSeen = true; sfx?.play("buzzer", 0.9f) }
-                if (core.over) { state = END; stateAt = now; sfx?.play("chime", 1f) } }
+                if (core.over) { state = END; stateAt = now; sfx?.play("chime", 1f); onEnd?.invoke(core.players.values.map { GameResult(it.cid, it.team == core.winner, math = it.correct) }) } }
             END, LOBBY -> if (now - stateAt > 600000 && state == END) stopNow()
         }
         shown += (core.pos - shown) * (1f - Math.pow(0.002, dt.toDouble()).toFloat())

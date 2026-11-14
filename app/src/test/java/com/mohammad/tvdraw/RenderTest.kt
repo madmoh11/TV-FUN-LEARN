@@ -314,4 +314,38 @@ class RenderTest {
         assertTrue("the missed words are read aloud: $said", said.take(2) == listOf("brave", "careful") || said.size >= 2)
         v.handle("tug join l Sara", "a"); assertTrue("joining another game closes this one", !v.space.active)
     }
+
+    @Test fun familyTools() {
+        val act = org.robolectric.Robolectric.buildActivity(android.app.Activity::class.java).setup().get()
+        act.getSharedPreferences("family", 0).edit().clear().commit()
+        v = DrawView(act); act.window.setContentView(v)
+        fill = { v.measure(View.MeasureSpec.makeMeasureSpec(1920, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(1080, View.MeasureSpec.EXACTLY)); v.layout(0, 0, 1920, 1080) }
+        fill()
+        fun line(cid: String, tag: String) = v.family.status(cid).split("\n").first { it.startsWith(tag) }
+        // quick vote
+        v.handle("poll new What+shall+we+eat%3F Pizza Burger Mansaf", "a"); shot("vote_empty")
+        v.handle("poll vote 2", "a"); v.handle("poll vote 2", "b"); v.handle("poll vote 0", "c"); v.handle("poll vote 1", "b")      // b changes its mind
+        v.handle("poll vote 9", "d"); shot("vote_open")
+        assertTrue(line("a", "P") == "P|1|2|What+shall+we+eat%3F|Pizza|1|Burger|1|Mansaf|1"); assertTrue(line("d", "P").startsWith("P|1|-1|"))
+        v.handle("poll vote 2", "c"); v.handle("poll close", "a"); shot("vote_result")
+        v.handle("poll vote 0", "a"); assertTrue("no voting after the vote is closed", line("a", "P").endsWith("|Pizza|0|Burger|1|Mansaf|2"))
+        tick(Family.RESULT_MS + 500); shot("vote_gone"); assertTrue(line("a", "P").startsWith("P|0|"))
+        // timer
+        v.handle("tm start 300 Bedtime", "a"); shot("timer"); assertTrue(line("a", "T") == "T|300|Bedtime")
+        tick(250000); shot("timer_urgent"); assertTrue(line("a", "T").startsWith("T|50|"))
+        v.handle("tm add 60", "a"); assertTrue(line("a", "T").startsWith("T|110|"))
+        tick(111000); shot("timer_done"); assertTrue(line("a", "T").startsWith("T|0|"))
+        tick(Family.DONE_MS + 500); shot("timer_gone"); assertTrue(line("a", "T").startsWith("T|-1|"))
+        // hall of fame: points come from real games
+        v.handle("nm Sara", "a"); v.handle("nm Omar", "b"); v.handle("nm %D9%84%D9%8A%D9%86%D8%A7", "c")
+        v.handle("tug join l", "a"); v.handle("tug join r", "b"); v.handle("tug join r", "c"); v.handle("tug join l", "x")       // x has no name
+        v.handle("tug level 2", "a"); v.handle("tug start", "a"); tick(1500); shot("f1"); tick(1700); shot("f2")
+        repeat(6) { v.handle("tug hit 4 500", "a") }; v.handle("tug hit 3 500", "b"); tick(400); shot("f3")
+        // five answers are a knockout: 2 for playing + 10 for winning + 5 correct; the losers get 2 each
+        assertTrue("left team won: " + v.family.status("a"), v.family.status("a").contains("B|Sara|17|17|1|1") && v.family.status("a").contains("B|Omar|2|2|0|1"))
+        assertTrue(v.family.status("a").split("\n").count { it.startsWith("B|") } == 3)
+        v.handle("tug stop", "a"); v.handle("hof show", "a"); shot("board")
+        val again = DrawView(act); assertTrue("the board is saved on the TV", again.family.status("a").contains("B|Sara|17|"))
+        v.handle("hof reset", "a"); assertTrue(!v.family.status("a").contains("B|"))
+    }
 }

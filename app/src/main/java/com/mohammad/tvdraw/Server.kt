@@ -66,7 +66,7 @@ class Server(private val page: () -> String, private val words: () -> ByteArray,
                 else if (parts[0] == "POST" && path.startsWith("/v")) onVideo(body, path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12).ifEmpty { "x" })
                 else if (parts[0] == "GET" && path.startsWith("/font.ttf")) { type = "font/ttf"; cache = true; resp = font() }
                 else if (parts[0] == "GET" && path.startsWith("/w")) { type = "application/json; charset=utf-8"; resp = words() }
-                else if (path.startsWith("/c") || path.startsWith("/t") || path.startsWith("/q") || path.startsWith("/s") || path.startsWith("/p") || path.startsWith("/g") || path.startsWith("/h") || path.startsWith("/j")) resp = status(path).toByteArray(Charsets.UTF_8)
+                else if (path.startsWith("/c") || path.startsWith("/t") || path.startsWith("/q") || path.startsWith("/u") || path.startsWith("/s") || path.startsWith("/p") || path.startsWith("/g") || path.startsWith("/h") || path.startsWith("/j")) resp = status(path).toByteArray(Charsets.UTF_8)
                 else if (parts[0] == "POST") onLines(String(body, Charsets.UTF_8).split("\n").filter { it.isNotBlank() },
                     path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12).ifEmpty { "x" })
                 else { type = "text/html; charset=utf-8"; resp = page().replace("__HTTPS__", httpsPort.toString()).toByteArray(Charsets.UTF_8) }

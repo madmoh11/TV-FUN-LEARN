@@ -26,6 +26,8 @@ class Game(private val view: View) {
     companion object { const val OFF = 0; const val LOBBY = 1; const val COUNT = 2; const val PLAY = 3; const val GOAL = 4; const val END = 5
         val TEAM = intArrayOf(0xFFFF3B30.toInt(), 0xFF2F80FF.toInt()); const val MATCH_SECONDS = 90f }
     var sfx: Sfx? = null
+    /** Called once when a match ends, with how each human player did. */
+    var onEnd: ((List<GameResult>) -> Unit)? = null
     private var state = OFF
     private val pl = arrayOf(Baller(0), Baller(1))
     private val score = IntArray(2)
@@ -201,7 +203,8 @@ class Game(private val view: View) {
             COUNT -> { val n = ((countMs - (now - stateAt)) / (countMs / 3f)).toInt()
                 if (n != countShown && n >= 0) { countShown = n; sfx?.play("blip", 0.7f) }
                 if (now - stateAt >= countMs) { state = PLAY; roundAt = now; sfx?.play("blip", 1f) } }
-            PLAY -> { timeLeft -= dt; if (timeLeft <= 0f) { timeLeft = 0f; state = END; stateAt = now; sfx?.play("buzzer", 1f) } }
+            PLAY -> { timeLeft -= dt; if (timeLeft <= 0f) { timeLeft = 0f; state = END; stateAt = now; sfx?.play("buzzer", 1f)
+                onEnd?.invoke((0..1).mapNotNull { i -> pl[i].cid?.let { GameResult(it, score[i] > score[1 - i]) } }) } }
             GOAL -> if (now - stateAt > 1700) toCount(1800, now)
             END -> if (now - stateAt > 9000) { state = LOBBY; stateAt = now }
         }

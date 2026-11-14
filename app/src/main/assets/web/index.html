@@ -89,6 +89,9 @@ select{flex:1;min-width:0;font-size:16px;padding:12px 8px;border-radius:12px;bor
 #qstart{flex:none;padding:22px 8px;font-size:20px;font-weight:600}
 #qrk button{font-size:26px;padding:8px 12px;position:relative}#qrk button[disabled]{opacity:.4}#qrk small{display:block;font-size:10px;color:#a59fc4}
 @media (orientation:landscape){#qmain{grid-column:1/3;grid-row:3;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr auto}#qbar,#qturbo,#qstart{grid-column:1/3}#qw{grid-column:1}#qans{grid-column:2;align-content:center}}
+.frow{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:#241c47;margin-bottom:6px;font-size:17px}.frow b{flex:none;width:30px;text-align:center}.frow span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.frow i{font-style:normal;color:#ffd60a;font-weight:700}.frow small{color:#a59fc4;font-size:12px}
+#fpopts button{display:flex;width:100%;margin-bottom:8px;background:#241c47;position:relative;overflow:hidden;text-align:start;padding:14px}#fpopts button.on{outline:3px solid #ffd60a}#fpopts button u{position:absolute;left:0;top:0;bottom:0;background:#7a3fd866;text-decoration:none}#fpopts button span{position:relative;flex:1}#fpopts button b{position:relative}
+.two input{font-size:16px;padding:11px}#tabs button{font-size:10px}#tabs.dot [data-t=fam] b::after{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;background:#ff3b30;margin-inline-start:2px;vertical-align:top}
 #jcrop{margin-top:12px}#jcv{display:block;width:280px;height:auto;aspect-ratio:1;max-width:100%;margin:0 auto 10px;border-radius:12px;touch-action:none}</style></head><body><main>
 <header id=top><b>TV Draw</b><span><span data-i=tagline>Control the TV from your phone</span></span><select id=lang aria-label="Language"></select></header>
 
@@ -168,6 +171,26 @@ select{flex:1;min-width:0;font-size:16px;padding:12px 8px;border-radius:12px;bor
 <p class=hint id=pics></p></div>
 </section>
 
+<section class=tab id=t-fam hidden>
+<div class=card><h3><span data-i=f_board>x</span></h3>
+<div id=fboard></div>
+<p class=hint id=fchamp></p>
+<div class=row3><button id=fshow><span data-i=f_show>x</span></button><button class=g id=freset><span data-i=f_reset>x</span></button></div>
+<p class=hint><span data-i=f_board_hint>x</span></p></div>
+<div class=card><h3><span data-i=f_vote>x</span></h3>
+<div id=fpnew><input type=text id=fq maxlength=60 data-ip=f_q_ph style="margin-bottom:8px">
+<div class=two><input type=text class=fo maxlength=24 data-ip=f_o1><input type=text class=fo maxlength=24 data-ip=f_o2><input type=text class=fo maxlength=24 data-ip=f_o3><input type=text class=fo maxlength=24 data-ip=f_o4></div>
+<button id=fpgo style="width:100%;margin-top:10px"><span data-i=f_vote_start>x</span></button></div>
+<div id=fplive hidden><p id=fpq style="font-size:19px;margin:4px 0 10px"></p><div id=fpopts></div>
+<p class=hint id=fpinfo></p><div class=row3><button class=g id=fpend><span data-i=f_vote_end>x</span></button></div></div></div>
+<div class=card><h3><span data-i=f_timer>x</span></h3>
+<div id=ftnew><input type=text id=ftl maxlength=28 data-ip=f_t_ph>
+<div class=sc id=ftm style="margin-top:8px"></div>
+<p class=hint style="margin-top:0"><span data-i=f_timer_hint>x</span></p></div>
+<div id=ftlive hidden><p id=ftclock style="font-size:44px;font-weight:800;text-align:center;margin:6px 0"></p>
+<div class=row3><button class=g id=ftadd><span data-i=f_t_add>x</span></button><button class=g id=ftstop><span data-i=f_t_stop>x</span></button></div></div></div>
+</section>
+
 <section class=tab id=t-prank hidden>
 <div class=card><h3><span data-i=prank_title>😈 Pranks</span></h3>
 <div id=pr><button data-p=crack><span data-i=p_crack>💥 Cracked screen</span></button><button data-p=fly><span data-i=p_fly>🪰 Fly</span></button>
@@ -225,7 +248,7 @@ select{flex:1;min-width:0;font-size:16px;padding:12px 8px;border-radius:12px;bor
 <button class=go id=qstart><span data-i=q_start>x</span></button>
 </div></div>
 <div id=camfloat hidden><video id=camv playsinline muted autoplay style="transform:scaleX(-1)"></video></div>
-<nav id=tabs><button data-t=play><b>🎮</b><span data-i=tab_play>Games</span></button><button data-t=draw><b>✏️</b><span data-i=tab_draw>Draw</span></button><button data-t=chat><b>💬</b><span data-i=tab_chat>Interact</span></button><button data-t=prank><b>😈</b><span data-i=tab_prank>Pranks</span></button><button data-t=set><b>⚙️</b><span data-i=tab_set>Settings</span></button></nav>
+<nav id=tabs><button data-t=play><b>🎮</b><span data-i=tab_play>Games</span></button><button data-t=draw><b>✏️</b><span data-i=tab_draw>Draw</span></button><button data-t=chat><b>💬</b><span data-i=tab_chat>Interact</span></button><button data-t=fam><b>🏆</b><span data-i=tab_fam>Family</span></button><button data-t=prank><b>😈</b><span data-i=tab_prank>Pranks</span></button><button data-t=set><b>⚙️</b><span data-i=tab_set>Settings</span></button></nav>
 
 <div class=ctl id=gplay hidden>
 <div class=cbar><button class=cx id=gleave data-ia=exit aria-label="Exit">✕</button><div class=chud id=ghud></div><button class=cset data-o=gopt data-ia=options aria-label="Options">⚙️</button></div>
@@ -535,6 +558,28 @@ if(st!==qst){qst=st;if(st===3){qfrozen=0;qn=0;if(qbank)qnext();else qload().then
 else if(st===5){qmsg(a[11]===1?T('you_win'):T('q_finished',a[10]));if(navigator.vibrate)navigator.vibrate(a[11]===1?[120,60,200]:200)}}
 if(st===1)qmsg(T('q_wait',a[5]));qinfoShow()}).catch(()=>{})}
 qcard();
+/* ---- family: hall of fame, quick vote, timer ---- */
+function nmSend(){send('nm '+(enc(nm.value.trim())||'%20'))}nmSend();nm.addEventListener('change',nmSend);
+const fdec=s=>decodeURIComponent(String(s||'').replace(/\+/g,' '));let fpoll=null,ftsecs=-1;
+[1,3,5,10,15,30,60].forEach(m=>{const b=document.createElement('button');b.textContent=T('f_min',m);b.onclick=()=>{send('tm start '+m*60+' '+(enc(E('ftl').value.trim())||'%20'));setTimeout(fload,300)};E('ftm').appendChild(b)});
+E('ftadd').onclick=()=>{send('tm add 60');setTimeout(fload,300)};E('ftstop').onclick=()=>{send('tm stop');setTimeout(fload,300)};
+E('fpgo').onclick=()=>{const q=E('fq').value.trim(),o=[...document.querySelectorAll('.fo')].map(x=>x.value.trim()).filter(x=>x);if(!q||o.length<2){E('fpinfo').textContent='';alert(T('f_vote_need'));return}
+send('poll new '+enc(q)+' '+o.map(enc).join(' '));setTimeout(fload,300)};
+E('fpend').onclick=()=>{send(fpoll&&fpoll.state===1?'poll close':'poll off');setTimeout(fload,300)};
+E('fshow').onclick=()=>send('hof show');E('freset').onclick=()=>{if(confirm(T('f_reset_ask'))){send('hof reset');setTimeout(fload,300)}};
+function fclock(s){return s>=3600?Math.floor(s/3600)+':'+String(Math.floor(s%3600/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'):Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+function fload(){fetch('/u?c='+CID).then(r=>r.text()).then(t=>{const rows=[];let ch=null;t.split('\n').forEach(l=>{const a=l.split('|');
+if(a[0]==='T'){ftsecs=+a[1];E('ftnew').hidden=ftsecs>=0;E('ftlive').hidden=ftsecs<0;E('ftclock').textContent=(fdec(a[2])?fdec(a[2])+'  ':'')+(ftsecs===0?T('f_t_done'):fclock(Math.max(0,ftsecs)))}
+else if(a[0]==='P'){const st=+a[1],my=+a[2],o=[];for(let i=4;i+1<a.length;i+=2)o.push([fdec(a[i]),+a[i+1]]);fpoll={state:st,my:my,q:fdec(a[3]),o:o};const tot=o.reduce((s,x)=>s+x[1],0);
+E('fpnew').hidden=st!==0;E('fplive').hidden=st===0;E('tabs').classList.toggle('dot',st===1&&my<0);
+if(st){E('fpq').textContent=fpoll.q;const box=E('fpopts');if(box.children.length!==o.length){box.innerHTML='';o.forEach((x,i)=>{const b=document.createElement('button');b.innerHTML='<u></u><span></span><b></b>';b.onclick=()=>{if(fpoll.state===1){send('poll vote '+i);setTimeout(fload,250)}};box.appendChild(b)})}
+o.forEach((x,i)=>{const b=box.children[i];b.classList.toggle('on',i===my);b.children[0].style.width=(tot?x[1]*100/tot:0)+'%';b.children[1].textContent=x[0];b.children[2].textContent=x[1]});
+E('fpinfo').textContent=st===1?T('f_vote_open',tot):T('f_vote_closed',tot);E('fpend').firstChild.textContent=st===1?T('f_vote_end'):T('f_vote_new')}}
+else if(a[0]==='C')ch=a.slice(1).map(fdec);else if(a[0]==='B')rows.push(a)});
+E('fboard').innerHTML='';if(!rows.length){const p=document.createElement('p');p.className='hint';p.style.marginTop=0;p.textContent=T('f_board_empty');E('fboard').appendChild(p)}
+rows.forEach((a,i)=>{const d=document.createElement('div');d.className='frow';d.innerHTML='<b></b><span></span><small></small><i></i>';d.children[0].textContent=['🥇','🥈','🥉'][i]||i+1;d.children[1].textContent=fdec(a[1]);d.children[2].textContent=T('f_week',a[3]);d.children[3].textContent=T('f_pts',a[2]);E('fboard').appendChild(d)});
+E('fchamp').textContent=ch?[ch[0]&&T('f_c_week',ch[0]),ch[1]&&T('f_c_math',ch[1]),ch[2]&&T('f_c_words',ch[2])].filter(x=>x).join(' • '):''}).catch(()=>{})}
+setInterval(()=>{if(!E('t-fam').hidden||ftsecs>=0||(fpoll&&fpoll.state))fload()},1000);setInterval(fload,4000);fload();
 let jimg=null,jz=1,jox=0,joy=0,jb=1,jdrag=null;const jcv=E('jcv'),jc=jcv.getContext('2d');
 function jdraw(){jc.fillStyle='#000';jc.fillRect(0,0,280,280);if(!jimg)return;const s=jb*jz;jc.drawImage(jimg,140+jox-jimg.width*s/2,140+joy-jimg.height*s/2,jimg.width*s,jimg.height*s);
 jc.fillStyle='rgba(0,0,0,.6)';jc.beginPath();jc.rect(0,0,280,280);jc.arc(140,140,120,0,6.2832,true);jc.fill('evenodd');jc.strokeStyle='#fff';jc.lineWidth=3;jc.beginPath();jc.arc(140,140,120,0,6.2832);jc.stroke()}

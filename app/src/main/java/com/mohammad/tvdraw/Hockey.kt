@@ -20,6 +20,7 @@ class Hockey(private val view: View) {
     companion object { const val OFF = 0; const val LOBBY = 1; const val COUNT = 2; const val PLAY = 3; const val GOAL = 4; const val END = 5
         val TEAM = intArrayOf(0xFFE53935.toInt(), 0xFF26282C.toInt()); const val WIN = 7 }
     var sfx: Sfx? = null
+    var onEnd: ((List<GameResult>) -> Unit)? = null
     private var state = OFF
     private val pl = arrayOf(Mallet(0), Mallet(1))
     private val score = IntArray(2)
@@ -154,7 +155,7 @@ class Hockey(private val view: View) {
     private fun goal(side: Int, now: Long) {
         score[side]++; goals++; lastScorer = side; serveTo = 1 - side                 // the player who conceded serves
         burst(if (side == 0) w() - rail() else rail(), h() / 2, TEAM[0], 50, 900f); burst(if (side == 0) w() - rail() else rail(), h() / 2, Color.WHITE, 30, 700f)
-        if (score[side] >= WIN) { state = END; stateAt = now; sfx?.play("buzzer", 1f) } else { state = GOAL; stateAt = now; sfx?.play("chime", 0.9f) }
+        if (score[side] >= WIN) { state = END; stateAt = now; sfx?.play("buzzer", 1f); onEnd?.invoke((0..1).mapNotNull { i -> pl[i].cid?.let { GameResult(it, i == side) } }) } else { state = GOAL; stateAt = now; sfx?.play("chime", 0.9f) }
     }
 
     private fun update(now: Long) {

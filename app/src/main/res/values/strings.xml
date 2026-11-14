@@ -90,6 +90,18 @@
     <string name="cat_space">Space &amp; Tech</string>
     <string name="cat_master">Master Challenge</string>
 
+    <!-- Family tools: vote, timer, hall of fame -->
+    <string name="timer_done">Time is up!</string>
+    <string name="poll_hint">%d votes • vote from your phone</string>
+    <string name="poll_result">Result • %d votes</string>
+    <string name="board_title">Family Hall of Fame</string>
+    <string name="board_empty">Write your name on your phone and play a game to get on the board</string>
+    <string name="board_pts">%d pts</string>
+    <string name="board_week_pts">this week %d</string>
+    <string name="champ_week">⭐ Player of the week: %s</string>
+    <string name="champ_math">🧮 Math champion: %s</string>
+    <string name="champ_words">📚 Word champion: %s</string>
+
     <!-- Prayer alert -->
     <string name="fajr">Fajr</string>
     <string name="dhuhr">Dhuhr</string>

@@ -81,6 +81,17 @@
     <string name="cat_space">الفضاء والتكنولوجيا</string>
     <string name="cat_master">التحدي الشامل</string>
 
+    <string name="timer_done">انتهى الوقت!</string>
+    <string name="poll_hint">%d أصوات • صوّت من تليفونك</string>
+    <string name="poll_result">النتيجة • %d أصوات</string>
+    <string name="board_title">لوحة شرف العيلة</string>
+    <string name="board_empty">اكتب اسمك على تليفونك والعب لتدخل اللوحة</string>
+    <string name="board_pts">%d نقطة</string>
+    <string name="board_week_pts">هذا الأسبوع %d</string>
+    <string name="champ_week">⭐ لاعب الأسبوع: %s</string>
+    <string name="champ_math">🧮 بطل الحساب: %s</string>
+    <string name="champ_words">📚 بطل الكلمات: %s</string>
+
     <string name="fajr">الفجر</string>
     <string name="dhuhr">الظهر</string>
     <string name="asr">العصر</string>
