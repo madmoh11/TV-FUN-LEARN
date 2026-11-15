@@ -90,6 +90,8 @@ class RenderTest {
         v.handle("l off", "a"); v.handle("l mode dot", "a")
         v.showNotice(v.context.str(R.string.prayer_before, 15, v.context.getString(R.string.asr), "3:18")); tick(1500); shot("notice")
         v.handle("p crack", "a"); v.handle("p fly", "a"); for (i in 0..40) { tick(50); shot("fly") }
+        v.handle("bug s 300", "a"); for (i in 0..30) { tick(50); shot("fly_big") }
+        v.handle("p fly", "a"); for (i in 0..3) { tick(60); shot("fly_away") }; tick(2000); shot("fly_gone"); v.handle("bug s 100", "a")
         v.handle("p clear", "a"); tick(26000)
         v.handle("l mode dot", "a"); v.handle("k #ff3b30", "a"); v.handle("l 0.25 0.3", "a"); v.handle("k #34c759", "b"); v.handle("l 0.7 0.6", "b"); tick(100); shot("laser"); tick(100); shot("laser")
         v.handle("l off", "a"); v.handle("l off", "b")

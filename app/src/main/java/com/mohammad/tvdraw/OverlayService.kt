@@ -86,8 +86,31 @@ class DrawView(c: Context) : View(c) {
     private fun asset(name: String): Bitmap? =
         try { context.assets.open(name).use { BitmapFactory.decodeStream(it) } } catch (e: Throwable) { null }
 
-    // ---- fly: a real photo sprite that darts, stops, turns on the spot ----
-    private var flyBmp: Bitmap? = null
+    // ---- bug: a real photo sprite that darts, stops, turns on the spot, and casts a shadow on the picture ----
+    /** speed factor, flies (buzzes and lifts off) or crawls */
+    private class BugKind(val speed: Float, val flies: Boolean)
+    private val bugKinds = mapOf(
+        "fly" to BugKind(1f, true), "wasp" to BugKind(0.9f, true),
+        "roach" to BugKind(1.25f, false), "spider" to BugKind(0.8f, false), "ant" to BugKind(0.55f, false))
+    private val bugBmps = HashMap<String, Bitmap?>()
+    private val bugShades = HashMap<String, Bitmap?>()
+    private var bugKind = "fly"
+    private var bugSize = 1f
+    private var flyLift = 0f                               // 0 standing on the glass .. 1 in the air
+    private fun bugBmp(): Bitmap? = bugBmps.getOrPut(bugKind) { asset(if (bugKind == "fly") "fly.webp" else "bug_$bugKind.webp") }
+    /** The sprite's outline, softened: drawn dark and shifted, it is the shadow. */
+    private fun bugShade(): Bitmap? = bugShades.getOrPut(bugKind) {
+        val b = bugBmp() ?: return@getOrPut null
+        try { b.extractAlpha(Paint().apply { maskFilter = BlurMaskFilter(b.height * 0.035f, BlurMaskFilter.Blur.NORMAL) }, null) }
+        catch (e: Throwable) { try { b.extractAlpha() } catch (e2: Throwable) { null } }
+    }
+    private fun bugCommand(p: List<String>) {
+        when (p[1]) {
+            "k" -> if (bugKinds.containsKey(p[2])) { val old = bugKind; bugKind = p[2]; if (bugBmp() == null) bugKind = old }
+            "s" -> bugSize = (p[2].toFloat() / 100f).coerceIn(0.4f, 5f)
+        }
+        invalidate()
+    }
     private var flyOn = false
     private var flyFlee = false
     private var fx = 0f; private var fy = 0f
@@ -98,12 +121,14 @@ class DrawView(c: Context) : View(c) {
     private var flyFleeStart = 0L
     private fun toggleFly() {
         val w = getWidth().toFloat(); val h = height.toFloat()
-        if (flyBmp == null) flyBmp = asset("fly.webp")
-        if (flyOn) {            // already there -> it takes off and leaves through the nearest side
+        if (bugBmp() == null) return
+        if (flyOn) {            // already there -> it takes off (or scurries) and leaves through the nearest side
             flyFlee = true; flyFleeStart = SystemClock.uptimeMillis()
-            ftx = if (fx < w / 2) -300f else w + 300f; fty = fy - h * 0.35f; flyPause = 0
+            val out = 300f * sc() * bugSize
+            ftx = if (fx < w / 2) -out else w + out
+            fty = if (bugKinds[bugKind]!!.flies) fy - h * 0.35f else fy + h * 0.2f * (Math.random().toFloat() - 0.5f); flyPause = 0
         } else {
-            flyOn = true; flyFlee = false; fx = -40f; fy = h * (0.2f + 0.6f * Math.random().toFloat()); fa = 0f; faGoal = 0f
+            flyOn = true; flyFlee = false; flyLift = 0f; fx = -60f * sc() * bugSize; fy = h * (0.2f + 0.6f * Math.random().toFloat()); fa = 0f; faGoal = 0f
             flyLast = SystemClock.uptimeMillis(); flyPause = 0
             ftx = w * (0.15f + 0.2f * Math.random().toFloat()); fty = fy + h * 0.1f * (Math.random().toFloat() - 0.5f)
         }
@@ -121,11 +146,14 @@ class DrawView(c: Context) : View(c) {
         return if (Math.abs(d) <= maxStep) goal else cur + Math.signum(d) * maxStep
     }
     private fun stepFly(now: Long) {
+        val kind = bugKinds[bugKind]!!
         val dt = minOf(now - flyLast, 100L) / 1000f; flyLast = now
+        val up = if (!kind.flies) 0f else if (flyFlee) 1f else if (now >= flyPause) 0.3f else 0f
+        flyLift += (up - flyLift) * minOf(1f, dt * (if (flyFlee) 4f else 9f))
         if (now < flyPause) { fa = turnToward(fa, faGoal, 900f * dt); return }     // standing: maybe turning on the spot
         val dx = ftx - fx; val dy = fty - fy
         val dist = Math.hypot(dx.toDouble(), dy.toDouble()).toFloat()
-        val speed = (if (flyFlee) 2800f else 560f) * sc()
+        val speed = (if (flyFlee) (if (kind.flies) 2800f else 1900f) else 560f * kind.speed) * sc()
         if (dist < speed * dt + 1f) {
             fx = ftx; fy = fty
             if (flyFlee) { flyOn = false; flyFlee = false; return }
@@ -139,13 +167,23 @@ class DrawView(c: Context) : View(c) {
             fx += dx / dist * speed * dt; fy += dy / dist * speed * dt
         }
     }
+    private val shadePaint = Paint(Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG)
     private fun drawFly(cv: Canvas, now: Long) {
-        val bmp = flyBmp ?: return
-        var hh = 74f * sc(); var alpha = 255
-        if (flyFlee) { val k = minOf(1f, (now - flyFleeStart) / 350f); hh *= 1f + 0.7f * k; alpha = (255 * (1f - 0.6f * k)).toInt() }
+        val bmp = bugBmp() ?: return
+        var hh = 74f * sc() * bugSize; var alpha = 255
+        if (flyFlee && bugKinds[bugKind]!!.flies) { val k = minOf(1f, (now - flyFleeStart) / 350f); hh *= 1f + 0.7f * k; alpha = (255 * (1f - 0.6f * k)).toInt() }
         val ww = hh * bmp.width / bmp.height
         val moving = now >= flyPause
         val jit = if (moving) Math.sin(now / 17.0).toFloat() * 1.2f * sc() else 0f
+        // the shadow falls down and to the right; the higher the bug, the further away, bigger and fainter it is
+        bugShade()?.let { sh ->
+            val off = hh * (0.07f + 0.75f * flyLift); val grow = 1f + 0.25f * flyLift
+            val sw = ww * sh.width / bmp.width * grow; val shh = hh * sh.height / bmp.height * grow
+            shadePaint.color = Color.BLACK; shadePaint.alpha = (alpha * (0.5f - 0.3f * flyLift)).toInt()
+            cv.save(); cv.translate(fx + off * 0.75f, fy + off); cv.rotate(fa + 90f); cv.translate(jit, 0f)
+            cv.drawBitmap(sh, null, RectF(-sw / 2, -shh / 2, sw / 2, shh / 2), shadePaint)
+            cv.restore()
+        }
         cv.save(); cv.translate(fx, fy); cv.rotate(fa + 90f); cv.translate(jit, 0f)
         bmpPaint.alpha = alpha
         cv.drawBitmap(bmp, null, RectF(-ww / 2, -hh / 2, ww / 2, hh / 2), bmpPaint)
@@ -287,7 +325,7 @@ class DrawView(c: Context) : View(c) {
         }
         if (flyOn) {
             stepFly(now); if (flyOn) drawFly(cv, now); anim = true
-            sfx?.buzz(flyOn && now >= flyPause, flyFlee)
+            sfx?.buzz(flyOn && now >= flyPause && bugKinds[bugKind]!!.flies, flyFlee)
         }
         if (lionStart != 0L && drawLion(cv, now)) anim = true
         if (lionLoading) anim = true
@@ -394,6 +432,7 @@ class DrawView(c: Context) : View(c) {
                 "e" -> addEmoji(dec(p[1]))
                 "q" -> showInfo()
                 "p" -> { prank(p[1]); invalidate() }
+                "bug" -> bugCommand(p)
                 "b" -> sfx?.play("beep", 1f, true)
                 "z" -> onPrayerCmd?.invoke(p)
                 "i" -> { if (p[1] == "0") showImage(null) else if (p[1] == "d") { imgDim = p[2] == "1"; invalidate() } }

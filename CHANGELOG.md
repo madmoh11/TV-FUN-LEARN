@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.9
+
+- The fly prank: a size slider (40% to 500%) and a soft shadow under the insect, so it looks like it is sitting on the
+  glass. The shadow moves away and fades when it takes off.
+
 ## 3.8
 
 - The phone page now fits every screen: phones, tablets and laptops, upright or sideways. Cards flow into two or three
