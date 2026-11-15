@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.11
+
+- Four more insects for the prank, next to the fly: cockroach, spider, ant and wasp. The crawlers run without a buzz and
+  scurry off the screen; the wasp flies and buzzes like the fly.
+
 ## 3.10
 
 - New prank: a person's shadow crosses the bottom of the picture, head and shoulders only, like somebody walking in

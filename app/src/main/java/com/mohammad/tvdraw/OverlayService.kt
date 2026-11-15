@@ -87,11 +87,11 @@ class DrawView(c: Context) : View(c) {
         try { context.assets.open(name).use { BitmapFactory.decodeStream(it) } } catch (e: Throwable) { null }
 
     // ---- bug: a real photo sprite that darts, stops, turns on the spot, and casts a shadow on the picture ----
-    /** speed factor, flies (buzzes and lifts off) or crawls */
-    private class BugKind(val speed: Float, val flies: Boolean)
+    /** speed factor, flies (buzzes and lifts off) or crawls, size next to the fly */
+    private class BugKind(val speed: Float, val flies: Boolean, val scale: Float)
     private val bugKinds = mapOf(
-        "fly" to BugKind(1f, true), "wasp" to BugKind(0.9f, true),
-        "roach" to BugKind(1.25f, false), "spider" to BugKind(0.8f, false), "ant" to BugKind(0.55f, false))
+        "fly" to BugKind(1f, true, 1f), "wasp" to BugKind(0.9f, true, 1.25f),
+        "roach" to BugKind(1.25f, false, 1.5f), "spider" to BugKind(0.8f, false, 1.7f), "ant" to BugKind(0.55f, false, 0.8f))
     private val bugBmps = HashMap<String, Bitmap?>()
     private val bugShades = HashMap<String, Bitmap?>()
     private var bugKind = "fly"
@@ -170,7 +170,7 @@ class DrawView(c: Context) : View(c) {
     private val shadePaint = Paint(Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG)
     private fun drawFly(cv: Canvas, now: Long) {
         val bmp = bugBmp() ?: return
-        var hh = 74f * sc() * bugSize; var alpha = 255
+        var hh = 74f * sc() * bugSize * bugKinds[bugKind]!!.scale; var alpha = 255
         if (flyFlee && bugKinds[bugKind]!!.flies) { val k = minOf(1f, (now - flyFleeStart) / 350f); hh *= 1f + 0.7f * k; alpha = (255 * (1f - 0.6f * k)).toInt() }
         val ww = hh * bmp.width / bmp.height
         val moving = now >= flyPause

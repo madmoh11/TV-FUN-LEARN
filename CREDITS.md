@@ -22,7 +22,7 @@ Text is set in **Baloo Bhaijaan 2** by Ek Type, used under the
 
 ## Other material
 
-- The lion, fly, basketball court and ball, and the space background, planet and spacecraft, were generated for this project with an AI image model.
+- The lion, fly and the other insects, basketball court and ball, and the space background, planet and spacecraft, were generated for this project with an AI image model.
 - All other sounds (fly buzz, roar, chimes, game effects) are synthesised by the app's own code in `Synth.kt`.
 - QR codes are drawn with [ZXing](https://github.com/zxing/zxing) (Apache License 2.0).
 - Prayer times use the standard astronomical method, calculated on the device.
