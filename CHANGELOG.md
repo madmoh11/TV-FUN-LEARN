@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.8
+
+- The phone page now fits every screen: phones, tablets and laptops, upright or sideways. Cards flow into two or three
+  columns on wide screens, the tabs move to the side when the screen is sideways, and the game controllers use the
+  space they have.
+
 ## 3.7
 
 - The app has a new name: **Lamma** (لمّة, a family get-together), with a new mascot icon and TV banner.
