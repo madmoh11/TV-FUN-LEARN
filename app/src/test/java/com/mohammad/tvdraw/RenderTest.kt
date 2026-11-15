@@ -95,6 +95,8 @@ class RenderTest {
         v.handle("p clear", "a"); tick(26000)
         v.handle("l mode dot", "a"); v.handle("k #ff3b30", "a"); v.handle("l 0.25 0.3", "a"); v.handle("k #34c759", "b"); v.handle("l 0.7 0.6", "b"); tick(100); shot("laser"); tick(100); shot("laser")
         v.handle("l off", "a"); v.handle("l off", "b")
+        v.handle("p man", "a"); tick(700); shot("walk_man1"); tick(500); shot("walk_man2"); tick(250); shot("walk_man3"); tick(4000); shot("walk_gone")
+        v.handle("p girl", "a"); tick(800); shot("walk_girl1"); tick(300); shot("walk_girl2"); tick(700); shot("walk_girl3"); tick(5000)
         v.handle("p lion", "a"); Thread.sleep(2500); tick(10)
         tick(3300); shot("lion_far"); tick(1000); shot("lion_near"); tick(650); shot("lion_out"); tick(600); shot("lion_leap")
     }

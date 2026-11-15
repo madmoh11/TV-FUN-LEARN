@@ -43,7 +43,7 @@ and no account, and nothing leaves your home network.
 | 🗳️ **Quick vote** | Ask a question, everyone votes from their phone, and the result appears on the TV. |
 | ⏱️ **Family timer** | A countdown in the corner of the TV with a big alert when time is up. |
 | 🔊 **Volume** | Turn the TV box volume up, down or mute it from your phone. |
-| 😈 **Pranks** | Cracked screen, a fly that walks around, a lion that jumps out of the screen, a fake shutdown message. |
+| 😈 **Pranks** | Cracked screen, a fly that walks around (any size, with a shadow), a person's shadow that walks past like in a cinema, a lion that jumps out of the screen, a fake shutdown message. |
 | 🕌 **Prayer alert** | A banner before each prayer, calculated on the device with no internet. |
 | 🌍 **Languages** | English and Arabic, with [an easy way to add more](docs/TRANSLATING.md). |
 

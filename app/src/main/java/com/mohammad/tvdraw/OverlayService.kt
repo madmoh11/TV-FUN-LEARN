@@ -303,13 +303,16 @@ class DrawView(c: Context) : View(c) {
     private var revealUntil = 0L
     private val dlg = Paint().apply { isAntiAlias = true }
     private val dlgTx = Paint().apply { isAntiAlias = true; textAlign = Paint.Align.CENTER }
-    private fun clearPranks() { cracks.clear(); flyOn = false; flyFlee = false; offStart = 0L; lionStart = 0L; sfx?.buzz(false, false) }
+    private val walker = Walker()
+    private fun clearPranks() { walker.stop(); cracks.clear(); flyOn = false; flyFlee = false; offStart = 0L; lionStart = 0L; sfx?.buzz(false, false) }
     private fun reveal() { clearPranks(); revealUntil = SystemClock.uptimeMillis() + 4500 }
     private fun prank(what: String) {
         when (what) {
             "crack" -> addCrack()
             "fly" -> toggleFly()
             "lion" -> startLion()
+            "man" -> walker.go(false)
+            "girl" -> walker.go(true)
             "off" -> { offStart = SystemClock.uptimeMillis(); revealUntil = 0L }
             "reveal" -> reveal()
             "clear" -> { clearPranks(); revealUntil = 0L }
@@ -327,6 +330,7 @@ class DrawView(c: Context) : View(c) {
             stepFly(now); if (flyOn) drawFly(cv, now); anim = true
             sfx?.buzz(flyOn && now >= flyPause && bugKinds[bugKind]!!.flies, flyFlee)
         }
+        if (walker.draw(cv, w, h, now)) anim = true
         if (lionStart != 0L && drawLion(cv, now)) anim = true
         if (lionLoading) anim = true
         if (drawNotice(cv, now)) anim = true

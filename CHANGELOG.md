@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.10
+
+- New prank: a person's shadow crosses the bottom of the picture, head and shoulders only, like somebody walking in
+  front of a cinema screen. A man walks from right to left, a girl from left to right.
+
 ## 3.9
 
 - The fly prank: a size slider (40% to 500%) and a soft shadow under the insect, so it looks like it is sitting on the
