@@ -549,7 +549,7 @@ class OverlayService : Service() {
                     else if (path.startsWith("/j")) view.snake.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/h")) view.hockey.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/g")) view.game.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
-                    else sfx.status() })
+                    else sfx.status() }, { webFile(it) })
             server.start()
             val ok = server.httpPort != 0
             val msg = if (ok) "http://" + localIp() + ":" + server.httpPort else getString(R.string.no_port)
@@ -572,6 +572,13 @@ class OverlayService : Service() {
 
     /** The app font, served to the phones so the page looks like the TV. */
     private val font: ByteArray by lazy { try { assets.open("fonts/BalooBhaijaan2-Bold.ttf").use { it.readBytes() } } catch (e: Throwable) { ByteArray(0) } }
+
+    /** What lets a phone keep the page as an icon on its home screen. */
+    private val webFiles = HashMap<String, ByteArray?>()
+    private fun webFile(name: String): ByteArray? {
+        if (name != "manifest.json" && name != "icon-192.png" && name != "icon-512.png") return null
+        return synchronized(webFiles) { webFiles.getOrPut(name) { try { assets.open("web/$name").use { it.readBytes() } } catch (e: Throwable) { null } } }
+    }
 
     /** The vocabulary bank of the space race, served to the phones as it is. */
     private val words: ByteArray by lazy { try { assets.open("data/words_bank.json").use { it.readBytes() } } catch (e: Throwable) { "[]".toByteArray() } }

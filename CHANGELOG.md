@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.12
+
+- The phone page can live on the phone's home screen with its own icon, like an app. The settings tab shows the steps for
+  Android and for iPhone.
+
 ## 3.11
 
 - Four more insects for the prank, next to the fly: cockroach, spider, ant and wasp. The crawlers run without a buzz and

@@ -2,6 +2,9 @@
 <!-- Phone control page. All visible text lives in lang/*.json: use data-i="key" in HTML and T('key') in the script. -->
 <html lang=en dir=ltr><head><meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1,user-scalable=no"><title>Lamma</title>
+<link rel=manifest href=/app/manifest.json><link rel=icon href=/app/icon-192.png><link rel=apple-touch-icon href=/app/icon-192.png>
+<meta name=theme-color content=#120c26><meta name=mobile-web-app-capable content=yes><meta name=apple-mobile-web-app-capable content=yes>
+<meta name=apple-mobile-web-app-status-bar-style content=black-translucent><meta name=apple-mobile-web-app-title content="لمّة">
 <style>@font-face{font-family:"Lamma";src:url(/font.ttf) format("truetype");font-display:swap}
 *{box-sizing:border-box}[hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}body{margin:0;background:#120c26;color:#f2f2f2;font-family:"Lamma",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-tap-highlight-color:transparent}
@@ -228,6 +231,11 @@ main{padding:10px 16px 20px;padding-inline-start:104px}
 </section>
 
 <section class=tab id=t-set hidden>
+<div class=card id=homecard><h3><span data-i=home_title>📲 Put Lamma on your home screen</span></h3>
+<p class=hint style="margin-top:0"><span data-i=home_why>One tap opens it like an app, with no address to type.</span></p>
+<button class=g id=homego style="width:100%" hidden><span data-i=home_go>Add it now</span></button>
+<ol id=homesteps style="margin:8px 0 0;padding-inline-start:22px;line-height:1.9"></ol>
+<p class=hint><span data-i=home_note>If the TV's address changes, the icon stops opening. Give the TV a fixed address in your router to avoid that.</span></p></div>
 <div class=card><h3><span data-i=prayer_title>🕌 Prayer alert</span></h3>
 <label class=ck style="margin-top:0"><input type=checkbox id=zon><span data-i=prayer_on>Show the alert on the TV</span></label>
 <div class=row style="margin:12px 0 0"><select id=zcity><option value="31.9539 35.9106 18 18 0 5" data-i=c_amman>Amman</option><option value="32.0728 36.088 18 18 0 5" data-i=c_zarqa>Zarqa</option><option value="32.5556 35.85 18 18 0 5" data-i=c_irbid>Irbid</option><option value="29.5321 35.0063 18 18 0 5" data-i=c_aqaba>Aqaba</option><option value="32.0392 35.7272 18 18 0 5" data-i=c_salt>Salt</option><option value="31.716 35.7939 18 18 0 5" data-i=c_madaba>Madaba</option><option value="32.2808 35.8993 18 18 0 5" data-i=c_jerash>Jerash</option><option value="32.3326 35.7517 18 18 0 5" data-i=c_ajloun>Ajloun</option><option value="32.3429 36.208 18 18 0 5" data-i=c_mafraq>Mafraq</option><option value="31.1853 35.7048 18 18 0 5" data-i=c_karak>Karak</option><option value="30.8375 35.6044 18 18 0 5" data-i=c_tafilah>Tafilah</option><option value="30.1962 35.7341 18 18 0 5" data-i=c_maan>Ma'an</option><option value="21.4225 39.8262 18.5 0 90 0" data-i=c_makkah>Makkah</option><option value="24.4672 39.6111 18.5 0 90 0" data-i=c_madinah>Madinah</option><option value="24.7136 46.6753 18.5 0 90 0" data-i=c_riyadh>Riyadh</option><option value="21.5433 39.1728 18.5 0 90 0" data-i=c_jeddah>Jeddah</option><option value="30.0444 31.2357 19.5 17.5 0 0" data-i=c_cairo>Cairo</option><option value="25.2048 55.2708 18.2 18.2 0 0" data-i=c_dubai>Dubai</option><option value="29.3759 47.9774 18 17.5 0 0" data-i=c_kuwait>Kuwait City</option><option value="25.2854 51.531 18 0 90 0" data-i=c_doha>Doha</option></select>
@@ -414,6 +422,9 @@ E('zon').onchange=()=>zs('z on '+(E('zon').checked?1:0));E('zat').onchange=()=>z
 E('zbef').onchange=()=>zs('z before '+E('zbef').value);
 E('zcity').onchange=()=>zs('z city '+E('zcity').value+' '+enc(E('zcity').selectedOptions[0].textContent));
 E('ztest').onclick=()=>send('z test');zload();
+const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true,ios=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+E('homecard').hidden=standalone;E('homesteps').innerHTML=[1,2,3].map(i=>'<li>'+T((ios?'home_i':'home_a')+i)+'</li>').join('');
+let homeEvt=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();homeEvt=e;E('homego').hidden=false});E('homego').onclick=()=>{if(homeEvt){homeEvt.prompt();homeEvt=null;E('homego').hidden=true}};
 const BUGS=['fly','roach','spider','ant','wasp'],bugs=E('bugs');let bug=localStorage.bug||'fly';if(!BUGS.includes(bug))bug='fly';bugs.value=localStorage.bugs||100;
 function bugUI(){E('bugsv').textContent=bugs.value+'%';[...E('bugk').children].forEach(x=>x.classList.toggle('on',x.dataset.k===bug))}
 function bugSend(){send('bug k '+bug);send('bug s '+bugs.value)}
