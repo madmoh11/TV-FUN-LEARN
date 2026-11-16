@@ -34,6 +34,16 @@ select{flex:1;min-width:0;font-size:16px;padding:12px 8px;border-radius:12px;bor
 #cols button{width:36px;height:36px;padding:0;border-radius:50%;border:2px solid #1c1538}#cols button.on{outline:2px solid #fff}
 #cols input{flex:none;width:40px;height:36px;padding:0;border:0;background:none}
 #bugk{flex-wrap:wrap}#bugk button{flex:1;background:#2f2759;padding:10px 6px;font-size:15px}#bugk button.on{background:#ffd60a;color:#111}#bugsv{min-width:48px;text-align:end}
+.frow.al,.frow.ch{display:flex;gap:8px;align-items:center;margin:0 0 8px}.frow.al span:nth-child(2),.frow.ch span:first-child{flex:1;min-width:0;overflow-wrap:anywhere}.frow.ch span:nth-child(2){color:#ffd60a;font-weight:800}.frow.ch.done span:first-child{opacity:.55;text-decoration:line-through}.frow button{padding:8px 12px;font-size:15px;flex:none}.frow .fx{background:#3a2030;padding:8px 11px}#alq button.on{background:#34c759}
+#zmain{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px;margin-top:8px}#zside{flex:none;display:flex;flex-direction:column;gap:10px}
+#zq{flex:1;min-height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-radius:18px;background:#1c1538;padding:6px 12px;font-size:min(10vw,9vh);font-weight:800;text-align:center;line-height:1.25}
+#zq small{font-size:17px;font-weight:600;color:#d4cfee}#zq.msg{font-size:22px;font-weight:600;color:#d4cfee;line-height:1.5}#zq.ok{box-shadow:0 0 0 4px #34c759 inset}#zq.no{box-shadow:0 0 0 4px #ff453a inset}
+#zans{display:grid;grid-template-columns:1fr 1fr;gap:10px}#zans button{padding:4px;height:min(14vh,110px);font-size:min(5.6vw,4.6vh);font-weight:800;line-height:1.25}
+#zans button.ok{outline:5px solid #fff}#zans button.no{opacity:.25}#zans button.mine{outline:5px solid #ffd60a}#zans.done button:not(.ok):not(.mine){opacity:.3}
+#ztype{display:flex;gap:8px}#zword{flex:1;min-width:0;font-size:26px;padding:14px;text-align:center;user-select:text;-webkit-user-select:text}#zspk{flex:none;width:58px;padding:0;font-size:24px;background:#2f2759}#zsend{flex:none;padding:0 18px;font-size:18px}
+#zinfo{margin:0;min-height:26px;text-align:center;font-size:19px;font-weight:700;color:#ffd60a}#zstart{padding:16px;font-size:20px;font-weight:700}#zjoin button{padding:16px 4px;font-weight:600}
+@media (orientation:landscape){#zmain{grid-column:1/3;grid-row:3;flex-direction:row;gap:12px}#zq,#zside{flex:1;min-width:0}#zside{justify-content:center}#zq{font-size:min(6vw,12vh)}#zans button{height:min(26vh,120px);font-size:min(3.6vw,6.5vh)}}
+@media (orientation:portrait) and (min-width:700px){#zans button{height:min(15vh,190px);font-size:40px}#zq{font-size:min(11vw,110px)}#zword{font-size:34px}}
 .row2{display:flex;gap:10px;align-items:center;font-size:14px;color:#d4cfee;margin:6px 0 8px}.row2 input{flex:1;min-width:0}.row2 span{flex:none}
 #cvw{position:relative;border-radius:10px;overflow:hidden;background:#241c47;touch-action:none;margin:0 auto}
 #cvw canvas{position:absolute;left:0;top:0;width:100%;height:100%;touch-action:none}
@@ -144,6 +154,10 @@ main{padding:10px 16px 20px;padding-inline-start:104px}
 <div class=sc id=qrk></div>
 <button id=qjoin style="width:100%;padding:18px;font-size:18px;font-weight:600;background:#7a3fd8"><span data-i=q_join>x</span></button>
 <p class=hint id=qh></p></div>
+<div class=card><h3><span data-i=z_title>x</span><small><span data-i=k_players>x</span></small></h3>
+<p class=cd><span data-i=z_desc>x</span></p>
+<div class=row3 id=zjoin><button data-m=0 style="background:#1f6fff"><span data-i=z_flags>x</span></button><button data-m=1 style="background:#7a3fd8"><span data-i=z_caps>x</span></button><button data-m=2 style="background:#1f9d46"><span data-i=z_spell>x</span></button></div>
+<p class=hint id=zh><span data-i=z_hint>x</span></p></div>
 </section>
 
 <section class=tab id=t-draw hidden>
@@ -204,6 +218,17 @@ main{padding:10px 16px 20px;padding-inline-start:104px}
 <p class=hint id=fchamp></p>
 <div class=row3><button id=fshow><span data-i=f_show>x</span></button><button class=g id=freset><span data-i=f_reset>x</span></button></div>
 <p class=hint><span data-i=f_board_hint>x</span></p></div>
+<div class=card><h3><span data-i=al_title>x</span></h3>
+<div class=sc id=alq></div>
+<div class=row style="margin-top:8px"><input type=text id=altxt maxlength=60 data-ip=al_ph><button id=algo style="flex:none"><span data-i=al_send>x</span></button></div>
+<p class=hint><span data-i=al_daily>x</span></p>
+<div id=allist></div>
+<div class=row><input type=time id=altime value="20:00" style="flex:none;width:auto"><input type=text id=altxt2 maxlength=40 data-ip=al_ph2><button class=g id=aladd style="flex:none">＋</button></div></div>
+<div class=card><h3><span data-i=ch_title>x</span></h3>
+<div id=chlist></div>
+<p class=hint id=chhint></p>
+<div class=row><input type=text id=chtxt maxlength=40 data-ip=ch_ph><select id=chpts style="flex:none;width:auto"><option>5</option><option selected>10</option><option>20</option><option>30</option></select><button class=g id=chadd style="flex:none">＋</button></div>
+<p class=hint><span data-i=ch_hint>x</span></p></div>
 <div class=card><h3><span data-i=f_vote>x</span></h3>
 <div id=fpnew><input type=text id=fq maxlength=60 data-ip=f_q_ph style="margin-bottom:8px">
 <div class=two><input type=text class=fo maxlength=24 data-ip=f_o1><input type=text class=fo maxlength=24 data-ip=f_o2><input type=text class=fo maxlength=24 data-ip=f_o3><input type=text class=fo maxlength=24 data-ip=f_o4></div>
@@ -267,6 +292,21 @@ main{padding:10px 16px 20px;padding-inline-start:104px}
 <div id=kinfo></div>
 <button class=go id=kstart><span data-i=start_match>x</span></button>
 </div></div>
+<div class=ctl id=zplay hidden>
+<div class=cbar><button class=cx id=zleave data-ia=exit aria-label="Exit">✕</button><div class=chud id=zhud></div><button class=cset data-o=zopt data-ia=options aria-label="Options">⚙️</button></div>
+<div class=copt id=zopt hidden>
+<div class=row2 style="margin-top:0"><span data-i=z_mode>x</span><select id=zmode><option value=0 data-i=z_flags>x<option value=1 data-i=z_caps>x<option value=2 data-i=z_spell>x</select></div>
+<div class=row2><span data-i=z_rounds>x</span><select id=zrounds><option>5<option>10<option>15</select><select id=zlevel><option value=0 data-i=lvl_easy>x<option value=1 data-i=lvl_medium>x<option value=2 data-i=lvl_hard>x</select></div>
+<label class=ck><input type=checkbox id=zsnd checked><span data-i=z_say>x</span></label>
+<button class=g id=zstop style="width:100%;margin-top:12px"><span data-i=end_all>x</span></button></div>
+<div id=zmain>
+<div id=zq><small id=zql></small><span id=zqt></span></div>
+<div id=zside>
+<div id=zans><button style="background:#d92d20"></button><button style="background:#1f6fff"></button><button style="background:#e0a800;color:#111"></button><button style="background:#1f9d46"></button></div>
+<div id=ztype hidden><input type=text id=zword dir=ltr lang=en maxlength=24 autocapitalize=off autocomplete=off autocorrect=off spellcheck=false enterkeyhint=send data-ip=z_ph><button id=zspk aria-label="🔊">🔊</button><button class=go id=zsend><span data-i=z_send>x</span></button></div>
+<p id=zinfo></p>
+<button class=go id=zstart><span data-i=z_start>x</span></button>
+</div></div></div>
 <div class=ctl id=qplay hidden>
 <div class=cbar><button class=cx id=qleave data-ia=exit aria-label="Exit">✕</button><div class=chud id=qhud></div><button class=cset data-o=qopt data-ia=options aria-label="Options">⚙️</button></div>
 <div class=copt id=qopt hidden>
@@ -610,19 +650,58 @@ E('fpgo').onclick=()=>{const q=E('fq').value.trim(),o=[...document.querySelector
 send('poll new '+enc(q)+' '+o.map(enc).join(' '));setTimeout(fload,300)};
 E('fpend').onclick=()=>{send(fpoll&&fpoll.state===1?'poll close':'poll off');setTimeout(fload,300)};
 E('fshow').onclick=()=>send('hof show');E('freset').onclick=()=>{if(confirm(T('f_reset_ask'))){send('hof reset');setTimeout(fload,300)}};
+['al_q1','al_q2','al_q3','al_q4','al_q5','al_q6'].forEach(k=>{const b=document.createElement('button');b.textContent=T(k);b.onclick=()=>{send('al now '+enc(T(k)));b.classList.add('on');setTimeout(()=>b.classList.remove('on'),900)};E('alq').appendChild(b)});
+E('algo').onclick=()=>{const t=E('altxt').value.trim();if(t){send('al now '+enc(t));E('altxt').value=''}};
+E('aladd').onclick=()=>{const t=E('altxt2').value.trim(),m=E('altime').value.split(':');if(!t||m.length<2)return;send('al add '+(m[0]*60+ +m[1])+' '+enc(t));E('altxt2').value='';setTimeout(fload,300)};
+E('chadd').onclick=()=>{const t=E('chtxt').value.trim();if(!t)return;send('ch add '+E('chpts').value+' '+enc(t));E('chtxt').value='';setTimeout(fload,300)};
+function frow(box,cls,parts,del){const d=document.createElement('div');d.className='frow '+cls;parts.forEach(x=>{if(typeof x==='string'){const s=document.createElement('span');s.textContent=x;d.appendChild(s)}else d.appendChild(x)});
+const x=document.createElement('button');x.className='fx';x.textContent='✕';x.onclick=del;d.appendChild(x);box.appendChild(d)}
 function fclock(s){return s>=3600?Math.floor(s/3600)+':'+String(Math.floor(s%3600/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'):Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
-function fload(){fetch('/u?c='+CID).then(r=>r.text()).then(t=>{const rows=[];let ch=null;t.split('\n').forEach(l=>{const a=l.split('|');
+let fhsig='';function fhome(als,chs){const sig=JSON.stringify([als,chs,nm.value]);if(sig===fhsig)return;fhsig=sig;
+const al=E('allist');al.innerHTML='';als.forEach(a=>{const m=+a[2];frow(al,'al',['⏰ '+String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'),fdec(a[3])],()=>{send('al del '+a[1]);setTimeout(fload,300)})});
+const cl=E('chlist');cl.innerHTML='';chs.forEach(a=>{const who=fdec(a[3]),b=document.createElement('button');b.className=who?'g':'';b.textContent=who?'✅ '+who:T('ch_done');
+b.onclick=()=>{if(who){if(confirm(T('ch_undo_ask')))send('ch undo '+a[1])}else if(!nm.value.trim()){alert(T('ch_need_name'))}else send('ch done '+a[1]);setTimeout(fload,300)};
+frow(cl,'ch'+(who?' done':''),[fdec(a[4]),'+'+a[2],b],()=>{if(confirm(T('ch_del_ask'))){send('ch del '+a[1]);setTimeout(fload,300)}})});
+E('chhint').textContent=chs.length?'':T('ch_empty')}
+function fload(){fetch('/u?c='+CID).then(r=>r.text()).then(t=>{const rows=[],als=[],chs=[];let ch=null;t.split('\n').forEach(l=>{const a=l.split('|');
 if(a[0]==='T'){ftsecs=+a[1];E('ftnew').hidden=ftsecs>=0;E('ftlive').hidden=ftsecs<0;E('ftclock').textContent=(fdec(a[2])?fdec(a[2])+'  ':'')+(ftsecs===0?T('f_t_done'):fclock(Math.max(0,ftsecs)))}
 else if(a[0]==='P'){const st=+a[1],my=+a[2],o=[];for(let i=4;i+1<a.length;i+=2)o.push([fdec(a[i]),+a[i+1]]);fpoll={state:st,my:my,q:fdec(a[3]),o:o};const tot=o.reduce((s,x)=>s+x[1],0);
 E('fpnew').hidden=st!==0;E('fplive').hidden=st===0;E('tabs').classList.toggle('dot',st===1&&my<0);
 if(st){E('fpq').textContent=fpoll.q;const box=E('fpopts');if(box.children.length!==o.length){box.innerHTML='';o.forEach((x,i)=>{const b=document.createElement('button');b.innerHTML='<u></u><span></span><b></b>';b.onclick=()=>{if(fpoll.state===1){send('poll vote '+i);setTimeout(fload,250)}};box.appendChild(b)})}
 o.forEach((x,i)=>{const b=box.children[i];b.classList.toggle('on',i===my);b.children[0].style.width=(tot?x[1]*100/tot:0)+'%';b.children[1].textContent=x[0];b.children[2].textContent=x[1]});
 E('fpinfo').textContent=st===1?T('f_vote_open',tot):T('f_vote_closed',tot);E('fpend').firstChild.textContent=st===1?T('f_vote_end'):T('f_vote_new')}}
-else if(a[0]==='C')ch=a.slice(1).map(fdec);else if(a[0]==='B')rows.push(a)});
+else if(a[0]==='C')ch=a.slice(1).map(fdec);else if(a[0]==='B')rows.push(a);else if(a[0]==='A')als.push(a);else if(a[0]==='H')chs.push(a)});
+fhome(als,chs);
 E('fboard').innerHTML='';if(!rows.length){const p=document.createElement('p');p.className='hint';p.style.marginTop=0;p.textContent=T('f_board_empty');E('fboard').appendChild(p)}
 rows.forEach((a,i)=>{const d=document.createElement('div');d.className='frow';d.innerHTML='<b></b><span></span><small></small><i></i>';d.children[0].textContent=['🥇','🥈','🥉'][i]||i+1;d.children[1].textContent=fdec(a[1]);d.children[2].textContent=T('f_week',a[3]);d.children[3].textContent=T('f_pts',a[2]);E('fboard').appendChild(d)});
 E('fchamp').textContent=ch?[ch[0]&&T('f_c_week',ch[0]),ch[1]&&T('f_c_math',ch[1]),ch[2]&&T('f_c_words',ch[2])].filter(x=>x).join(' • '):''}).catch(()=>{})}
 setInterval(()=>{if(!E('t-fam').hidden||ftsecs>=0||(fpoll&&fpoll.state))fload()},1000);setInterval(fload,4000);fload();
+/* ---- room quiz: flags, capitals, spelling. The TV asks, every phone answers. ---- */
+let zin=false,zt=0,zkey='',zround='',zmy=-1;const zab=[...E('zans').children];
+function zjoin(m){if(gside>=0){send('y leave');gout()}if(hside>=0){send('h leave');hout()}if(jside>=0){send('j leave');jout()}if(kside>=0){send('tug leave');kout()}if(qin){send('sr leave');qout()}
+fs(true);send('qz join '+m+' '+(enc(nm.value.trim())||'%20'));if(!zt)zt=setInterval(zpoll,300);setTimeout(zpoll,150)}
+document.querySelectorAll('#zjoin button').forEach(b=>b.onclick=()=>zjoin(b.dataset.m));
+function zout(){fs(false);E('zopt').hidden=true;zin=false;clearInterval(zt);zt=0;zkey='';zround='';E('zplay').hidden=true;try{if(window.speechSynthesis)speechSynthesis.cancel()}catch(e){}}
+let zsaid='';function zsay(){if(!zsaid||!E('zsnd').checked||!window.speechSynthesis)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(zsaid);u.lang='en-US';u.rate=.8;speechSynthesis.speak(u)}catch(e){}}
+function zshow(cls,label,text){E('zq').className=cls;E('zql').textContent=label;E('zql').hidden=!label;E('zqt').textContent=text}
+function zanswer(v){if(!zround)return;send('qz ans '+zround+' '+v);if(navigator.vibrate)navigator.vibrate(20);setTimeout(zpoll,120)}
+zab.forEach((b,i)=>b.onclick=()=>{if(zmy<0&&E('zans').dataset.live==='1'){zmy=i;b.classList.add('mine');E('zans').classList.add('done');zanswer(i)}});
+function zsendWord(){const w=E('zword').value.trim();if(!w)return;E('zword').blur();zanswer(enc(w))}
+E('zsend').onclick=zsendWord;E('zword').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();zsendWord()}};E('zspk').onclick=zsay;
+E('zmode').onchange=()=>send('qz mode '+E('zmode').value);E('zrounds').onchange=()=>send('qz rounds '+E('zrounds').value);E('zlevel').onchange=()=>send('qz level '+E('zlevel').value);
+E('zstart').onclick=()=>send('qz start');E('zstop').onclick=()=>{send('qz stop');zout()};E('zleave').onclick=()=>{send('qz leave');zout()};
+function zpoll(){fetch('/n?c='+CID).then(r=>r.text()).then(t=>{const a=t.split('|');if(a.length<16)return;const st=+a[0],mode=+a[1],typed=mode===2;
+if(a[11]!=='1'){if(zin||st===0){zout();return}if(+a[8]>=6)E('zh').textContent=T('k_full');return}
+if(!zin){zin=true;E('zplay').hidden=false;document.body.classList.add('playing')}
+[['zmode',1],['zrounds',3],['zlevel',10]].forEach(x=>{if(document.activeElement!==E(x[0]))E(x[0]).value=a[x[1]]});
+E('zhud').textContent=(st===3||st===4?a[2]+'/'+a[3]+'  •  ':'')+'⭐ '+a[5]+(st===3?'  •  ⏱ '+a[4]:'');E('zstart').hidden=!(st===1||st===5);
+const key=[st,mode,a[2],a[6],a[8]].join('|');if(key===zkey)return;zkey=key;
+const asking=st===3&&a[6]==='0';E('zans').hidden=typed||!(st===3||st===4);E('ztype').hidden=!(typed&&asking);E('zans').dataset.live=asking?'1':'0';E('zinfo').textContent='';
+if(st===3&&zround!==a[2]){zround=a[2];zmy=-1;E('zans').classList.remove('done');zab.forEach((b,i)=>{b.className='';b.textContent=fdec(a[16+i])});E('zword').value='';zsaid=typed?fdec(a[15]):'';if(typed){zsay();setTimeout(()=>{try{E('zword').focus()}catch(e){}},50)}}
+if(st===1){zround='';zshow('msg','',T('z_wait',a[8]))}else if(st===2){zround='';zshow('msg','',T('st_ready'))}
+else if(st===3){if(!asking)zshow('msg','',T('z_sent'));else if(typed)zshow('',T('z_q_spell'),fdec(a[13]));else if(mode===1)zshow('',T('z_q_cap'),fdec(a[13]));else zshow('',T('z_q_flag'),'🌍')}
+else if(st===4){const ok=a[7]==='1',ans=fdec(a[14]);zshow(ok?'ok':'no',ok?T('z_right',a[12]):a[6]==='1'?T('z_wrong'):T('z_time'),ans);E('zans').classList.add('done');zab.forEach(b=>{if(b.textContent===ans)b.classList.add('ok')});if(navigator.vibrate)navigator.vibrate(ok?[60,40,120]:180)}
+else if(st===5){zround='';zshow('msg','',a[9]==='1'?T('you_win'):T('z_place',a[9],a[5]));if(navigator.vibrate)navigator.vibrate(200)}}).catch(()=>{})}
 let jimg=null,jz=1,jox=0,joy=0,jb=1,jdrag=null;const jcv=E('jcv'),jc=jcv.getContext('2d');
 function jdraw(){jc.fillStyle='#000';jc.fillRect(0,0,280,280);if(!jimg)return;const s=jb*jz;jc.drawImage(jimg,140+jox-jimg.width*s/2,140+joy-jimg.height*s/2,jimg.width*s,jimg.height*s);
 jc.fillStyle='rgba(0,0,0,.6)';jc.beginPath();jc.rect(0,0,280,280);jc.arc(140,140,120,0,6.2832,true);jc.fill('evenodd');jc.strokeStyle='#fff';jc.lineWidth=3;jc.beginPath();jc.arc(140,140,120,0,6.2832);jc.stroke()}

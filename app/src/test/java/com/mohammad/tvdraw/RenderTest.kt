@@ -7,6 +7,8 @@ import android.graphics.Paint
 import android.graphics.Shader
 import android.os.Looper
 import android.view.View
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -302,6 +304,43 @@ class RenderTest {
         v.handle("j join g", "a"); assertTrue("joining another game closes this one", !v.tug.active)
     }
 
+    @Test fun quiz() {
+        val act = org.robolectric.Robolectric.buildActivity(android.app.Activity::class.java).setup().get()
+        act.getSharedPreferences("family", 0).edit().clear().commit()
+        v = DrawView(act); act.window.setContentView(v)
+        fill = { v.measure(View.MeasureSpec.makeMeasureSpec(1920, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(1080, View.MeasureSpec.EXACTLY)); v.layout(0, 0, 1920, 1080) }
+        fill()
+        val said = ArrayList<String>(); v.quiz.speak = { said.add(it) }
+        fun st(cid: String) = v.quiz.status(cid).split("|")
+        fun dec(x: String) = java.net.URLDecoder.decode(x, "UTF-8")
+        for (mode in 0..2) {
+            v.handle("nm Sara", "a"); v.handle("nm Omar", "b"); v.handle("nm Lina", "c")
+            v.handle("qz join $mode Sara", "a"); v.handle("qz join $mode Omar", "b"); v.handle("qz join $mode Lina", "c"); v.handle("qz rounds 5", "a")
+            shot("quiz${mode}_lobby"); assertEquals("1", st("a")[0]); assertEquals("" + mode, st("a")[1]); assertEquals("3", st("a")[8])
+            v.handle("qz start", "a"); tick(1200); shot("quiz${mode}_count"); tick(2000); shot("quiz${mode}_ask"); shot("quiz${mode}_ask")
+            assertEquals("3", st("a")[0])
+            for (round in 1..5) {
+                val s = st("a"); assertEquals("" + round, s[2]); assertEquals("-1", s[7]); assertEquals("", s[14])
+                if (mode == 2) { assertEquals(16, s.size); tick(700); shot("quiz2_ask")
+                    v.handle("qz ans $round " + s[15].uppercase(), "a"); v.handle("qz ans $round zzz", "b") }
+                else { assertEquals(20, s.size); v.handle("qz ans $round 0", "a"); v.handle("qz ans $round 1", "b"); v.handle("qz ans ${round + 1} 2", "c") }   // c answers the wrong round
+                assertEquals("1", st("a")[6]); assertEquals("0", st("c")[6]); shot("quiz${mode}_wait")
+                assertEquals("still waiting for Lina", "3", st("a")[0])
+                v.handle("qz ans $round " + (if (mode == 2) "nope" else "2"), "c"); shot("quiz${mode}_reveal"); shot("quiz${mode}_reveal")
+                val r = st("a"); assertEquals("4", r[0]); assertTrue(r[14].isNotEmpty())
+                if (mode == 2) { assertEquals("1", r[7]); assertEquals("0", st("b")[7]) }
+                else assertTrue("the answer shown is one of the four choices", (16..19).any { dec(r[it]) == dec(r[14]) })
+                tick(QuizGame.REVEAL_MS + 100); shot("quiz${mode}_next")
+            }
+            assertEquals("5", st("a")[0]); tick(1500); shot("quiz${mode}_end")
+            if (mode == 2) { assertEquals("1", st("a")[9]); assertTrue(said.size >= 5); assertTrue(st("a")[5].toInt() >= 50) }
+            v.handle("qz stop", "a"); assertEquals("0", st("a")[0])
+        }
+        assertTrue("spelling points reach the board", v.family.status("a").contains("B|Sara|"))
+        v.handle("qz join 0 Sara", "a"); v.handle("sr join Sara 0 0", "a"); assertFalse(v.quiz.active)
+        v.handle("qz join 0 Sara", "a"); assertFalse(v.space.active); tick(QuizGame.GONE_MS + 500); shot("quiz_left"); assertFalse("a phone that stops asking is dropped", v.quiz.active)
+    }
+
     @Test fun spaceRace() {
         val act = org.robolectric.Robolectric.buildActivity(android.app.Activity::class.java).setup().get()
         v = DrawView(act); act.window.setContentView(v)
@@ -339,6 +378,14 @@ class RenderTest {
         v.handle("poll vote 2", "c"); v.handle("poll close", "a"); shot("vote_result")
         v.handle("poll vote 0", "a"); assertTrue("no voting after the vote is closed", line("a", "P").endsWith("|Pizza|0|Burger|1|Mansaf|2"))
         tick(Family.RESULT_MS + 500); shot("vote_gone"); assertTrue(line("a", "P").startsWith("P|0|"))
+        // announcements and chores
+        v.handle("nm Sara", "a"); v.handle("al now Dinner+is+ready+%F0%9F%8D%BD", "a"); tick(600); shot("say"); tick(Home.SAY_MS)
+        v.handle("al add 1200 Bedtime", "a"); v.home.check(1200, 7); tick(600); shot("say_daily"); tick(Home.SAY_MS); shot("say_gone")
+        v.handle("ch add 10 Tidy+your+room", "a"); v.handle("ch add 20 Homework", "a"); v.handle("ch done 2", "zz")       // zz has no name
+        assertTrue(v.home.status().contains("H|2|10||Tidy+your+room"))
+        v.handle("ch done 2", "a"); tick(900); shot("chore"); assertTrue(v.home.status().contains("H|2|10|Sara|Tidy+your+room"))
+        assertTrue(line("a", "B|Sara").startsWith("B|Sara|10|10|0|0")); v.handle("ch done 2", "a"); assertTrue(line("a", "B|Sara").startsWith("B|Sara|10|"))
+        v.handle("ch undo 2", "a"); assertTrue(line("a", "B|Sara").startsWith("B|Sara|0|")); tick(Home.CHEER_MS); v.handle("hof reset", "a")
         // timer
         v.handle("tm start 300 Bedtime", "a"); shot("timer"); assertTrue(line("a", "T") == "T|300|Bedtime")
         tick(250000); shot("timer_urgent"); assertTrue(line("a", "T").startsWith("T|50|"))

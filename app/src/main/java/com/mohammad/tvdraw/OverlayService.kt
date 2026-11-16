@@ -22,7 +22,9 @@ class DrawView(c: Context) : View(c) {
     val tug = TugGame(this)
     val space = SpaceGame(this)
     val family = Family(this)
-    init { val give: (List<GameResult>) -> Unit = { family.award(it) }; game.onEnd = give; hockey.onEnd = give; snake.onEnd = give; tug.onEnd = give; space.onEnd = give }
+    val home = Home(this, family)
+    val quiz = QuizGame(this)
+    init { val give: (List<GameResult>) -> Unit = { family.award(it) }; game.onEnd = give; hockey.onEnd = give; snake.onEnd = give; tug.onEnd = give; space.onEnd = give; quiz.onEnd = give; quiz.onBonus = { n, pts -> family.bonus(n, pts) } }
     val cam = LiveCam(this)
 
     // ---- floating comments + emoji ----
@@ -34,6 +36,7 @@ class DrawView(c: Context) : View(c) {
     private val emo = Paint().apply { isAntiAlias = true }
     private val commentMs = 10000L
     private val emojiMs = 3500L
+    private val OTHER_GAMES = setOf("y", "j", "h", "tug", "sr")
     private fun sc() = (if (height > 0) height else 1080) / 1080f
     private fun dec(v: String) = java.net.URLDecoder.decode(v, "UTF-8")
 
@@ -406,6 +409,7 @@ class DrawView(c: Context) : View(c) {
     fun handle(line: String, cid: String = "tv") {
         try {
             val p = line.trim().split(" ")
+            if (p.size > 1 && p[1] == "join" && quiz.active && p[0] in OTHER_GAMES) quiz.stopNow()
             when (p[0]) {
                 "d" -> ink.down(cid, p[1].toFloat() * getWidth(), p[2].toFloat() * height)
                 "m" -> ink.move(cid, p[1].toFloat() * getWidth(), p[2].toFloat() * height)
@@ -418,7 +422,9 @@ class DrawView(c: Context) : View(c) {
                 "h" -> { if (p[1] == "join") { if (game.active) game.stopNow(); if (snake.active) snake.stopNow(); if (tug.active) tug.stopNow(); if (space.active) space.stopNow() }; hockey.command(p, cid) }
                 "tug" -> { if (p[1] == "join") { if (game.active) game.stopNow(); if (snake.active) snake.stopNow(); if (hockey.active) hockey.stopNow(); if (space.active) space.stopNow() }; tug.command(p, cid) }
                 "sr" -> { if (p[1] == "join") { if (game.active) game.stopNow(); if (snake.active) snake.stopNow(); if (hockey.active) hockey.stopNow(); if (tug.active) tug.stopNow() }; space.command(p, cid) }
+                "qz" -> { if (p[1] == "join") { if (game.active) game.stopNow(); if (snake.active) snake.stopNow(); if (hockey.active) hockey.stopNow(); if (tug.active) tug.stopNow(); if (space.active) space.stopNow() }; quiz.command(p, cid) }
                 "nm", "poll", "tm", "hof" -> family.command(p, cid)
+                "al", "ch" -> home.command(p, cid)
                 "c" -> ink.clearAll()
                 "u" -> ink.undo(cid)
                 "k" -> ink.pen(cid).color = Color.parseColor(p[1])
@@ -450,7 +456,7 @@ class DrawView(c: Context) : View(c) {
 
     override fun onDraw(cv: Canvas) {
         val now = SystemClock.uptimeMillis()
-        val gaming = game.draw(cv, now) or hockey.draw(cv, now) or snake.draw(cv, now) or tug.draw(cv, now) or space.draw(cv, now)
+        val gaming = game.draw(cv, now) or hockey.draw(cv, now) or snake.draw(cv, now) or tug.draw(cv, now) or space.draw(cv, now) or quiz.draw(cv, now)
         ink.draw(cv)
         val s = sc()
         val it = floats.iterator()
@@ -493,6 +499,7 @@ class DrawView(c: Context) : View(c) {
         }
         cam.draw(cv, now, s)
         family.draw(cv, now)
+        home.draw(cv, now)
         val lasering = ink.drawLaser(cv, now)
         if (floats.isNotEmpty() || pranking || lasering || gaming) postInvalidateOnAnimation()
     }
@@ -522,7 +529,7 @@ class OverlayService : Service() {
             PixelFormat.TRANSLUCENT)
         getSystemService(WindowManager::class.java).addView(view, lp)
 
-        val sfx = Sfx(this); view.sfx = sfx; view.game.sfx = sfx; view.hockey.sfx = sfx; view.snake.sfx = sfx; view.tug.sfx = sfx; view.family.sfx = sfx; view.space.sfx = sfx; view.space.speak = { say(it) }
+        val sfx = Sfx(this); view.sfx = sfx; view.game.sfx = sfx; view.hockey.sfx = sfx; view.snake.sfx = sfx; view.tug.sfx = sfx; view.family.sfx = sfx; view.home.sfx = sfx; view.home.start(); view.quiz.sfx = sfx; view.quiz.speak = { say(it) }; view.space.sfx = sfx; view.space.speak = { say(it) }
         val prayer = PrayerAlerts(this, view, sfx); view.onPrayerCmd = { prayer.command(it) }; prayer.start()
         thread {
             val server = Server({ page }, { words }, { font }, filesDir, { lines, cid -> ui.post { lines.forEach { view.handle(it, cid) }; view.invalidate() } }, { sfx.voice(it) },
@@ -543,7 +550,8 @@ class OverlayService : Service() {
                 } catch (e: Throwable) { camBusy.set(false) } },
                 { path -> if (path.startsWith("/p")) prayer.status()
                     else if (path.startsWith("/c")) view.cam.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
-                    else if (path.startsWith("/u")) view.family.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
+                    else if (path.startsWith("/u")) view.family.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12)) + view.home.status()
+                    else if (path.startsWith("/n")) view.quiz.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/q")) view.space.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/t")) view.tug.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/j")) view.snake.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))

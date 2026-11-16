@@ -42,6 +42,8 @@ and no account, and nothing leaves your home network.
 | 🏆 **Hall of fame** | Every named player collects points from all the games, with weekly champions. Saved on the TV. |
 | 🗳️ **Quick vote** | Ask a question, everyone votes from their phone, and the result appears on the TV. |
 | ⏱️ **Family timer** | A countdown in the corner of the TV with a big alert when time is up. |
+| 📣 **Call the family** | "Dinner is ready", "Bedtime" or your own message on the TV with a chime, now or every day at a set time. |
+| ✅ **Kids' chores** | Chores with points: a finished chore adds to the family board and the TV celebrates. |
 | 🔊 **Volume** | Turn the TV box volume up, down or mute it from your phone. |
 | 😈 **Pranks** | Cracked screen, a fly that walks around (any size, with a shadow), a person's shadow that walks past like in a cinema, a lion that jumps out of the screen, a fake shutdown message. |
 | 🕌 **Prayer alert** | A banner before each prayer, calculated on the device with no internet. |
@@ -56,6 +58,7 @@ and no account, and nothing leaves your home network.
 | 🐍 **Snake** | 1 or 2 | Eat to grow and avoid crashing. Leave one edge and come back from the other. You can put your own face on the snake. |
 | 🪢 **Math tug of war** | 1 to 6 | Two teams solve sums on their phones; every correct answer pulls the rope. Easy, medium, hard, or a level that gets harder. Knockout, time limit and sudden death. |
 | 🚀 **Space race** | 1 to 6 | An English word appears on the phone and you pick its Arabic meaning. Correct answers fly your rocket to the planet. |
+| 🌍 **Flags, capitals and spelling** | 1 to 6 | One question on the TV for everybody: a flag, a country, or a spoken English word. Answer on your phone; faster right answers earn more. |
 
 Every game can be played alone: the computer takes the empty side.
 

@@ -38,6 +38,15 @@ class Board {
         return earned
     }
 
+    /** Points outside the games, such as a finished chore. A negative number takes them back, never below zero. */
+    fun bonus(name: String, points: Int, weekNow: Int): Boolean {
+        if (name.isBlank() || points == 0) return false
+        rollWeek(weekNow)
+        val e = entries.getOrPut(key(name)) { Entry(name.trim()) }
+        e.points = (e.points + points).coerceAtLeast(0); e.weekPoints = (e.weekPoints + points).coerceAtLeast(0)
+        return true
+    }
+
     fun top(n: Int = 8) = entries.values.sortedWith(compareByDescending<Entry> { it.points }.thenByDescending { it.wins }).take(n)
     /** This week's champions; null while nobody has scored in that field this week. */
     fun weekChampion() = entries.values.filter { it.weekPoints > 0 }.maxByOrNull { it.weekPoints }

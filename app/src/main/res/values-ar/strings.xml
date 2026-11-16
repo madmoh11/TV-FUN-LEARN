@@ -82,6 +82,24 @@
     <string name="cat_space">الفضاء والتكنولوجيا</string>
     <string name="cat_master">التحدي الشامل</string>
 
+    <string name="say_from">من %s</string>
+    <string name="chore_done">%1$s خلّص: %2$s</string>
+    <string name="chore_points">+%d نقطة</string>
+    <string name="quiz_flags">🌍 الأعلام</string>
+    <string name="quiz_caps">🏛️ العواصم</string>
+    <string name="quiz_spell">✍️ الإملاء</string>
+    <string name="quiz_flags_how">بيطلع علم هون، واختار دولته من تليفونك.</string>
+    <string name="quiz_caps_how">بتطلع دولة هون، واختار عاصمتها من تليفونك.</string>
+    <string name="quiz_spell_how">اسمع الكلمة الإنجليزية واكتبها على تليفونك.</string>
+    <string name="quiz_setup">%1$d أسئلة • %2$d لاعبين</string>
+    <string name="quiz_round">%1$d / %2$d</string>
+    <string name="quiz_q_flag">علم أي دولة هذا؟</string>
+    <string name="quiz_q_cap">شو عاصمتها؟</string>
+    <string name="quiz_q_spell">اسمع واكتب الكلمة بالإنجليزي</string>
+    <string name="quiz_letters">%d حروف</string>
+    <string name="quiz_tie">تعادل! 🤝</string>
+    <string name="quiz_nobody">ما حدا جاب نقاط هالمرة</string>
+    <string name="quiz_score">%1$d نقطة • %2$d/%3$d</string>
     <string name="timer_done">انتهى الوقت!</string>
     <string name="poll_hint">%d أصوات • صوّت من تليفونك</string>
     <string name="poll_result">النتيجة • %d أصوات</string>

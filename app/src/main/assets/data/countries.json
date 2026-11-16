@@ -1,0 +1,610 @@
+[
+{
+"code": "jo",
+"en": "Jordan",
+"ar": "الأردن",
+"cap_en": "Amman",
+"cap_ar": "عمّان",
+"level": 1
+},
+{
+"code": "ps",
+"en": "Palestine",
+"ar": "فلسطين",
+"cap_en": "Jerusalem",
+"cap_ar": "القدس",
+"level": 1
+},
+{
+"code": "sa",
+"en": "Saudi Arabia",
+"ar": "السعودية",
+"cap_en": "Riyadh",
+"cap_ar": "الرياض",
+"level": 1
+},
+{
+"code": "eg",
+"en": "Egypt",
+"ar": "مصر",
+"cap_en": "Cairo",
+"cap_ar": "القاهرة",
+"level": 1
+},
+{
+"code": "sy",
+"en": "Syria",
+"ar": "سوريا",
+"cap_en": "Damascus",
+"cap_ar": "دمشق",
+"level": 1
+},
+{
+"code": "lb",
+"en": "Lebanon",
+"ar": "لبنان",
+"cap_en": "Beirut",
+"cap_ar": "بيروت",
+"level": 1
+},
+{
+"code": "iq",
+"en": "Iraq",
+"ar": "العراق",
+"cap_en": "Baghdad",
+"cap_ar": "بغداد",
+"level": 1
+},
+{
+"code": "ae",
+"en": "United Arab Emirates",
+"ar": "الإمارات",
+"cap_en": "Abu Dhabi",
+"cap_ar": "أبو ظبي",
+"level": 1
+},
+{
+"code": "kw",
+"en": "Kuwait",
+"ar": "الكويت",
+"cap_en": "Kuwait City",
+"cap_ar": "مدينة الكويت",
+"level": 1
+},
+{
+"code": "qa",
+"en": "Qatar",
+"ar": "قطر",
+"cap_en": "Doha",
+"cap_ar": "الدوحة",
+"level": 1
+},
+{
+"code": "bh",
+"en": "Bahrain",
+"ar": "البحرين",
+"cap_en": "Manama",
+"cap_ar": "المنامة",
+"level": 1
+},
+{
+"code": "om",
+"en": "Oman",
+"ar": "عُمان",
+"cap_en": "Muscat",
+"cap_ar": "مسقط",
+"level": 1
+},
+{
+"code": "ye",
+"en": "Yemen",
+"ar": "اليمن",
+"cap_en": "Sanaa",
+"cap_ar": "صنعاء",
+"level": 1
+},
+{
+"code": "ly",
+"en": "Libya",
+"ar": "ليبيا",
+"cap_en": "Tripoli",
+"cap_ar": "طرابلس",
+"level": 1
+},
+{
+"code": "tn",
+"en": "Tunisia",
+"ar": "تونس",
+"cap_en": "Tunis",
+"cap_ar": "تونس العاصمة",
+"level": 1
+},
+{
+"code": "dz",
+"en": "Algeria",
+"ar": "الجزائر",
+"cap_en": "Algiers",
+"cap_ar": "الجزائر العاصمة",
+"level": 1
+},
+{
+"code": "ma",
+"en": "Morocco",
+"ar": "المغرب",
+"cap_en": "Rabat",
+"cap_ar": "الرباط",
+"level": 1
+},
+{
+"code": "sd",
+"en": "Sudan",
+"ar": "السودان",
+"cap_en": "Khartoum",
+"cap_ar": "الخرطوم",
+"level": 1
+},
+{
+"code": "mr",
+"en": "Mauritania",
+"ar": "موريتانيا",
+"cap_en": "Nouakchott",
+"cap_ar": "نواكشوط",
+"level": 2
+},
+{
+"code": "so",
+"en": "Somalia",
+"ar": "الصومال",
+"cap_en": "Mogadishu",
+"cap_ar": "مقديشو",
+"level": 2
+},
+{
+"code": "dj",
+"en": "Djibouti",
+"ar": "جيبوتي",
+"cap_en": "Djibouti City",
+"cap_ar": "مدينة جيبوتي",
+"level": 2
+},
+{
+"code": "km",
+"en": "Comoros",
+"ar": "جزر القمر",
+"cap_en": "Moroni",
+"cap_ar": "موروني",
+"level": 2
+},
+{
+"code": "tr",
+"en": "Turkey",
+"ar": "تركيا",
+"cap_en": "Ankara",
+"cap_ar": "أنقرة",
+"level": 1
+},
+{
+"code": "us",
+"en": "United States",
+"ar": "أمريكا",
+"cap_en": "Washington",
+"cap_ar": "واشنطن",
+"level": 1
+},
+{
+"code": "gb",
+"en": "United Kingdom",
+"ar": "بريطانيا",
+"cap_en": "London",
+"cap_ar": "لندن",
+"level": 1
+},
+{
+"code": "fr",
+"en": "France",
+"ar": "فرنسا",
+"cap_en": "Paris",
+"cap_ar": "باريس",
+"level": 1
+},
+{
+"code": "de",
+"en": "Germany",
+"ar": "ألمانيا",
+"cap_en": "Berlin",
+"cap_ar": "برلين",
+"level": 1
+},
+{
+"code": "it",
+"en": "Italy",
+"ar": "إيطاليا",
+"cap_en": "Rome",
+"cap_ar": "روما",
+"level": 1
+},
+{
+"code": "es",
+"en": "Spain",
+"ar": "إسبانيا",
+"cap_en": "Madrid",
+"cap_ar": "مدريد",
+"level": 1
+},
+{
+"code": "br",
+"en": "Brazil",
+"ar": "البرازيل",
+"cap_en": "Brasília",
+"cap_ar": "برازيليا",
+"level": 1
+},
+{
+"code": "ar",
+"en": "Argentina",
+"ar": "الأرجنتين",
+"cap_en": "Buenos Aires",
+"cap_ar": "بوينس آيرس",
+"level": 1
+},
+{
+"code": "jp",
+"en": "Japan",
+"ar": "اليابان",
+"cap_en": "Tokyo",
+"cap_ar": "طوكيو",
+"level": 1
+},
+{
+"code": "cn",
+"en": "China",
+"ar": "الصين",
+"cap_en": "Beijing",
+"cap_ar": "بكين",
+"level": 1
+},
+{
+"code": "in",
+"en": "India",
+"ar": "الهند",
+"cap_en": "New Delhi",
+"cap_ar": "نيودلهي",
+"level": 1
+},
+{
+"code": "ru",
+"en": "Russia",
+"ar": "روسيا",
+"cap_en": "Moscow",
+"cap_ar": "موسكو",
+"level": 1
+},
+{
+"code": "ca",
+"en": "Canada",
+"ar": "كندا",
+"cap_en": "Ottawa",
+"cap_ar": "أوتاوا",
+"level": 1
+},
+{
+"code": "pk",
+"en": "Pakistan",
+"ar": "باكستان",
+"cap_en": "Islamabad",
+"cap_ar": "إسلام آباد",
+"level": 1
+},
+{
+"code": "id",
+"en": "Indonesia",
+"ar": "إندونيسيا",
+"cap_en": "Jakarta",
+"cap_ar": "جاكرتا",
+"level": 1
+},
+{
+"code": "my",
+"en": "Malaysia",
+"ar": "ماليزيا",
+"cap_en": "Kuala Lumpur",
+"cap_ar": "كوالالمبور",
+"level": 1
+},
+{
+"code": "kr",
+"en": "South Korea",
+"ar": "كوريا الجنوبية",
+"cap_en": "Seoul",
+"cap_ar": "سيول",
+"level": 1
+},
+{
+"code": "pt",
+"en": "Portugal",
+"ar": "البرتغال",
+"cap_en": "Lisbon",
+"cap_ar": "لشبونة",
+"level": 2
+},
+{
+"code": "nl",
+"en": "Netherlands",
+"ar": "هولندا",
+"cap_en": "Amsterdam",
+"cap_ar": "أمستردام",
+"level": 2
+},
+{
+"code": "be",
+"en": "Belgium",
+"ar": "بلجيكا",
+"cap_en": "Brussels",
+"cap_ar": "بروكسل",
+"level": 2
+},
+{
+"code": "ch",
+"en": "Switzerland",
+"ar": "سويسرا",
+"cap_en": "Bern",
+"cap_ar": "برن",
+"level": 2
+},
+{
+"code": "at",
+"en": "Austria",
+"ar": "النمسا",
+"cap_en": "Vienna",
+"cap_ar": "فيينا",
+"level": 2
+},
+{
+"code": "se",
+"en": "Sweden",
+"ar": "السويد",
+"cap_en": "Stockholm",
+"cap_ar": "ستوكهولم",
+"level": 2
+},
+{
+"code": "no",
+"en": "Norway",
+"ar": "النرويج",
+"cap_en": "Oslo",
+"cap_ar": "أوسلو",
+"level": 2
+},
+{
+"code": "dk",
+"en": "Denmark",
+"ar": "الدنمارك",
+"cap_en": "Copenhagen",
+"cap_ar": "كوبنهاغن",
+"level": 2
+},
+{
+"code": "fi",
+"en": "Finland",
+"ar": "فنلندا",
+"cap_en": "Helsinki",
+"cap_ar": "هلسنكي",
+"level": 2
+},
+{
+"code": "gr",
+"en": "Greece",
+"ar": "اليونان",
+"cap_en": "Athens",
+"cap_ar": "أثينا",
+"level": 2
+},
+{
+"code": "pl",
+"en": "Poland",
+"ar": "بولندا",
+"cap_en": "Warsaw",
+"cap_ar": "وارسو",
+"level": 2
+},
+{
+"code": "ua",
+"en": "Ukraine",
+"ar": "أوكرانيا",
+"cap_en": "Kyiv",
+"cap_ar": "كييف",
+"level": 2
+},
+{
+"code": "ie",
+"en": "Ireland",
+"ar": "أيرلندا",
+"cap_en": "Dublin",
+"cap_ar": "دبلن",
+"level": 2
+},
+{
+"code": "mx",
+"en": "Mexico",
+"ar": "المكسيك",
+"cap_en": "Mexico City",
+"cap_ar": "مكسيكو سيتي",
+"level": 2
+},
+{
+"code": "co",
+"en": "Colombia",
+"ar": "كولومبيا",
+"cap_en": "Bogotá",
+"cap_ar": "بوغوتا",
+"level": 2
+},
+{
+"code": "cl",
+"en": "Chile",
+"ar": "تشيلي",
+"cap_en": "Santiago",
+"cap_ar": "سانتياغو",
+"level": 2
+},
+{
+"code": "pe",
+"en": "Peru",
+"ar": "بيرو",
+"cap_en": "Lima",
+"cap_ar": "ليما",
+"level": 2
+},
+{
+"code": "au",
+"en": "Australia",
+"ar": "أستراليا",
+"cap_en": "Canberra",
+"cap_ar": "كانبرا",
+"level": 2
+},
+{
+"code": "nz",
+"en": "New Zealand",
+"ar": "نيوزيلندا",
+"cap_en": "Wellington",
+"cap_ar": "ويلينغتون",
+"level": 2
+},
+{
+"code": "za",
+"en": "South Africa",
+"ar": "جنوب أفريقيا",
+"cap_en": "Pretoria",
+"cap_ar": "بريتوريا",
+"level": 2
+},
+{
+"code": "ng",
+"en": "Nigeria",
+"ar": "نيجيريا",
+"cap_en": "Abuja",
+"cap_ar": "أبوجا",
+"level": 2
+},
+{
+"code": "ke",
+"en": "Kenya",
+"ar": "كينيا",
+"cap_en": "Nairobi",
+"cap_ar": "نيروبي",
+"level": 2
+},
+{
+"code": "et",
+"en": "Ethiopia",
+"ar": "إثيوبيا",
+"cap_en": "Addis Ababa",
+"cap_ar": "أديس أبابا",
+"level": 2
+},
+{
+"code": "sn",
+"en": "Senegal",
+"ar": "السنغال",
+"cap_en": "Dakar",
+"cap_ar": "داكار",
+"level": 2
+},
+{
+"code": "gh",
+"en": "Ghana",
+"ar": "غانا",
+"cap_en": "Accra",
+"cap_ar": "أكرا",
+"level": 2
+},
+{
+"code": "ir",
+"en": "Iran",
+"ar": "إيران",
+"cap_en": "Tehran",
+"cap_ar": "طهران",
+"level": 2
+},
+{
+"code": "bd",
+"en": "Bangladesh",
+"ar": "بنغلاديش",
+"cap_en": "Dhaka",
+"cap_ar": "دكا",
+"level": 2
+},
+{
+"code": "th",
+"en": "Thailand",
+"ar": "تايلاند",
+"cap_en": "Bangkok",
+"cap_ar": "بانكوك",
+"level": 2
+},
+{
+"code": "vn",
+"en": "Vietnam",
+"ar": "فيتنام",
+"cap_en": "Hanoi",
+"cap_ar": "هانوي",
+"level": 2
+},
+{
+"code": "ph",
+"en": "Philippines",
+"ar": "الفلبين",
+"cap_en": "Manila",
+"cap_ar": "مانيلا",
+"level": 2
+},
+{
+"code": "az",
+"en": "Azerbaijan",
+"ar": "أذربيجان",
+"cap_en": "Baku",
+"cap_ar": "باكو",
+"level": 2
+},
+{
+"code": "kz",
+"en": "Kazakhstan",
+"ar": "كازاخستان",
+"cap_en": "Astana",
+"cap_ar": "أستانا",
+"level": 2
+},
+{
+"code": "uz",
+"en": "Uzbekistan",
+"ar": "أوزبكستان",
+"cap_en": "Tashkent",
+"cap_ar": "طشقند",
+"level": 2
+},
+{
+"code": "cu",
+"en": "Cuba",
+"ar": "كوبا",
+"cap_en": "Havana",
+"cap_ar": "هافانا",
+"level": 2
+},
+{
+"code": "ba",
+"en": "Bosnia and Herzegovina",
+"ar": "البوسنة والهرسك",
+"cap_en": "Sarajevo",
+"cap_ar": "سراييفو",
+"level": 2
+},
+{
+"code": "al",
+"en": "Albania",
+"ar": "ألبانيا",
+"cap_en": "Tirana",
+"cap_ar": "تيرانا",
+"level": 2
+}
+]

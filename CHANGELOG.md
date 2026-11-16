@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.13
+
+- New game for the whole room: **flags, capitals and spelling**. One question on the TV, everybody answers on their
+  phone, and faster right answers earn more. 76 countries with their flags; spelling uses the word bank and says the
+  word aloud on the TV and on the phone.
+- **Call the family**: ready messages such as "Dinner is ready" or your own text appear on the TV with a chime, now or
+  every day at a set time.
+- **Kids' chores**: a list of chores with points. A finished chore adds its points to the family board and the TV
+  celebrates. Chores open again every day.
+
 ## 3.12
 
 - The phone page can live on the phone's home screen with its own icon, like an app. The settings tab shows the steps for

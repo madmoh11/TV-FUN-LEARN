@@ -91,6 +91,24 @@
     <string name="cat_master">Master Challenge</string>
 
     <!-- Family tools: vote, timer, hall of fame -->
+    <string name="say_from">from %s</string>
+    <string name="chore_done">%1$s finished: %2$s</string>
+    <string name="chore_points">+%d points</string>
+    <string name="quiz_flags">🌍 Flags</string>
+    <string name="quiz_caps">🏛️ Capitals</string>
+    <string name="quiz_spell">✍️ Spelling</string>
+    <string name="quiz_flags_how">A flag appears here. Pick its country on your phone.</string>
+    <string name="quiz_caps_how">A country appears here. Pick its capital on your phone.</string>
+    <string name="quiz_spell_how">Listen to the English word and type it on your phone.</string>
+    <string name="quiz_setup">%1$d questions • %2$d players</string>
+    <string name="quiz_round">%1$d / %2$d</string>
+    <string name="quiz_q_flag">Which country has this flag?</string>
+    <string name="quiz_q_cap">What is its capital?</string>
+    <string name="quiz_q_spell">Listen and type the word in English</string>
+    <string name="quiz_letters">%d letters</string>
+    <string name="quiz_tie">It is a tie! 🤝</string>
+    <string name="quiz_nobody">Nobody scored this time</string>
+    <string name="quiz_score">%1$d pts • %2$d/%3$d</string>
     <string name="timer_done">Time is up!</string>
     <string name="poll_hint">%d votes • vote from your phone</string>
     <string name="poll_result">Result • %d votes</string>

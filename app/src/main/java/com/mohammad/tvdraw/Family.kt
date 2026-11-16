@@ -49,6 +49,10 @@ class Family(private val view: View) {
         if (changed) sp.edit().putString("board", board.save()).apply()
     }
 
+    fun bonus(name: String, points: Int) = synchronized(board) {
+        if (board.bonus(name, points, weekNow())) sp.edit().putString("board", board.save()).apply()
+    }
+
     /** "nm NAME", "poll new Q A B [C] [D]", "poll vote n", "poll close", "poll off", "tm start SECONDS LABEL", "tm add SECONDS", "tm stop", "hof show", "hof reset" */
     fun command(pp: List<String>, cid: String) = synchronized(board) {
         val now = SystemClock.uptimeMillis()
