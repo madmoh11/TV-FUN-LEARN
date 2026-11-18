@@ -10,7 +10,7 @@ import kotlin.concurrent.thread
 /**
  * Tiny HTTP + HTTPS server for the phone page.
  * GET / = the page, POST /e = command lines, POST /a = 16 kHz mono PCM16 voice, POST /i = picture to show,
- * GET /app/NAME = the home-screen icon and manifest, GET /w = the word bank of the space race, POST /f = selfie for the snake, POST /v = live camera frame, GET /n = quiz status, GET /s /p /g /h /j = sound, prayer and game status.
+ * GET /app/NAME = the home-screen icon and manifest, GET /w = the word bank of the space race, POST /f = selfie for the snake, POST /v = live camera frame, GET /n = quiz status, GET /m = rhythm workout status, GET /s /p /g /h /j = sound, prayer and game status.
  */
 class Server(private val page: () -> String, private val words: () -> ByteArray, private val font: () -> ByteArray, private val keyDir: java.io.File, private val onLines: (List<String>, String) -> Unit, private val onAudio: (ByteArray) -> Unit,
              private val onImage: (ByteArray) -> Unit, private val onFace: (ByteArray, String) -> Unit, private val onVideo: (ByteArray, String) -> Unit, private val status: (String) -> String,
@@ -71,7 +71,7 @@ class Server(private val page: () -> String, private val words: () -> ByteArray,
                     type = if (name.endsWith(".png")) "image/png" else "application/manifest+json"; cache = true; resp = extra(name) ?: ByteArray(0)
                 }
                 else if (parts[0] == "GET" && path.startsWith("/w")) { type = "application/json; charset=utf-8"; resp = words() }
-                else if (path.startsWith("/n") || path.startsWith("/c") || path.startsWith("/t") || path.startsWith("/q") || path.startsWith("/u") || path.startsWith("/s") || path.startsWith("/p") || path.startsWith("/g") || path.startsWith("/h") || path.startsWith("/j")) resp = status(path).toByteArray(Charsets.UTF_8)
+                else if (path.startsWith("/m") || path.startsWith("/n") || path.startsWith("/c") || path.startsWith("/t") || path.startsWith("/q") || path.startsWith("/u") || path.startsWith("/s") || path.startsWith("/p") || path.startsWith("/g") || path.startsWith("/h") || path.startsWith("/j")) resp = status(path).toByteArray(Charsets.UTF_8)
                 else if (parts[0] == "POST") onLines(String(body, Charsets.UTF_8).split("\n").filter { it.isNotBlank() },
                     path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12).ifEmpty { "x" })
                 else { type = "text/html; charset=utf-8"; resp = page().replace("__HTTPS__", httpsPort.toString()).toByteArray(Charsets.UTF_8) }

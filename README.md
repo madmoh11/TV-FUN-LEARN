@@ -59,6 +59,7 @@ and no account, and nothing leaves your home network.
 | 🪢 **Math tug of war** | 1 to 6 | Two teams solve sums on their phones; every correct answer pulls the rope. Easy, medium, hard, or a level that gets harder. Knockout, time limit and sudden death. |
 | 🚀 **Space race** | 1 to 6 | An English word appears on the phone and you pick its Arabic meaning. Correct answers fly your rocket to the planet. |
 | 🌍 **Flags, capitals and spelling** | 1 to 6 | One question on the TV for everybody: a flag, a country, or a spoken English word. Answer on your phone; faster right answers earn more. |
+| 🕺 **Move to the beat** | 1 or 2 | A workout on the beat: step left or right, jump or duck as the moves reach the line. The phone in your hand senses the movement. |
 
 Every game can be played alone: the computer takes the empty side.
 

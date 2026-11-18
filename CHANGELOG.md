@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.14
+
+- New game: **Move to the beat**, a workout on the beat for one or two players. Moves run towards you on a track: step
+  left, step right, jump or duck when they reach the gold line. The phone in your hand is the motion sensor; four
+  buttons do the same by touch. Timing gives Perfect or Good, streaks multiply the score, and the music is generated
+  by the app at three speeds.
+
 ## 3.13
 
 - New game for the whole room: **flags, capitals and spelling**. One question on the TV, everybody answers on their

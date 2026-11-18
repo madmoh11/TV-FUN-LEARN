@@ -33,6 +33,7 @@ class Sfx(ctx: Context) {
                 val made = mapOf("glass" to Synth.glass(), "buzz" to Synth.buzz(), "beep" to Synth.beep(),
                     "thump" to Synth.thump(), "roar" to Synth.roar(), "chime" to Synth.chime(), "swish" to Synth.swish(), "blip" to Synth.blip(), "buzzer" to Synth.buzzer(), "clack" to Synth.clack())
                 synchronized(lock) { sounds.putAll(made) }
+                for (i in MoveCore.BPM.indices) { val loop = Synth.beat(MoveCore.BPM[i]); synchronized(lock) { sounds["beat$i"] = loop } }   // music of the rhythm workout
                 for (name in arrayOf("glass1", "glass2")) try {          // real recordings (Gravity Sound, CC BY 4.0)
                     val b = ctx.assets.open("$name.pcm").use { it.readBytes() }
                     val pcm = ShortArray(b.size / 2) { ((b[2 * it + 1].toInt() shl 8) or (b[2 * it].toInt() and 0xff)).toShort() }

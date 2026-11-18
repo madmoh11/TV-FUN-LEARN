@@ -133,6 +133,32 @@ object Synth {
         return norm(f, 0.6f)
     }
 
+    /**
+     * Four bars of dance music at the given tempo: kick, clap, hats, a bass line and a small tune.
+     * It ends exactly on the bar line, so playing it again on the first beat makes it loop.
+     */
+    fun beat(bpm: Int, rnd: Random = Random(5)): ShortArray {
+        val beat = RATE * 60 / bpm; val n = beat * 16; val f = FloatArray(n)
+        fun add(at: Int, len: Int, gen: (Int, Float) -> Float) { for (i in 0 until len) { val j = (at + i) % n; f[j] += gen(i, i / RATE.toFloat()) } }
+        val bass = floatArrayOf(55f, 55f, 65.4f, 49f)                     // one root note for each bar: A, A, C, G
+        val tune = intArrayOf(0, 3, 5, 7, 5, 3, 7, 10)                   // steps of a minor pentatonic tune
+        for (b in 0 until 16) { val at = b * beat; val bar = b / 4
+            var ph = 0.0                                                  // kick on every beat
+            add(at, RATE / 4) { i, t -> ph += 2 * PI * (48.0 + 110.0 * exp(-t / 0.03)) / RATE; sin(ph).toFloat() * exp(-t / 0.12f) * minOf(1f, i / 40f) * 1.0f }
+            if (b % 2 == 1) { var lp = 0f                                 // clap on two and four
+                add(at, RATE / 6) { _, t -> val x = rnd.nextFloat() * 2f - 1f; lp += 0.35f * (x - lp); (x - lp) * exp(-t / 0.05f) * 0.55f } }
+            for (h in 0..1) { var lp = 0f                                 // hats on the eighths, the off beat louder
+                add(at + h * beat / 2, RATE / 20) { _, t -> val x = rnd.nextFloat() * 2f - 1f; lp += 0.7f * (x - lp); (x - lp) * exp(-t / 0.012f) * (if (h == 1) 0.34f else 0.16f) } }
+            for (h in 0..1) { val hz = bass[bar] * (if (h == 1 && b % 4 == 3) 1.5f else 1f) * 2f           // bass, an octave up so small speakers carry it
+                add(at + h * beat / 2, beat / 2) { i, t -> val x = hz * t; val saw = 2f * (x - Math.floor(x.toDouble()).toFloat()) - 1f
+                    (0.6f * sin(2 * PI.toFloat() * hz * t) + 0.25f * saw) * exp(-t / 0.16f) * minOf(1f, i / 80f) * 0.5f } }
+            if (bar % 2 == 1 || b % 2 == 0) { val hz = 440f * Math.pow(2.0, tune[(b * 3 + bar) % tune.size] / 12.0).toFloat()   // the tune
+                add(at + (if (b % 2 == 0) 0 else beat / 2), beat / 2) { i, t -> (sin(2 * PI.toFloat() * hz * t) + 0.3f * sin(4 * PI.toFloat() * hz * t)) * exp(-t / 0.14f) * minOf(1f, i / 60f) * 0.2f } }
+        }
+        for (i in 0 until n) f[i] = tanh(f[i] * 1.2f)
+        return norm(f, 0.8f)
+    }
+
     /** One heavy paw landing: a deep, dull body hit. */
     fun thump(rnd: Random = Random.Default): ShortArray {
         val n = (RATE * 0.45).toInt()

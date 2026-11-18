@@ -341,6 +341,32 @@ class RenderTest {
         v.handle("qz join 0 Sara", "a"); assertFalse(v.space.active); tick(QuizGame.GONE_MS + 500); shot("quiz_left"); assertFalse("a phone that stops asking is dropped", v.quiz.active)
     }
 
+    @Test fun move() {
+        val act = org.robolectric.Robolectric.buildActivity(android.app.Activity::class.java).setup().get()
+        act.getSharedPreferences("family", 0).edit().clear().commit()
+        v = DrawView(act); act.window.setContentView(v)
+        fill = { v.measure(View.MeasureSpec.makeMeasureSpec(1920, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(1080, View.MeasureSpec.EXACTLY)); v.layout(0, 0, 1920, 1080) }
+        fill()
+        fun st(cid: String) = v.move.status(cid).split("|")
+        v.handle("nm Sara", "a"); v.handle("mv join Sara", "a"); shot("move_lobby"); assertEquals("1", st("a")[0]); assertEquals("1", st("a")[7])
+        v.handle("mv level 1", "a"); v.handle("mv start", "a"); tick(1500); shot("move_count"); tick(1600); shot("move_go"); assertEquals("3", st("a")[0])
+        // play blind: try every move a few times a second, as a body that follows the track would
+        var hits = 0
+        for (step in 0 until 300) { tick(100); if (step % 3 == 0) shot("move_x"); val before = st("a")[9]
+            for (kind in 0..3) v.handle("mv act $kind", "a")
+            if (st("a")[9] != before) hits++
+            if (step == 60) shot("move_play"); if (step == 61) shot("move_play2") }
+        assertTrue("moves are judged", hits > 20); assertTrue(st("a")[4].toInt() > 2000); assertTrue(st("a")[11].toInt() >= 5)
+        for (i in 0 until 400) { tick(100); shot("move_x"); if (st("a")[0] == "5") break }
+        assertEquals("5", st("a")[0]); tick(1500); shot("move_end")
+        assertTrue("playing alone still counts on the board", v.family.status("a").contains("B|Sara|2|"))
+        // two players side by side
+        v.handle("mv join Omar", "b"); v.handle("mv level 2", "b"); v.handle("mv start", "b"); tick(3100); shot("move_x")
+        for (step in 0 until 80) { tick(100); shot("move_x"); for (kind in 0..3) v.handle("mv act $kind", "a"); if (step % 4 == 0) v.handle("mv act 2", "b") }
+        shot("move_two"); assertEquals("2", st("b")[7]); assertFalse(v.handle("mv join x", "c").let { v.move.status("c").split("|")[6] == "1" })
+        v.handle("qz join 0 Sara", "a"); assertFalse(v.move.active)
+    }
+
     @Test fun spaceRace() {
         val act = org.robolectric.Robolectric.buildActivity(android.app.Activity::class.java).setup().get()
         v = DrawView(act); act.window.setContentView(v)
