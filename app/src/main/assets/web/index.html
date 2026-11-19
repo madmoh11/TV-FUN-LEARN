@@ -37,6 +37,8 @@ select{flex:1;min-width:0;font-size:16px;padding:12px 8px;border-radius:12px;bor
 .frow.al,.frow.ch{display:flex;gap:8px;align-items:center;margin:0 0 8px}.frow.al span:nth-child(2),.frow.ch span:first-child{flex:1;min-width:0;overflow-wrap:anywhere}.frow.ch span:nth-child(2){color:#ffd60a;font-weight:800}.frow.ch.done span:first-child{opacity:.55;text-decoration:line-through}.frow button{padding:8px 12px;font-size:15px;flex:none}.frow .fx{background:#3a2030;padding:8px 11px}#alq button.on{background:#34c759}
 #mmain{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px;margin-top:8px}#minfo{margin:0;min-height:54px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:20px;font-weight:700;color:#d4cfee;border-radius:14px;background:#1c1538;padding:8px 10px}
 #minfo.p1{background:#7a5a00;color:#fff}#minfo.p2{background:#1f5d36;color:#fff}#minfo.p3{background:#6a1f24;color:#fff}
+#msig{position:relative;height:34px;border-radius:10px;background:#1c1538;overflow:hidden;direction:ltr}#msig i{position:absolute;left:0;top:0;bottom:0;width:0;background:#34c759;opacity:.55;transition:width .08s}#msig i.over{background:#ffd60a;opacity:.8}
+#msig u{position:absolute;top:0;bottom:0;width:3px;background:#fff}#msig span{position:absolute;left:0;right:0;top:0;line-height:34px;text-align:center;font-size:14px;font-weight:600}
 #mpad{direction:ltr;flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:10px}#mpad button{font-size:min(15vw,11vh);font-weight:800;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px;transition:transform .08s,filter .08s}
 #mpad button small{font-size:16px;font-weight:600}#mpad [data-k="2"]{grid-column:1/3}#mpad [data-k="3"]{grid-column:1/3;grid-row:3}#mpad button.hit{transform:scale(.94);filter:brightness(1.6)}
 #mstart{padding:16px;font-size:20px;font-weight:700}
@@ -307,11 +309,12 @@ main{padding:10px 16px 20px;padding-inline-start:104px}
 <div class=copt id=mopt hidden>
 <div class=row2 style="margin-top:0"><span data-i=m_speed>x</span><select id=mlevel><option value=0 data-i=lvl_easy>x<option value=1 data-i=lvl_medium>x<option value=2 data-i=lvl_hard>x</select><select id=mlen><option value=60>1:00<option value=90>1:30<option value=120>2:00</select></div>
 <label class=ck><input type=checkbox id=msense checked><span data-i=m_sense>x</span></label>
-<div class=row2><span data-i=m_sens>x</span><input type=range id=msens min=3 max=14 step=0.5 value=7></div>
+<div class=row2><span data-i=m_sens>x</span><input type=range id=msens min=2 max=12 step=0.5 value=5></div>
 <label class=ck><input type=checkbox id=mswap><span data-i=m_swap>x</span></label>
 <button class=g id=mstop style="width:100%;margin-top:12px"><span data-i=end_all>x</span></button></div>
 <div id=mmain>
 <p id=minfo></p>
+<div id=msig><i></i><u></u><span id=msigt></span></div>
 <div id=mpad><button data-k=2 style="background:#e0a800;color:#111">▲<small data-i=m_jump>x</small></button><button data-k=0 style="background:#1f6fff">◀<small data-i=m_left>x</small></button><button data-k=1 style="background:#d9308a">▶<small data-i=m_right>x</small></button><button data-k=3 style="background:#e8651a">▼<small data-i=m_duck>x</small></button></div>
 <button class=go id=mstart><span data-i=z_start>x</span></button>
 </div></div>
@@ -701,19 +704,27 @@ E('fchamp').textContent=ch?[ch[0]&&T('f_c_week',ch[0]),ch[1]&&T('f_c_math',ch[1]
 setInterval(()=>{if(!E('t-fam').hidden||ftsecs>=0||(fpoll&&fpoll.state))fload()},1000);setInterval(fload,4000);fload();
 /* ---- rhythm workout: the phone in the hand is the motion sensor; the four pads do the same by touch ---- */
 let min=false,mt=0,mseq='',mgot=false,mG=[0,0,9.8],mlast=0,mst=0;const mios=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
-try{E('msens').value=localStorage.msens||7;E('mswap').checked=localStorage.mswap==='1'}catch(e){}
-E('msens').oninput=()=>{localStorage.msens=E('msens').value};E('mswap').onchange=()=>{localStorage.mswap=E('mswap').checked?1:0};
+try{E('msens').value=localStorage.msens2||5;E('mswap').checked=localStorage.mswap==='1'}catch(e){}
+E('msens').oninput=()=>{localStorage.msens2=E('msens').value;msigShow()};E('mswap').onchange=()=>{localStorage.mswap=E('mswap').checked?1:0};
 function mact(k){if(!min)return;send('mv act '+k);const b=E('mpad').querySelector('[data-k="'+k+'"]');b.classList.add('hit');setTimeout(()=>b.classList.remove('hit'),140)}
 /* The first strong push decides the move: along gravity it is a jump or a duck, sideways along the phone's width a step.
    The slowing down that follows points the other way, so the sensor then rests for a moment. */
 function mmotion(e){const g=e.accelerationIncludingGravity;if(!g||g.x==null)return;mgot=true;let a=e.acceleration;
 if(a&&a.x!=null)mG=[g.x-a.x,g.y-a.y,g.z-a.z];else{mG=[mG[0]*.9+g.x*.1,mG[1]*.9+g.y*.1,mG[2]*.9+g.z*.1];a={x:g.x-mG[0],y:g.y-mG[1],z:g.z-mG[2]}}
 const n=Math.hypot(mG[0],mG[1],mG[2])||1,u=[mG[0]/n,mG[1]/n,mG[2]/n],v=a.x*u[0]+a.y*u[1]+a.z*u[2],lx=(a.x-v*u[0])*(mios?-1:1)*(E('mswap').checked?-1:1);
-const now=performance.now();if(now-mlast<380||mst!==3)return;const av=Math.abs(v),al=Math.abs(lx);if(Math.max(av,al)<+E('msens').value)return;
+const av=Math.abs(v),al=Math.abs(lx),top=Math.max(av,al);mev++;if(top>mpeak)mpeak=top;
+const now=performance.now();if(now-mlast<380||mst<1||mst>3)return;if(top<+E('msens').value)return;
 mlast=now;mact(av>=al?(v>0?2:3):(lx>0?1:0))}
+/* What the sensor feels, drawn as a bar with the push that counts as a move marked on it, so a player can see it is alive. */
+let mev=0,mpeak=0,mevSeen=0,mquiet=0;const MSCALE=14;
+function msigShow(){const bar=E('msig').firstChild,on=E('msense').checked;E('msig').children[1].style.left=Math.min(100,E('msens').value*100/MSCALE)+'%';
+if(mev!==mevSeen){mevSeen=mev;mquiet=0}else mquiet++;const alive=on&&mgot&&mquiet<12;
+bar.style.width=(alive?Math.min(100,mpeak*100/MSCALE):0)+'%';bar.className=mpeak>=+E('msens').value?'over':'';mpeak*=.6;
+E('msigt').textContent=!on?T('m_sensor_unused'):alive?T('m_sensor_on'):!window.isSecureContext?T('m_sensor_link'):T('m_sensor_off')}
+setInterval(()=>{if(min)msigShow()},120);
 async function msenseOn(){removeEventListener('devicemotion',mmotion);if(!E('msense').checked)return;
 try{if(window.DeviceMotionEvent&&DeviceMotionEvent.requestPermission)await DeviceMotionEvent.requestPermission()}catch(e){}
-mgot=false;addEventListener('devicemotion',mmotion);setTimeout(()=>{if(min&&!mgot&&E('msense').checked)E('minfo').textContent=T('m_no_motion')},1800)}
+mgot=false;mev=0;addEventListener('devicemotion',mmotion)}
 E('msense').onchange=msenseOn;
 E('mpad').querySelectorAll('button').forEach(b=>b.onpointerdown=e=>{e.preventDefault();mact(+b.dataset.k)});
 E('mjoin').onclick=()=>{if(gside>=0){send('y leave');gout()}if(hside>=0){send('h leave');hout()}if(jside>=0){send('j leave');jout()}if(kside>=0){send('tug leave');kout()}if(qin){send('sr leave');qout()}

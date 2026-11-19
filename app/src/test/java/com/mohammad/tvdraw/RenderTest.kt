@@ -349,6 +349,8 @@ class RenderTest {
         fill()
         fun st(cid: String) = v.move.status(cid).split("|")
         v.handle("nm Sara", "a"); v.handle("mv join Sara", "a"); shot("move_lobby"); assertEquals("1", st("a")[0]); assertEquals("1", st("a")[7])
+        for (kind in 0..3) { v.handle("mv act $kind", "a"); tick(MoveGame.MOVE_MS / 2); shot("move_try$kind"); tick(MoveGame.MOVE_MS) }      // the figure copies moves before the round too
+        v.handle("mv act 2", "zz"); assertEquals("moves in the lobby score nothing", "0", st("a")[9])
         v.handle("mv level 1", "a"); v.handle("mv start", "a"); tick(1500); shot("move_count"); tick(1600); shot("move_go"); assertEquals("3", st("a")[0])
         // play blind: try every move a few times a second, as a body that follows the track would
         var hits = 0

@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.15
+
+- Move to the beat: a figure now stands on the track and copies every move the phone sends (step, jump, squat), before
+  the round as well, so you can see that your moves arrive.
+- The phone shows what the motion sensor feels as a live bar, and says plainly when there is no signal. The sensor
+  needs a lighter push by default and also works before the round starts.
+
 ## 3.14
 
 - New game: **Move to the beat**, a workout on the beat for one or two players. Moves run towards you on a track: step

@@ -10,7 +10,7 @@ import kotlin.math.sin
 class MoveGame(private val view: View) {
     private fun s(id: Int, vararg a: Any) = view.context.str(id, *a)
     companion object { const val OFF = 0; const val LOBBY = 1; const val COUNT = 2; const val PLAY = 3; const val END = 5
-        const val GONE_MS = 8000L; const val LAG_MS = 60L          // a move reaches the TV about this long after the body made it
+        const val GONE_MS = 8000L; const val MOVE_MS = 460L; const val LAG_MS = 60L          // a move reaches the TV about this long after the body made it
         val TRAVEL = longArrayOf(2400, 2100, 1800)                // how long a move is on its way, per level
         val TINT = intArrayOf(0xFF2F80FF.toInt(), 0xFFFF4FA3.toInt(), 0xFFFFD60A.toInt(), 0xFFFF7A1A.toInt())   // left, right, jump, duck
         val NAMES = intArrayOf(R.string.mv_left, R.string.mv_right, R.string.mv_jump, R.string.mv_duck) }
@@ -20,9 +20,10 @@ class MoveGame(private val view: View) {
     private var state = OFF
     private var stateAt = 0L; private var countShown = -1; private var loops = -1
     private val seen = java.util.concurrent.ConcurrentHashMap<String, Long>()
+    private val moved = HashMap<String, LongArray>()          // the last move each player made and when, for the figure on the track
     val active get() = state != OFF
 
-    fun stopNow() { state = OFF; core.players.clear(); seen.clear() }
+    fun stopNow() { state = OFF; core.players.clear(); seen.clear(); moved.clear() }
     private fun clock(now: Long) = now - stateAt
 
     /** state|level|length|seconds left|score|combo|in game|players|my place at the end|judgement number|last judgement|best streak|multiplier */
@@ -44,8 +45,10 @@ class MoveGame(private val view: View) {
             "start" -> if (idle && core.players.isNotEmpty()) { core.begin(); state = COUNT; stateAt = now; countShown = -1 }
             "level" -> if (idle) core.level = pp[2].toInt().coerceIn(0, 2)
             "len" -> if (idle) core.seconds = pp[2].toInt().let { if (it == 90 || it == 120) it else 60 }
-            "act" -> if (state == PLAY) when (core.act(cid, pp[2].toInt().coerceIn(0, 3), clock(now) - LAG_MS)) {
-                MoveCore.PERFECT -> sfx?.play("blip", 0.9f); MoveCore.GOOD -> sfx?.play("blip", 0.5f) }
+            "act" -> if (core.players.containsKey(cid)) { val kind = pp[2].toInt().coerceIn(0, 3)
+                moved[cid] = longArrayOf(kind.toLong(), now)                  // the figure always answers, so the player sees the move arrived
+                if (state == PLAY) when (core.act(cid, kind, clock(now) - LAG_MS)) {
+                    MoveCore.PERFECT -> sfx?.play("blip", 0.9f); MoveCore.GOOD -> sfx?.play("blip", 0.5f) } }
             "stop" -> stopNow()
         }
         view.invalidate()
@@ -141,6 +144,46 @@ class MoveGame(private val view: View) {
         }
     }
 
+    /**
+     * The player's figure standing on the line: it steps aside, jumps or squats with every move the phone sends,
+     * and bobs on the beat while it waits. Feet at x, ground; tall is its height.
+     */
+    private fun figure(cv: Canvas, x: Float, ground: Float, tall: Float, side: Float, cid: String, now: Long, color: Int, bob: Float) {
+        val m = moved[cid]; val age = if (m == null) 9999L else now - m[1]; val kind = if (m == null || age > MOVE_MS) -1 else m[0].toInt()
+        val bell = if (kind < 0) 0f else sin(Math.PI * age / MOVE_MS).toFloat()
+        val shift = when (kind) { MoveCore.LEFT -> -side * bell; MoveCore.RIGHT -> side * bell; else -> 0f }
+        val up = if (kind == MoveCore.JUMP) 0.42f * tall * bell else 0f
+        val squat = if (kind == MoveCore.DUCK) bell else if (kind == MoveCore.JUMP) 0.25f * (1f - bell) * (if (age < MOVE_MS / 2) 1f else 0f) else 0.04f * bob
+        val cx = x + shift; val gy = ground - up
+        val hip = gy - tall * (0.46f - 0.2f * squat); val sh = hip - tall * (0.3f - 0.05f * squat); val head = sh - tall * 0.13f
+        val lean = when (kind) { MoveCore.LEFT -> -0.06f * tall * bell; MoveCore.RIGHT -> 0.06f * tall * bell; else -> 0f }
+        // shadow on the track: it stays down when the figure jumps
+        p.style = Paint.Style.FILL; p.color = Color.argb((110 - 60 * (up / (0.42f * tall + 1f))).toInt(), 0, 0, 0)
+        cv.drawOval(RectF(cx - tall * 0.2f, ground - tall * 0.03f, cx + tall * 0.2f, ground + tall * 0.03f), p)
+        p.style = Paint.Style.STROKE; p.strokeCap = Paint.Cap.ROUND; p.strokeJoin = Paint.Join.ROUND
+        fun limb(x0: Float, y0: Float, x1: Float, y1: Float, x2: Float, y2: Float, wd: Float, c: Int) {
+            p.color = c; p.strokeWidth = wd; path.rewind(); path.moveTo(x0, y0); path.lineTo(x1, y1); path.lineTo(x2, y2); cv.drawPath(path, p) }
+        for (pass in 0..1) { val c = if (pass == 0) Ui.INK else color; val fat = if (pass == 0) tall * 0.03f else 0f      // a dark edge first, then the colour
+            for (sd in intArrayOf(-1, 1)) {
+                val stance = tall * (0.09f + 0.07f * squat + (if (kind == MoveCore.LEFT || kind == MoveCore.RIGHT) 0.06f * bell else 0f))
+                val fx = cx + sd * stance; val fy = gy - (if (kind == MoveCore.JUMP) tall * 0.06f * bell else 0f)
+                limb(cx + lean + sd * tall * 0.05f, hip, (cx + lean + fx) / 2 + sd * tall * (0.03f + 0.13f * squat), (hip + fy) / 2, fx, fy, tall * 0.085f + fat, c)
+                val sx = cx + lean + sd * tall * 0.11f
+                val (ex, ey, hx, hy) = when (kind) {
+                    MoveCore.JUMP -> floatArrayOf(sx + sd * tall * 0.12f * bell, sh - tall * 0.1f * bell + tall * 0.14f * (1f - bell), sx + sd * tall * 0.16f, sh - tall * 0.3f * bell + tall * 0.28f * (1f - bell))
+                    MoveCore.DUCK -> floatArrayOf(sx + sd * tall * 0.12f, sh + tall * 0.1f, sx + sd * tall * (0.1f + 0.1f * bell), sh + tall * (0.26f - 0.16f * bell))
+                    MoveCore.LEFT, MoveCore.RIGHT -> { val out = if ((kind == MoveCore.LEFT) == (sd < 0)) bell else 0f
+                        floatArrayOf(sx + sd * tall * (0.07f + 0.1f * out), sh + tall * (0.14f - 0.1f * out), sx + sd * tall * (0.1f + 0.2f * out), sh + tall * (0.28f - 0.26f * out)) }
+                    else -> floatArrayOf(sx + sd * tall * 0.07f, sh + tall * 0.14f, sx + sd * tall * 0.1f, sh + tall * (0.28f - 0.02f * bob))
+                }.let { a -> listOf(a[0], a[1], a[2], a[3]) }
+                limb(sx, sh, ex, ey, hx, hy, tall * 0.065f + fat, c)
+            }
+            limb(cx + lean, sh, cx + lean, (sh + hip) / 2, cx + lean, hip, tall * 0.2f + fat, c)                           // the trunk
+            p.style = Paint.Style.FILL; p.color = c; cv.drawCircle(cx + lean, head, tall * 0.085f + fat / 2, p); p.style = Paint.Style.STROKE
+        }
+        p.style = Paint.Style.FILL
+    }
+
     private fun hud(cv: Canvas, tr: Track, pl: MoveCore.Player, t: Long, k: Float, wide: Float) {
         fit(cv, pl.name.ifEmpty { "★" }, tr.cx, tr.top - 96f * k, 44f * k, wide, Color.WHITE, true)
         text(cv, "" + pl.score, tr.cx, tr.top - 30f * k, 70f * k, Ui.GOLD, true)
@@ -149,7 +192,7 @@ class MoveGame(private val view: View) {
         val age = t - pl.lastAt
         if (pl.lastJudge != 0 && age in 0..650) { val f = age / 650f
             val (word, col) = when (pl.lastJudge) { MoveCore.PERFECT -> s(R.string.mv_perfect) to Ui.GOLD; MoveCore.GOOD -> s(R.string.mv_good) to Color.WHITE; else -> s(R.string.mv_miss) to Color.rgb(255, 90, 80) }
-            p.alpha = 255; text(cv, word, tr.cx, tr.line - 60f * k - 70f * k * f, (76f + 30f * (1f - f)) * k, Color.argb((255 * (1f - f * f)).toInt(), Color.red(col), Color.green(col), Color.blue(col)), f < 0.5f) }
+            p.alpha = 255; text(cv, word, tr.cx, tr.line - 330f * k - 50f * k * f, (70f + 30f * (1f - f)) * k, Color.argb((255 * (1f - f * f)).toInt(), Color.red(col), Color.green(col), Color.blue(col)), f < 0.5f) }
     }
 
     fun draw(cv: Canvas, now: Long): Boolean {
@@ -165,7 +208,9 @@ class MoveGame(private val view: View) {
                 list.forEachIndexed { i, pl ->
                     val tr = Track(if (two) w * (0.27f + 0.46f * i) else w / 2, (if (two) 330f else 440f) * k, h * 0.27f, h * 0.8f)
                     drawTrack(cv, tr, pl, t, k, state == PLAY)
-                    if (state != LOBBY) hud(cv, tr, pl, t, k, (if (two) 600f else 800f) * k)
+                    val bob = if (state == PLAY) sin(Math.PI * 2 * (t % core.beatMs) / core.beatMs).toFloat() else 0f
+                    figure(cv, tr.cx, tr.y(1f) + 8f * k, (if (two) 250f else 300f) * k, tr.half * 2f / 3, pl.cid, now, if (i == 0) Color.rgb(90, 220, 255) else Color.rgb(255, 150, 60), bob)
+                    hud(cv, tr, pl, t, k, (if (two) 600f else 800f) * k)
                 }
             }
             when (state) {
@@ -175,8 +220,12 @@ class MoveGame(private val view: View) {
                     for (kind in 0..3) { val x = w * (0.2f + 0.2f * kind)                    // the four moves and what they look like
                         Ui.panel(cv, RectF(x - 150f * k, h * 0.34f, x + 150f * k, h * 0.34f + 190f * k), k)
                         chevron(cv, kind, x, h * 0.34f + 70f * k, 34f * k, TINT[kind]); text(cv, s(NAMES[kind]), x, h * 0.34f + 160f * k, 40f * k, Color.WHITE) }
-                    text(cv, s(R.string.mv_setup, core.bpm, core.seconds, list.size), w / 2, h * 0.6f, 38f * k, Color.argb(255, 200, 190, 235))
-                    Ui.pill(cv, view, s(R.string.press_start), w / 2, h * 0.7f, 50f * k, now)
+                    text(cv, s(R.string.mv_setup, core.bpm, core.seconds, list.size), w / 2, h * 0.57f, 36f * k, Color.argb(255, 200, 190, 235))
+                    fit(cv, s(R.string.mv_try), w / 2, h * 0.64f, 40f * k, w * 0.9f, Ui.GOLD, true)                      // practise before the round
+                    list.forEachIndexed { i, pl -> val x = if (two) w * (0.36f + 0.28f * i) else w / 2
+                        figure(cv, x, h * 0.955f, 250f * k, 190f * k, pl.cid, now, if (i == 0) Color.rgb(90, 220, 255) else Color.rgb(255, 150, 60), 0f)
+                        fit(cv, pl.name, x, h * 0.995f, 30f * k, 300f * k, Color.WHITE) }
+                    Ui.pill(cv, view, s(R.string.press_start), w * 0.82f, h * 0.9f, 40f * k, now)
                 }
                 COUNT -> { val el = now - stateAt; Ui.countdown(cv, view, 3 - (el / 1000).toInt(), (el % 1000) / 1000f, w / 2, h * 0.5f, k) }
                 PLAY -> {                                                       // how much of the round is left
