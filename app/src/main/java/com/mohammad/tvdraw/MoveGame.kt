@@ -227,7 +227,8 @@ class MoveGame(private val view: View) {
                         fit(cv, pl.name, x, h * 0.995f, 30f * k, 300f * k, Color.WHITE) }
                     Ui.pill(cv, view, s(R.string.press_start), w * 0.82f, h * 0.9f, 40f * k, now)
                 }
-                COUNT -> { val el = now - stateAt; Ui.countdown(cv, view, 3 - (el / 1000).toInt(), (el % 1000) / 1000f, w / 2, h * 0.5f, k) }
+                COUNT -> { val el = now - stateAt; Ui.countdown(cv, view, 3 - (el / 1000).toInt(), (el % 1000) / 1000f, w / 2, h * 0.46f, k)
+                    fit(cv, s(R.string.mv_still), w / 2, 120f * k, 48f * k, w * 0.9f, Ui.GOLD, true) }
                 PLAY -> {                                                       // how much of the round is left
                     val f = (t.toFloat() / (core.seconds * 1000f)).coerceIn(0f, 1f)
                     p.style = Paint.Style.FILL; p.color = Color.argb(255, 24, 14, 56); cv.drawRoundRect(RectF(w * 0.3f, 40f * k, w * 0.7f, 56f * k), 8f * k, 8f * k, p)

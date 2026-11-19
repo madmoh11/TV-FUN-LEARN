@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.16
+
+- Move to the beat: the motion sensor can be set up for the way you hold the phone. Stand still, take one step to the
+  right, and the phone learns where your right is. The sensor also resets itself during the 3-2-1 countdown.
+
 ## 3.15
 
 - Move to the beat: a figure now stands on the track and copies every move the phone sends (step, jump, squat), before

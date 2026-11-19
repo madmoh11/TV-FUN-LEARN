@@ -112,6 +112,7 @@
     <string name="mv_title">🕺 Move to the beat</string>
     <string name="mv_how">Hold your phone and move it with your body when a move reaches the gold line</string>
     <string name="mv_try">Try the moves now: the figure below copies you</string>
+    <string name="mv_still">Stand still for a moment: the sensor is being reset</string>
     <string name="mv_left">Step left</string>
     <string name="mv_right">Step right</string>
     <string name="mv_jump">Jump</string>

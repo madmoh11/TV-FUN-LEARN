@@ -41,7 +41,7 @@ select{flex:1;min-width:0;font-size:16px;padding:12px 8px;border-radius:12px;bor
 #msig u{position:absolute;top:0;bottom:0;width:3px;background:#fff}#msig span{position:absolute;left:0;right:0;top:0;line-height:34px;text-align:center;font-size:14px;font-weight:600}
 #mpad{direction:ltr;flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:10px}#mpad button{font-size:min(15vw,11vh);font-weight:800;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px;transition:transform .08s,filter .08s}
 #mpad button small{font-size:16px;font-weight:600}#mpad [data-k="2"]{grid-column:1/3}#mpad [data-k="3"]{grid-column:1/3;grid-row:3}#mpad button.hit{transform:scale(.94);filter:brightness(1.6)}
-#mstart{padding:16px;font-size:20px;font-weight:700}
+#mstart{padding:16px;font-size:20px;font-weight:700}#mcal{padding:12px;font-size:16px}#mcal.on{background:#ffd60a;color:#111}
 @media (orientation:landscape){#mmain{grid-column:1/3;grid-row:3}#mpad{grid-template-columns:1fr 1fr 1fr 1fr;grid-template-rows:1fr}#mpad [data-k="2"],#mpad [data-k="3"]{grid-column:auto;grid-row:auto}}
 #zmain{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px;margin-top:8px}#zside{flex:none;display:flex;flex-direction:column;gap:10px}
 #zq{flex:1;min-height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-radius:18px;background:#1c1538;padding:6px 12px;font-size:min(10vw,9vh);font-weight:800;text-align:center;line-height:1.25}
@@ -315,6 +315,7 @@ main{padding:10px 16px 20px;padding-inline-start:104px}
 <div id=mmain>
 <p id=minfo></p>
 <div id=msig><i></i><u></u><span id=msigt></span></div>
+<button class=g id=mcal><span data-i=m_cal>x</span></button>
 <div id=mpad><button data-k=2 style="background:#e0a800;color:#111">▲<small data-i=m_jump>x</small></button><button data-k=0 style="background:#1f6fff">◀<small data-i=m_left>x</small></button><button data-k=1 style="background:#d9308a">▶<small data-i=m_right>x</small></button><button data-k=3 style="background:#e8651a">▼<small data-i=m_duck>x</small></button></div>
 <button class=go id=mstart><span data-i=z_start>x</span></button>
 </div></div>
@@ -709,11 +710,21 @@ E('msens').oninput=()=>{localStorage.msens2=E('msens').value;msigShow()};E('mswa
 function mact(k){if(!min)return;send('mv act '+k);const b=E('mpad').querySelector('[data-k="'+k+'"]');b.classList.add('hit');setTimeout(()=>b.classList.remove('hit'),140)}
 /* The first strong push decides the move: along gravity it is a jump or a duck, sideways along the phone's width a step.
    The slowing down that follows points the other way, so the sensor then rests for a moment. */
+/* Calibration. However the phone is held, "up" is read from gravity; "right" is learnt once from a step to the right
+   (mR, a direction in the phone's own axes). A reset forgets the gravity estimate and rests the sensor for a moment. */
+let mR=null,mcal=0,mcalT=0,mzero=false;try{mR=JSON.parse(localStorage.mright||'null')}catch(e){}
+function mreset(){mzero=true;mlast=performance.now()+350;mpeak=0}
+function mcalEnd(ok){mcal=0;clearTimeout(mcalT);E('mcal').classList.remove('on');E('minfo').className=ok?'p2':'';E('minfo').textContent=ok?T('m_cal_ok'):T('m_cal_fail')}
+function mcalStart(){if(!E('msense').checked||!mgot){E('minfo').textContent=T('m_sensor_off');return}mreset();mcal=1;E('mcal').classList.add('on');E('minfo').className='';E('minfo').textContent=T('m_cal1');
+clearTimeout(mcalT);mcalT=setTimeout(()=>{if(mcal!==1)return;mcal=2;E('minfo').className='p1';E('minfo').textContent=T('m_cal2');mcalT=setTimeout(()=>{if(mcal)mcalEnd(false)},9000)},1300)}
 function mmotion(e){const g=e.accelerationIncludingGravity;if(!g||g.x==null)return;mgot=true;let a=e.acceleration;
+if(mzero){mzero=false;mG=[g.x,g.y,g.z]}
 if(a&&a.x!=null)mG=[g.x-a.x,g.y-a.y,g.z-a.z];else{mG=[mG[0]*.9+g.x*.1,mG[1]*.9+g.y*.1,mG[2]*.9+g.z*.1];a={x:g.x-mG[0],y:g.y-mG[1],z:g.z-mG[2]}}
-const n=Math.hypot(mG[0],mG[1],mG[2])||1,u=[mG[0]/n,mG[1]/n,mG[2]/n],v=a.x*u[0]+a.y*u[1]+a.z*u[2],lx=(a.x-v*u[0])*(mios?-1:1)*(E('mswap').checked?-1:1);
-const av=Math.abs(v),al=Math.abs(lx),top=Math.max(av,al);mev++;if(top>mpeak)mpeak=top;
-const now=performance.now();if(now-mlast<380||mst<1||mst>3)return;if(top<+E('msens').value)return;
+const n=Math.hypot(mG[0],mG[1],mG[2])||1,u=[mG[0]/n,mG[1]/n,mG[2]/n],v=a.x*u[0]+a.y*u[1]+a.z*u[2],h=[a.x-v*u[0],a.y-v*u[1],a.z-v*u[2]],hl=Math.hypot(h[0],h[1],h[2]);
+const now=performance.now(),need=+E('msens').value;mev++;
+if(mcal){if(hl>mpeak)mpeak=hl;if(mcal===2&&now>mlast&&hl>=need&&hl>Math.abs(v)){mR=[h[0]/hl,h[1]/hl,h[2]/hl];try{localStorage.mright=JSON.stringify(mR)}catch(e){}E('mswap').checked=false;localStorage.mswap=0;mlast=now;mcalEnd(true);mact(1)}return}
+const lx=(mR?h[0]*mR[0]+h[1]*mR[1]+h[2]*mR[2]:h[0]*(mios?-1:1))*(E('mswap').checked?-1:1),av=Math.abs(v),al=Math.abs(lx),top=Math.max(av,al);if(top>mpeak)mpeak=top;
+if(now-mlast<380||mst<1||mst>3)return;if(top<need)return;
 mlast=now;mact(av>=al?(v>0?2:3):(lx>0?1:0))}
 /* What the sensor feels, drawn as a bar with the push that counts as a move marked on it, so a player can see it is alive. */
 let mev=0,mpeak=0,mevSeen=0,mquiet=0;const MSCALE=14;
@@ -725,13 +736,13 @@ setInterval(()=>{if(min)msigShow()},120);
 async function msenseOn(){removeEventListener('devicemotion',mmotion);if(!E('msense').checked)return;
 try{if(window.DeviceMotionEvent&&DeviceMotionEvent.requestPermission)await DeviceMotionEvent.requestPermission()}catch(e){}
 mgot=false;mev=0;addEventListener('devicemotion',mmotion)}
-E('msense').onchange=msenseOn;
+E('msense').onchange=msenseOn;E('mcal').onclick=mcalStart;
 E('mpad').querySelectorAll('button').forEach(b=>b.onpointerdown=e=>{e.preventDefault();mact(+b.dataset.k)});
 E('mjoin').onclick=()=>{if(gside>=0){send('y leave');gout()}if(hside>=0){send('h leave');hout()}if(jside>=0){send('j leave');jout()}if(kside>=0){send('tug leave');kout()}if(qin){send('sr leave');qout()}
 fs(true);msenseOn();send('mv join '+(enc(nm.value.trim())||'%20'));if(!mt)mt=setInterval(mpoll,250);setTimeout(mpoll,150)};
 E('mlevel').onchange=()=>send('mv level '+E('mlevel').value);E('mlen').onchange=()=>send('mv len '+E('mlen').value);
 E('mstart').onclick=()=>send('mv start');E('mstop').onclick=()=>{send('mv stop');mout()};E('mleave').onclick=()=>{send('mv leave');mout()};
-function mout(){fs(false);E('mopt').hidden=true;min=false;clearInterval(mt);mt=0;mst=0;mseq='';E('mplay').hidden=true;removeEventListener('devicemotion',mmotion)}
+function mout(){if(mcal){mcal=0;clearTimeout(mcalT);E('mcal').classList.remove('on')}fs(false);E('mopt').hidden=true;min=false;clearInterval(mt);mt=0;mst=0;mseq='';E('mplay').hidden=true;removeEventListener('devicemotion',mmotion)}
 function mpoll(){fetch('/m?c='+CID).then(r=>r.text()).then(t=>{const a=t.split('|');if(a.length<13)return;const st=+a[0];
 if(a[6]!=='1'){if(min||st===0){mout();return}if(+a[7]>=2)E('mh').textContent=T('k_full');return}
 if(!min){min=true;E('mplay').hidden=false;document.body.classList.add('playing')}
@@ -739,7 +750,8 @@ if(!min){min=true;E('mplay').hidden=false;document.body.classList.add('playing')
 E('mhud').textContent='⭐ '+a[4]+(+a[5]>1?'  •  🔥 '+a[5]:'')+(+a[12]>1?'  ×'+a[12]:'')+(st===3?'  •  ⏱ '+a[3]:'');E('mstart').hidden=!(st===1||st===5);
 const info=E('minfo');if(st===3&&a[9]!==mseq&&mseq!==''){const j=+a[10];info.className='p'+j;info.textContent=j===1?T('m_perfect'):j===2?T('m_good'):T('m_miss');if(navigator.vibrate)navigator.vibrate(j===3?120:25)}
 mseq=st===3?a[9]:'';
-if(st!==mst){mst=st;info.className='';if(st===1)info.textContent=mgot||!E('msense').checked?T('m_wait'):info.textContent||T('m_wait');else if(st===2)info.textContent=T('st_ready');else if(st===3)info.textContent=T('m_go');
+E('mcal').hidden=st!==1||!E('msense').checked;
+if(st!==mst){mst=st;if(mcal&&st!==1)mcalEnd(false);if(st===2||st===3)mreset();info.className='';if(st===1)info.textContent=mgot||!E('msense').checked?T('m_wait'):info.textContent||T('m_wait');else if(st===2)info.textContent=T('st_ready');else if(st===3)info.textContent=T('m_go');
 else if(st===5){info.textContent=+a[7]>1&&a[8]==='1'?T('you_win'):T('m_end',a[4],a[11]);if(navigator.vibrate)navigator.vibrate(200)}}}).catch(()=>{})}
 /* ---- room quiz: flags, capitals, spelling. The TV asks, every phone answers. ---- */
 let zin=false,zt=0,zkey='',zround='',zmy=-1;const zab=[...E('zans').children];
