@@ -25,6 +25,7 @@ class DrawView(c: Context) : View(c) {
     val home = Home(this, family)
     val quiz = QuizGame(this)
     val move = MoveGame(this)
+    val hifz = Hifz(this)
     init { val give: (List<GameResult>) -> Unit = { family.award(it) }; game.onEnd = give; hockey.onEnd = give; snake.onEnd = give; tug.onEnd = give; space.onEnd = give; quiz.onEnd = give; move.onEnd = give; quiz.onBonus = { n, pts -> family.bonus(n, pts) } }
     val cam = LiveCam(this)
 
@@ -425,6 +426,7 @@ class DrawView(c: Context) : View(c) {
                 "sr" -> { if (p[1] == "join") { if (game.active) game.stopNow(); if (snake.active) snake.stopNow(); if (hockey.active) hockey.stopNow(); if (tug.active) tug.stopNow() }; space.command(p, cid) }
                 "qz" -> { if (p[1] == "join") { if (game.active) game.stopNow(); if (snake.active) snake.stopNow(); if (hockey.active) hockey.stopNow(); if (tug.active) tug.stopNow(); if (space.active) space.stopNow() }; quiz.command(p, cid) }
                 "mv" -> { if (p[1] == "join") { if (game.active) game.stopNow(); if (snake.active) snake.stopNow(); if (hockey.active) hockey.stopNow(); if (tug.active) tug.stopNow(); if (space.active) space.stopNow() }; move.command(p, cid) }
+                "hz" -> hifz.command(p, cid)
                 "nm", "poll", "tm", "hof" -> family.command(p, cid)
                 "al", "ch" -> home.command(p, cid)
                 "c" -> ink.clearAll()
@@ -458,7 +460,7 @@ class DrawView(c: Context) : View(c) {
 
     override fun onDraw(cv: Canvas) {
         val now = SystemClock.uptimeMillis()
-        val gaming = game.draw(cv, now) or hockey.draw(cv, now) or snake.draw(cv, now) or tug.draw(cv, now) or space.draw(cv, now) or quiz.draw(cv, now) or move.draw(cv, now)
+        val gaming = game.draw(cv, now) or hockey.draw(cv, now) or snake.draw(cv, now) or tug.draw(cv, now) or space.draw(cv, now) or quiz.draw(cv, now) or move.draw(cv, now) or hifz.draw(cv, now)
         ink.draw(cv)
         val s = sc()
         val it = floats.iterator()
@@ -531,7 +533,7 @@ class OverlayService : Service() {
             PixelFormat.TRANSLUCENT)
         getSystemService(WindowManager::class.java).addView(view, lp)
 
-        val sfx = Sfx(this); view.sfx = sfx; view.game.sfx = sfx; view.hockey.sfx = sfx; view.snake.sfx = sfx; view.tug.sfx = sfx; view.family.sfx = sfx; view.home.sfx = sfx; view.home.start(); view.quiz.sfx = sfx; view.move.sfx = sfx; view.quiz.speak = { say(it) }; view.space.sfx = sfx; view.space.speak = { say(it) }
+        val sfx = Sfx(this); view.sfx = sfx; view.game.sfx = sfx; view.hockey.sfx = sfx; view.snake.sfx = sfx; view.tug.sfx = sfx; view.family.sfx = sfx; view.home.sfx = sfx; view.home.start(); view.quiz.sfx = sfx; view.hifz.sfx = sfx; view.hifz.play = { url, done -> playUrl(url, done) }; view.hifz.stop = { stopUrl() }; view.move.sfx = sfx; view.quiz.speak = { say(it) }; view.space.sfx = sfx; view.space.speak = { say(it) }
         val prayer = PrayerAlerts(this, view, sfx); view.onPrayerCmd = { prayer.command(it) }; prayer.start()
         thread {
             val server = Server({ page }, { words }, { font }, filesDir, { lines, cid -> ui.post { lines.forEach { view.handle(it, cid) }; view.invalidate() } }, { sfx.voice(it) },
@@ -553,6 +555,7 @@ class OverlayService : Service() {
                 { path -> if (path.startsWith("/p")) prayer.status()
                     else if (path.startsWith("/c")) view.cam.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/u")) view.family.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12)) + view.home.status()
+                    else if (path.startsWith("/y")) view.hifz.status()
                     else if (path.startsWith("/m")) view.move.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/n")) view.quiz.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/q")) view.space.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
@@ -587,8 +590,8 @@ class OverlayService : Service() {
     /** What lets a phone keep the page as an icon on its home screen. */
     private val webFiles = HashMap<String, ByteArray?>()
     private fun webFile(name: String): ByteArray? {
-        if (name != "manifest.json" && name != "icon-192.png" && name != "icon-512.png") return null
-        return synchronized(webFiles) { webFiles.getOrPut(name) { try { assets.open("web/$name").use { it.readBytes() } } catch (e: Throwable) { null } } }
+        val path = when (name) { "manifest.json", "icon-192.png", "icon-512.png" -> "web/$name"; "AmiriQuran.ttf" -> "fonts/$name"; "surahs.txt" -> "quran/$name"; else -> return null }
+        return synchronized(webFiles) { webFiles.getOrPut(name) { try { assets.open(path).use { it.readBytes() } } catch (e: Throwable) { null } } }
     }
 
     /** The vocabulary bank of the space race, served to the phones as it is. */
@@ -603,6 +606,22 @@ class OverlayService : Service() {
                 if (status == android.speech.tts.TextToSpeech.SUCCESS) { tts?.language = java.util.Locale.US; ttsReady = true; tts?.speak(text, android.speech.tts.TextToSpeech.QUEUE_ADD, null, "w") } }
             else if (ttsReady) tts?.speak(text, android.speech.tts.TextToSpeech.QUEUE_ADD, null, "w")
         } catch (e: Throwable) { }
+    }
+
+    // One recording from the internet at a time: the recitation of an ayah.
+    private var media: android.media.MediaPlayer? = null
+    private fun stopUrl() { try { media?.release() } catch (e: Throwable) { }; media = null }
+    private fun playUrl(url: String, done: () -> Unit) {
+        stopUrl()
+        try {
+            val m = android.media.MediaPlayer(); media = m
+            m.setAudioAttributes(android.media.AudioAttributes.Builder().setUsage(android.media.AudioAttributes.USAGE_MEDIA).setContentType(android.media.AudioAttributes.CONTENT_TYPE_SPEECH).build())
+            m.setDataSource(url)
+            m.setOnPreparedListener { try { it.start() } catch (e: Throwable) { ui.post(done) } }
+            m.setOnCompletionListener { ui.post(done) }
+            m.setOnErrorListener { _, _, _ -> ui.post(done); true }
+            m.prepareAsync()
+        } catch (e: Throwable) { ui.post(done) }
     }
 
     private fun localIp(): String {

@@ -369,6 +369,37 @@ class RenderTest {
         v.handle("qz join 0 Sara", "a"); assertFalse(v.move.active)
     }
 
+    @Test fun hifz() {
+        val act = org.robolectric.Robolectric.buildActivity(android.app.Activity::class.java).setup().get()
+        act.getSharedPreferences("family", 0).edit().clear().commit()
+        v = DrawView(act); act.window.setContentView(v)
+        fill = { v.measure(View.MeasureSpec.makeMeasureSpec(1920, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(1080, View.MeasureSpec.EXACTLY)); v.layout(0, 0, 1920, 1080) }
+        fill()
+        val played = ArrayList<String>(); var done: (() -> Unit)? = null
+        v.hifz.play = { url, d -> played.add(url.substringAfterLast("/")); done = d }; v.hifz.stop = { done = null }
+        fun st() = v.hifz.status().split("\n")
+        fun head() = st()[0].split("|")
+        v.handle("hz who Khaled", "a"); v.handle("hz juz 30 1", "a"); v.handle("hz juz 29 1", "a"); v.handle("hz juz 29 0", "a")
+        assertTrue(st().contains("J|30")); assertEquals(5, st().count { it.startsWith("D|") }); assertTrue(st().first { it.startsWith("D|") }.startsWith("D|114:1-6|114|1|6|0|-999"))
+        // listen: the basmala first, then the ayah; words hide step by step
+        v.handle("hz listen 112 1 4", "a"); assertEquals(listOf("001001.mp3"), played); assertEquals("1", head()[9]); shot("hifz_listen")
+        done?.invoke(); assertEquals("112001.mp3", played.last()); done?.invoke(); assertEquals("0", head()[9])
+        v.handle("hz hide 1", "a"); shot("hifz_hide1"); v.handle("hz hide 3", "a"); shot("hifz_hide3")
+        v.handle("hz next", "a"); assertEquals("112002.mp3", played.last()); assertEquals("2", head()[4]); v.handle("hz reciter 1", "a"); assertEquals("112002.mp3", played.last())
+        v.handle("hz hide 0", "a"); v.handle("hz listen 2 255 255", "a"); shot("hifz_long"); assertEquals("002255.mp3", played.last())
+        v.handle("hz listen 2 282 282", "a"); shot("hifz_longest")
+        // test: the text is hidden, a grown-up marks each ayah
+        v.handle("hz part 112:1-4", "a"); assertEquals("2", head()[0]); shot("hifz_test"); assertTrue(st().any { it.startsWith("X|") })
+        v.handle("hz mark 1", "a"); v.handle("hz mark 0", "a"); shot("hifz_wrong"); v.handle("hz mark 1", "a"); v.handle("hz mark 1", "a")
+        assertEquals("3", head()[0]); assertEquals("1", head()[8]); shot("hifz_again"); assertTrue(st().any { it == "R|1|4|0|1" })
+        v.handle("hz part 114:1-6", "a"); repeat(6) { v.handle("hz mark 1", "a") }; tick(1500); shot("hifz_result"); assertTrue(st().any { it == "R|0|6|1|1" })
+        assertEquals("1", head()[11]); assertEquals("2", head()[13]); assertEquals("Khaled", head()[14])
+        assertTrue("a recited part leaves today's portion", st().none { it.startsWith("D|114:") }); assertTrue(st().none { it.startsWith("D|112:") })
+        // another child has another plan, and it is all remembered
+        v.handle("hz who Sara", "a"); assertTrue(st().contains("J|")); v.handle("hz who khaled", "a"); assertTrue(st().contains("J|30"))
+        v.handle("hz close", "a"); assertFalse(v.hifz.active)
+    }
+
     @Test fun spaceRace() {
         val act = org.robolectric.Robolectric.buildActivity(android.app.Activity::class.java).setup().get()
         v = DrawView(act); act.window.setContentView(v)

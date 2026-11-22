@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.17
+
+- New: **The memoriser's journey**, for learning the Quran by heart.
+  - Listen and repeat: one ayah on the TV in mushaf script with Al-Husary's recitation, and its words hide step by
+    step until only the first is left.
+  - Recite from memory: the text is hidden on the TV while a grown-up follows it on the phone and marks each ayah.
+  - Today's portion: mark the juz already memorised and every part comes back for revision after 1, 3, 7, 14, 30 and
+    60 days; a part with mistakes comes back the next day. A streak counts the days in a row.
+  - The whole Quran is included (Tanzil Uthmani text, unchanged). The recitation is streamed, so the TV needs the
+    internet for it.
+
 ## 3.16
 
 - Move to the beat: the motion sensor can be set up for the way you hold the phone. Stand still, take one step to the

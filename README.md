@@ -44,6 +44,7 @@ and no account, and nothing leaves your home network.
 | ⏱️ **Family timer** | A countdown in the corner of the TV with a big alert when time is up. |
 | 📣 **Call the family** | "Dinner is ready", "Bedtime" or your own message on the TV with a chime, now or every day at a set time. |
 | ✅ **Kids' chores** | Chores with points: a finished chore adds to the family board and the TV celebrates. |
+| 📖 **The memoriser's journey** | Learn the Quran by heart: listen and repeat with Al-Husary while the words hide, recite from memory with a grown-up marking each ayah, and revise each part on the right day. |
 | 🔊 **Volume** | Turn the TV box volume up, down or mute it from your phone. |
 | 😈 **Pranks** | Cracked screen, a fly that walks around (any size, with a shadow), a person's shadow that walks past like in a cinema, a lion that jumps out of the screen, a fake shutdown message. |
 | 🕌 **Prayer alert** | A banner before each prayer, calculated on the device with no internet. |
