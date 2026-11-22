@@ -129,6 +129,7 @@
     <string name="hz_hide1">Some words hidden</string>
     <string name="hz_hide2">Most words hidden</string>
     <string name="hz_hide3">Only the first word</string>
+    <string name="hz_no_sound">The recitation could not be played. Check the TV\'s internet.</string>
     <string name="hz_auto">Repeating after the reciter</string>
     <string name="hz_ayah_of">Ayah %1$d of %2$d</string>
     <string name="hz_test">Recite from memory</string>

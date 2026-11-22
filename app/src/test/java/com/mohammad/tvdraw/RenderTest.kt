@@ -388,6 +388,10 @@ class RenderTest {
         v.handle("hz next", "a"); assertEquals("112002.mp3", played.last()); assertEquals("2", head()[4]); v.handle("hz reciter 1", "a"); assertEquals("112002.mp3", played.last())
         v.handle("hz hide 0", "a"); v.handle("hz listen 2 255 255", "a"); shot("hifz_long"); assertEquals("002255.mp3", played.last())
         v.handle("hz listen 2 282 282", "a"); shot("hifz_longest")
+        // a failed recitation says why, and a phone can take over the sound
+        v.hifz.audioError = "UnknownHostException: everyayah.com"; shot("hifz_error"); assertTrue(st().any { it.startsWith("E|UnknownHostException") }); assertTrue(st().contains("S|1"))
+        val before = played.size; v.handle("hz sound 0", "a"); v.handle("hz next", "a"); v.handle("hz say", "a"); assertEquals("the TV stays silent", before, played.size); assertTrue(st().contains("S|0")); assertEquals("0", head()[9])
+        v.handle("hz sound 1", "a"); v.handle("hz say", "a"); assertEquals(before + 1, played.size); v.hifz.audioError = ""
         // test: the text is hidden, a grown-up marks each ayah
         v.handle("hz part 112:1-4", "a"); assertEquals("2", head()[0]); shot("hifz_test"); assertTrue(st().any { it.startsWith("X|") })
         v.handle("hz mark 1", "a"); v.handle("hz mark 0", "a"); shot("hifz_wrong"); v.handle("hz mark 1", "a"); v.handle("hz mark 1", "a")

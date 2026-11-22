@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.19
+
+- The memoriser's journey: the recitation is now saved first and then played, which works on TV boxes whose player
+  cannot stream it; an ayah heard once plays again without the internet. When it still cannot be played, the TV and
+  the phone say why. A new option plays the recitation from the phone instead of the TV.
+
 ## 3.18
 
 - The memoriser's journey: a **Quran challenge**. The TV asks "which ayah comes next?" and "how does this ayah go

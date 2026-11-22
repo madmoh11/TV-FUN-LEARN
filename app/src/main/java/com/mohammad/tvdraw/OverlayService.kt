@@ -609,20 +609,40 @@ class OverlayService : Service() {
         } catch (e: Throwable) { }
     }
 
-    // One recording from the internet at a time: the recitation of an ayah.
+    // One recording from the internet at a time: the recitation of an ayah. It is first saved to the cache and then
+    // played from the file, which works on boxes whose player cannot stream, and lets a heard ayah play again offline.
     private var media: android.media.MediaPlayer? = null
-    private fun stopUrl() { try { media?.release() } catch (e: Throwable) { }; media = null }
+    private var mediaTurn = 0
+    private fun stopUrl() { mediaTurn++; try { media?.release() } catch (e: Throwable) { }; media = null }
     private fun playUrl(url: String, done: () -> Unit) {
-        stopUrl()
-        try {
-            val m = android.media.MediaPlayer(); media = m
-            m.setAudioAttributes(android.media.AudioAttributes.Builder().setUsage(android.media.AudioAttributes.USAGE_MEDIA).setContentType(android.media.AudioAttributes.CONTENT_TYPE_SPEECH).build())
-            m.setDataSource(url)
-            m.setOnPreparedListener { try { it.start() } catch (e: Throwable) { ui.post(done) } }
-            m.setOnCompletionListener { ui.post(done) }
-            m.setOnErrorListener { _, _, _ -> ui.post(done); true }
-            m.prepareAsync()
-        } catch (e: Throwable) { ui.post(done) }
+        stopUrl(); val turn = mediaTurn
+        thread {
+            var err = ""
+            val file = File(cacheDir, "quran/" + url.substringAfter("/data/").replace('/', '_'))
+            try {
+                if (!file.exists() || file.length() < 2000) {
+                    file.parentFile?.mkdirs()
+                    val c = java.net.URL(url).openConnection() as java.net.HttpURLConnection
+                    c.connectTimeout = 8000; c.readTimeout = 20000; c.setRequestProperty("User-Agent", "Mozilla/5.0 (Android) Lamma")
+                    try { if (c.responseCode != 200) throw IOException("HTTP " + c.responseCode)
+                        val part = File(file.path + ".part"); c.inputStream.use { i -> part.outputStream().use { o -> i.copyTo(o) } }
+                        if (!part.renameTo(file)) throw IOException("cannot save")
+                    } finally { c.disconnect() }
+                }
+            } catch (e: Throwable) { err = e.javaClass.simpleName + (e.message?.let { ": $it" } ?: "") }
+            ui.post {
+                if (turn != mediaTurn) return@post
+                if (err.isNotEmpty()) { view.hifz.audioError = err.take(120); view.invalidate(); done(); return@post }
+                try {
+                    val m = android.media.MediaPlayer(); media = m
+                    m.setAudioAttributes(android.media.AudioAttributes.Builder().setUsage(android.media.AudioAttributes.USAGE_MEDIA).setContentType(android.media.AudioAttributes.CONTENT_TYPE_SPEECH).build())
+                    m.setDataSource(file.path)
+                    m.setOnCompletionListener { ui.post { if (turn == mediaTurn) done() } }
+                    m.setOnErrorListener { _, what, extra -> view.hifz.audioError = "player $what/$extra"; file.delete(); ui.post { if (turn == mediaTurn) done() }; true }
+                    m.prepare(); m.start(); view.hifz.audioError = ""
+                } catch (e: Throwable) { view.hifz.audioError = (e.javaClass.simpleName + (e.message?.let { ": $it" } ?: "")).take(120); file.delete(); view.invalidate(); done() }
+            }
+        }
     }
 
     private fun localIp(): String {

@@ -46,6 +46,9 @@ class Hifz(private val view: View) {
     private var touched = 0L; private var stateAt = 0L; private var wrongAyah = 0; private var wrongAt = 0L
     private var result: HifzPlan.Entry? = null
     val active get() = state != OFF
+    /** Why the last recitation could not be played, or empty. Shown on the TV and the phone. */
+    @Volatile var audioError = ""
+    private var sound = true                                          // false when a phone plays the recitation itself
     private var quizParts: List<Quran.Part>? = null
     /** What the Quran challenge asks about: a chosen stretch, else the memorised juz, else the last juz. */
     fun quizScope(): List<Quran.Part> = quizParts ?: quran.parts.filter { it.juz in plan.juz }.ifEmpty { quran.parts.filter { it.juz == 30 } }
@@ -55,7 +58,9 @@ class Hifz(private val view: View) {
 
     private fun recite() {
         if (state != LISTEN) return
-        val mine = ++token; playing = true
+        val mine = ++token
+        if (!sound) { stop?.invoke(); playing = false; view.invalidate(); return }
+        playing = true
         val ayah = { play?.invoke(url(reciter, surah, cur)) { if (mine == token) { playing = false; ended() } } ?: run { playing = false } }
         if (cur == 1 && quran.hasBasmala(surah)) play?.invoke(url(reciter, 1, 1)) { if (mine == token) ayah() } ?: run { playing = false } else ayah()
         view.invalidate()
@@ -78,7 +83,7 @@ class Hifz(private val view: View) {
 
     /**
      * "hz who NAME", "hz juz N 0|1", "hz listen S FROM TO", "hz test S FROM TO", "hz part ID" (test a part of today's portion),
-     * "hz next", "hz prev", "hz go AYAH", "hz hide LEVEL", "hz say", "hz auto 0|1", "hz reciter n", "hz mark 1|0", "hz quiz juz" or "hz quiz S FROM TO" (what the challenge asks about), "hz close"
+     * "hz next", "hz prev", "hz go AYAH", "hz hide LEVEL", "hz say", "hz auto 0|1", "hz reciter n", "hz sound 0|1" (off when a phone plays the recitation), "hz mark 1|0", "hz quiz juz" or "hz quiz S FROM TO" (what the challenge asks about), "hz close"
      */
     fun command(pp: List<String>, cid: String) = synchronized(this) {
         val now = SystemClock.uptimeMillis(); touched = now
@@ -93,6 +98,7 @@ class Hifz(private val view: View) {
             "go" -> if (state == LISTEN) { cur = pp[2].toInt().coerceIn(from, to); recite() }
             "hide" -> if (state == LISTEN) hide = pp[2].toInt().coerceIn(0, 3)
             "say" -> recite()
+            "sound" -> { sound = pp[2] == "1"; if (!sound) { token++; stop?.invoke(); playing = false; auto = false; audioError = "" } }
             "auto" -> if (state == LISTEN) { auto = pp[2] == "1"; if (auto && !playing) recite() }
             "reciter" -> { reciter = pp[2].toInt().coerceIn(0, RECITERS.size - 1); if (state == LISTEN) recite() }
             "mark" -> if (state == TEST) { val ok = pp[2] == "1"
@@ -127,6 +133,8 @@ class Hifz(private val view: View) {
             .append('|').append(plan.doneToday(day)).append('|').append(enc(who)).append('\n')
         if (state == LISTEN || state == TEST) sb.append("X|").append(enc(quran.text(surah, cur))).append('\n')
         sb.append("J|").append(plan.juz.joinToString(",")).append('\n')
+        if (audioError.isNotEmpty() && state == LISTEN) sb.append("E|").append(enc(audioError)).append('\n')
+        sb.append("S|").append(if (sound) 1 else 0).append('\n')
         result?.let { if (state == RESULT) sb.append("R|").append(it.mistakes).append('|').append(to - from + 1).append('|').append(it.level).append('|').append(it.due - day).append('\n') }
         for (p in plan.today(quran.parts, day)) { val e = plan.entry(p.id)
             sb.append("D|").append(p.id).append('|').append(p.surah).append('|').append(p.from).append('|').append(p.to).append('|').append(e?.level ?: 0).append('|').append(if (e == null) -999 else day - e.due).append('\n') }
@@ -173,6 +181,8 @@ class Hifz(private val view: View) {
                     val label = intArrayOf(R.string.hz_hide0, R.string.hz_hide1, R.string.hz_hide2, R.string.hz_hide3)[hide]
                     text(cv, (if (playing) "🔊  " else "") + s(label) + (if (auto) "   •   " + s(R.string.hz_auto) else ""), w / 2, h - 150f * k, 38f * k, Color.argb(255, 190, 215, 200))
                     text(cv, s(R.string.hz_ayah_of, cur - from + 1, n), w / 2, h - 90f * k, 34f * k, Ui.GOLD)
+                    if (audioError.isNotEmpty()) { text(cv, s(R.string.hz_no_sound), w / 2, h - 232f * k, 34f * k, Color.rgb(255, 150, 130))
+                        text(cv, audioError, w / 2, h - 196f * k, 24f * k, Color.argb(200, 255, 150, 130)) }
                 }
                 TEST -> {
                     text(cv, s(R.string.hz_test), w / 2, 260f * k, 54f * k, Color.WHITE, true)
