@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.18
+
+- The memoriser's journey: a **Quran challenge**. The TV asks "which ayah comes next?" and "how does this ayah go
+  on?" from one surah or from all the memorised juz, and up to six players answer on their phones. Every choice,
+  right or wrong, is real Quran text taken from other ayahs.
+
 ## 3.17
 
 - New: **The memoriser's journey**, for learning the Quran by heart.

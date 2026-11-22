@@ -140,6 +140,10 @@
     <string name="hz_tomorrow">Next revision: tomorrow</string>
     <string name="hz_next_in">Next revision in %d days</string>
     <string name="hz_streak">%d days in a row</string>
+    <string name="quiz_quran">📖 Quran challenge</string>
+    <string name="quiz_quran_how">An ayah appears here. Pick what comes after it on your phone.</string>
+    <string name="quiz_q_next">Which ayah comes next?</string>
+    <string name="quiz_q_complete">How does this ayah go on?</string>
     <string name="timer_done">Time is up!</string>
     <string name="poll_hint">%d votes • vote from your phone</string>
     <string name="poll_result">Result • %d votes</string>

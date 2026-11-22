@@ -26,7 +26,8 @@ class DrawView(c: Context) : View(c) {
     val quiz = QuizGame(this)
     val move = MoveGame(this)
     val hifz = Hifz(this)
-    init { val give: (List<GameResult>) -> Unit = { family.award(it) }; game.onEnd = give; hockey.onEnd = give; snake.onEnd = give; tug.onEnd = give; space.onEnd = give; quiz.onEnd = give; move.onEnd = give; quiz.onBonus = { n, pts -> family.bonus(n, pts) } }
+    init { val give: (List<GameResult>) -> Unit = { family.award(it) }; game.onEnd = give; hockey.onEnd = give; snake.onEnd = give; tug.onEnd = give; space.onEnd = give; quiz.onEnd = give; move.onEnd = give; quiz.onBonus = { n, pts -> family.bonus(n, pts) }
+        quiz.quranQuestions = { n -> HifzQuiz.questions(hifz.quran, hifz.quizScope(), n, java.util.Random()) } }
     val cam = LiveCam(this)
 
     // ---- floating comments + emoji ----
@@ -411,7 +412,7 @@ class DrawView(c: Context) : View(c) {
     fun handle(line: String, cid: String = "tv") {
         try {
             val p = line.trim().split(" ")
-            if (p.size > 1 && p[1] == "join" && p[0] in OTHER_GAMES) { if (quiz.active && p[0] != "qz") quiz.stopNow(); if (move.active && p[0] != "mv") move.stopNow() }
+            if (p.size > 1 && p[1] == "join" && p[0] in OTHER_GAMES) { if (quiz.active && p[0] != "qz") quiz.stopNow(); if (move.active && p[0] != "mv") move.stopNow(); if (hifz.active) hifz.stopNow() }
             when (p[0]) {
                 "d" -> ink.down(cid, p[1].toFloat() * getWidth(), p[2].toFloat() * height)
                 "m" -> ink.move(cid, p[1].toFloat() * getWidth(), p[2].toFloat() * height)

@@ -91,6 +91,19 @@ object Ui {
         text(cv, v, n.coerceAtLeast(1).toString(), cx, cy + size * 0.34f, size, Color.WHITE)
     }
 
+    private var mushaf: Typeface? = null
+    fun quranFont(c: Context): Typeface = mushaf ?: (try { Typeface.createFromAsset(c.assets, "fonts/AmiriQuran.ttf") } catch (e: Throwable) { Typeface.DEFAULT }).also { mushaf = it }
+    private val qp = android.text.TextPaint(Paint.ANTI_ALIAS_FLAG)
+    /** Quran text set in lines inside a box, as large as fits, in the mushaf typeface. */
+    fun quran(cv: Canvas, v: View, t: String, cx: Float, top: Float, width: Float, maxH: Float, size: Float, color: Int) {
+        var sz = size; var lay: android.text.StaticLayout
+        while (true) { qp.typeface = quranFont(v.context); qp.textSize = sz; qp.color = color
+            lay = android.text.StaticLayout.Builder.obtain(t, 0, t.length, qp, width.toInt()).setAlignment(android.text.Layout.Alignment.ALIGN_CENTER).setLineSpacing(0f, 0.8f).build()
+            if (lay.height <= maxH || sz <= 26f) break
+            sz *= 0.9f }
+        cv.save(); cv.translate(cx - width / 2, top + maxOf(0f, (maxH - lay.height) / 2)); lay.draw(cv); cv.restore()
+    }
+
     /** Paper confetti falling over a result screen. It needs no memory of its own: every piece follows from the time. */
     fun confetti(cv: Canvas, v: View, ms: Long, pieces: Int = 90) {
         val w = v.width.toFloat(); val h = v.height.toFloat(); val k = h / 1080f; val t = ms / 1000f

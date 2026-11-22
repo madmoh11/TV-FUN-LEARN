@@ -13,7 +13,8 @@ class QuizGame(private val view: View) {
     companion object { const val OFF = 0; const val LOBBY = 1; const val COUNT = 2; const val ASK = 3; const val REVEAL = 4; const val END = 5
         const val GONE_MS = 8000L; const val CHOICE_MS = 12000L; const val TYPE_MS = 25000L; const val REVEAL_MS = 4500L
         val COLORS = intArrayOf(0xFFD92D20.toInt(), 0xFF1F6FFF.toInt(), 0xFFE0A800.toInt(), 0xFF1F9D46.toInt())
-        val TITLES = intArrayOf(R.string.quiz_flags, R.string.quiz_caps, R.string.quiz_spell) }
+        val TITLES = intArrayOf(R.string.quiz_flags, R.string.quiz_caps, R.string.quiz_spell, R.string.quiz_quran)
+        const val QURAN_MS = 20000L }
     var sfx: Sfx? = null
     var onEnd: ((List<GameResult>) -> Unit)? = null
     /** Extra points for right answers that the board does not count by itself: name, points. */
@@ -50,7 +51,9 @@ class QuizGame(private val view: View) {
     }
     private val flags = HashMap<String, Bitmap?>()
     private fun flag(code: String) = flags.getOrPut(code) { Ui.bitmap(view.context, "flags/$code.webp") }
-    private fun limit() = if (core.typed) TYPE_MS else CHOICE_MS
+    /** Questions of the Quran challenge, made from the parts the family chose: how many are wanted. */
+    var quranQuestions: ((Int) -> List<QuizCore.Question>)? = null
+    private fun limit() = if (core.typed) TYPE_MS else if (core.mode == QuizCore.QURAN) QURAN_MS else CHOICE_MS
     private fun enc(t: String) = URLEncoder.encode(t, "UTF-8")
 
     fun stopNow() { state = OFF; core.players.clear(); seen.clear() }
@@ -79,10 +82,10 @@ class QuizGame(private val view: View) {
         val idle = state == LOBBY || state == END
         when (pp[1]) {
             "join" -> { val name = Board.cleanName(URLDecoder.decode(pp.getOrElse(3) { "" }, "UTF-8"))
-                if (core.join(cid, name)) { if (state == OFF) { state = LOBBY; stateAt = now; core.mode = pp.getOrElse(2) { "0" }.toInt().coerceIn(0, 2) } } }
+                if (core.join(cid, name)) { if (state == OFF) { state = LOBBY; stateAt = now; core.mode = pp.getOrElse(2) { "0" }.toInt().coerceIn(0, 3) } } }
             "leave" -> { core.leave(cid); if (core.players.isEmpty()) stopNow() }
-            "start" -> if (idle && core.players.isNotEmpty() && core.begin(items())) { state = COUNT; stateAt = now; countShown = -1 }
-            "mode" -> if (idle) { core.mode = pp[2].toInt().coerceIn(0, 2); if (state == END) { state = LOBBY; stateAt = now } }
+            "start" -> if (idle && core.players.isNotEmpty() && (if (core.mode == QuizCore.QURAN) core.beginWith(quranQuestions?.invoke(core.rounds) ?: emptyList()) else core.begin(items()))) { state = COUNT; stateAt = now; countShown = -1 }
+            "mode" -> if (idle) { core.mode = pp[2].toInt().coerceIn(0, 3); if (state == END) { state = LOBBY; stateAt = now } }
             "rounds" -> if (idle) core.rounds = pp[2].toInt().let { if (it == 5 || it == 15) it else 10 }
             "level" -> if (idle) core.level = pp[2].toInt().coerceIn(0, 2)
             "ans" -> if (state == ASK && pp[2].toInt() == core.round + 1 && core.answer(cid, URLDecoder.decode(pp.getOrElse(3) { "" }, "UTF-8"), now - stateAt, limit())) sfx?.play("blip", 0.5f)
@@ -157,7 +160,7 @@ class QuizGame(private val view: View) {
             val q = core.current
             when (state) {
                 LOBBY -> {
-                    fit(cv, s(intArrayOf(R.string.quiz_flags_how, R.string.quiz_caps_how, R.string.quiz_spell_how)[core.mode]), w / 2, h * 0.36f, 54f * k, w * 0.86f, Color.WHITE, true)
+                    fit(cv, s(intArrayOf(R.string.quiz_flags_how, R.string.quiz_caps_how, R.string.quiz_spell_how, R.string.quiz_quran_how)[core.mode]), w / 2, h * 0.36f, 54f * k, w * 0.86f, Color.WHITE, true)
                     text(cv, s(R.string.quiz_setup, core.rounds, core.players.size), w / 2, h * 0.47f, 40f * k, Color.argb(255, 200, 190, 235))
                     Ui.pill(cv, view, s(R.string.press_start), w / 2, h * 0.64f, 50f * k, now)
                     chips(cv, w, h, k)
@@ -170,7 +173,20 @@ class QuizGame(private val view: View) {
                         p.style = Paint.Style.FILL; p.color = Color.argb(255, 24, 14, 56); cv.drawRoundRect(RectF(w * 0.2f, 186f * k, w * 0.8f, 206f * k), 10f * k, 10f * k, p)
                         p.color = if (f < 0.25f) Color.rgb(255, 80, 70) else Ui.GOLD; cv.drawRoundRect(RectF(w * 0.2f, 186f * k, w * 0.2f + w * 0.6f * f, 206f * k), 10f * k, 10f * k, p)
                     }
-                    if (core.typed) {
+                    if (core.mode == QuizCore.QURAN) {
+                        val nextQ = q.item.key.startsWith(HifzQuiz.NEXT)
+                        fit(cv, s(if (nextQ) R.string.quiz_q_next else R.string.quiz_q_complete), w / 2, h * 0.255f, 44f * k, w * 0.86f, Ui.GOLD)
+                        Ui.panel(cv, RectF(w * 0.06f, h * 0.28f, w * 0.94f, h * 0.47f), k, Color.argb(240, 14, 30, 26), Ui.GOLD)
+                        Ui.quran(cv, view, q.item.prompt, w / 2, h * 0.285f, w * 0.84f, h * 0.18f, 70f * k, Color.WHITE)
+                        q.options.forEachIndexed { i, o ->
+                            val l = if (i % 2 == 0) w * 0.51f else w * 0.06f; val t = h * (0.5f + 0.165f * (i / 2)); val r = RectF(l, t, l + w * 0.43f, t + h * 0.15f)      // read from the right: the first choice is on the right
+                            val right = state == REVEAL && i == q.right; val off = state == REVEAL && !right
+                            p.style = Paint.Style.FILL; p.color = if (right) Color.rgb(31, 157, 70) else COLORS[i]; p.alpha = if (off) 60 else 255
+                            cv.drawRoundRect(r, 22f * k, 22f * k, p); p.alpha = 255
+                            if (right) { p.style = Paint.Style.STROKE; p.strokeWidth = 8f * k; p.color = Color.WHITE; cv.drawRoundRect(r, 22f * k, 22f * k, p); p.style = Paint.Style.FILL }
+                            Ui.quran(cv, view, o, r.centerX(), t + 4f * k, r.width() - 40f * k, r.height() - 8f * k, 54f * k, if (off) Color.argb(110, 255, 255, 255) else if (i == 2 && !right) Ui.INK else Color.WHITE)
+                        }
+                    } else if (core.typed) {
                         fit(cv, s(R.string.quiz_q_spell), w / 2, h * 0.31f, 46f * k, w * 0.86f, Color.argb(255, 200, 190, 235))
                         fit(cv, q.item.prompt, w / 2, h * 0.47f, 150f * k, w * 0.86f, Color.WHITE, true)
                         val word = q.item.answer

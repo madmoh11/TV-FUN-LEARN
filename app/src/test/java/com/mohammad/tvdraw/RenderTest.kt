@@ -398,6 +398,15 @@ class RenderTest {
         // another child has another plan, and it is all remembered
         v.handle("hz who Sara", "a"); assertTrue(st().contains("J|")); v.handle("hz who khaled", "a"); assertTrue(st().contains("J|30"))
         v.handle("hz close", "a"); assertFalse(v.hifz.active)
+        // the challenge: asked from the memorised juz, answered on the phones
+        fun qs() = v.quiz.status("a").split("|")
+        v.handle("hz listen 112 1 4", "a"); v.handle("hz quiz juz", "a"); assertFalse(v.hifz.active)
+        v.handle("qz join 3 Khaled", "a"); v.handle("qz join 3 Dad", "b"); v.handle("qz rounds 5", "a"); shot("hquiz_lobby"); assertEquals("3", qs()[1])
+        v.handle("qz start", "a"); tick(3100); shot("hquiz_ask"); shot("hquiz_ask"); assertEquals("3", qs()[0]); assertEquals(20, qs().size)
+        for (round in 1..5) { v.handle("qz ans $round 0", "a"); v.handle("qz ans $round 1", "b"); shot("hquiz_reveal"); shot("hquiz_reveal$round"); assertEquals("4", qs()[0]); tick(QuizGame.REVEAL_MS + 100); shot("hquiz_ask$round") }
+        assertEquals("5", qs()[0]); tick(1200); shot("hquiz_end")
+        v.handle("hz quiz 2 255 262", "a"); v.handle("qz start", "a"); tick(3100); shot("hquiz_long"); shot("hquiz_long"); assertEquals("3", qs()[0])
+        v.handle("hz listen 112 1 4", "a"); v.handle("qz stop", "a")
     }
 
     @Test fun spaceRace() {

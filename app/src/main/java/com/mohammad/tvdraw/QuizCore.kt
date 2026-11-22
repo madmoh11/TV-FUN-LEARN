@@ -46,6 +46,14 @@ class QuizCore(private val rnd: java.util.Random = java.util.Random()) {
         clearAnswers()
         return true
     }
+    /** Starts a new game from questions that are already made, each with its own choices. */
+    fun beginWith(made: List<Question>): Boolean {
+        if (made.isEmpty()) return false
+        questions = made.take(rounds); round = 0
+        for (p in players.values) { p.score = 0; p.rights = 0 }
+        clearAnswers()
+        return true
+    }
     private fun clearAnswers() { for (p in players.values) { p.answered = false; p.correct = false; p.gained = 0 } }
 
     /** One answer per player and question: a choice number, or the typed word. Faster right answers earn more. */
@@ -70,7 +78,7 @@ class QuizCore(private val rnd: java.util.Random = java.util.Random()) {
     fun place(p: Player) = 1 + players.values.count { it.score > p.score }
 
     companion object {
-        const val FLAGS = 0; const val CAPITALS = 1; const val SPELL = 2
+        const val FLAGS = 0; const val CAPITALS = 1; const val SPELL = 2; const val QURAN = 3
         const val MAX_PLAYERS = 6; const val RIGHT_POINTS = 10; const val SPEED_POINTS = 5
         /** Spelling is compared without regard to case or spacing. */
         fun norm(s: String) = s.trim().lowercase().replace(Regex("\\s+"), " ")

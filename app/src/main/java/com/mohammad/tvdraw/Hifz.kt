@@ -46,6 +46,9 @@ class Hifz(private val view: View) {
     private var touched = 0L; private var stateAt = 0L; private var wrongAyah = 0; private var wrongAt = 0L
     private var result: HifzPlan.Entry? = null
     val active get() = state != OFF
+    private var quizParts: List<Quran.Part>? = null
+    /** What the Quran challenge asks about: a chosen stretch, else the memorised juz, else the last juz. */
+    fun quizScope(): List<Quran.Part> = quizParts ?: quran.parts.filter { it.juz in plan.juz }.ifEmpty { quran.parts.filter { it.juz == 30 } }
 
     fun stopNow() { state = OFF; token++; playing = false; stop?.invoke() }
     private fun enc(t: String) = URLEncoder.encode(t, "UTF-8")
@@ -75,7 +78,7 @@ class Hifz(private val view: View) {
 
     /**
      * "hz who NAME", "hz juz N 0|1", "hz listen S FROM TO", "hz test S FROM TO", "hz part ID" (test a part of today's portion),
-     * "hz next", "hz prev", "hz go AYAH", "hz hide LEVEL", "hz say", "hz auto 0|1", "hz reciter n", "hz mark 1|0", "hz close"
+     * "hz next", "hz prev", "hz go AYAH", "hz hide LEVEL", "hz say", "hz auto 0|1", "hz reciter n", "hz mark 1|0", "hz quiz juz" or "hz quiz S FROM TO" (what the challenge asks about), "hz close"
      */
     fun command(pp: List<String>, cid: String) = synchronized(this) {
         val now = SystemClock.uptimeMillis(); touched = now
@@ -96,6 +99,9 @@ class Hifz(private val view: View) {
                 marks[cur - from] = if (ok) 1 else 2
                 if (ok) sfx?.play("blip", 0.6f, true) else { wrongAyah = cur; wrongAt = now; sfx?.play("thump", 0.5f, true) }
                 if (cur < to) cur++ else finish(now) }
+            "quiz" -> { quizParts = if (pp.getOrElse(2) { "juz" } == "juz") null else quran.surah(pp[2].toInt())?.let { su ->
+                    val a = pp[3].toInt().coerceIn(1, su.ayahs); listOf(Quran.Part(su.number, a, pp[4].toInt().coerceIn(a, su.ayahs), 0)) }
+                stopNow() }
             "close" -> stopNow()
         }
         view.invalidate()
