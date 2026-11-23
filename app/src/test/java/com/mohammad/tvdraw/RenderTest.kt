@@ -401,6 +401,16 @@ class RenderTest {
         assertTrue("a recited part leaves today's portion", st().none { it.startsWith("D|114:") }); assertTrue(st().none { it.startsWith("D|112:") })
         // another child has another plan, and it is all remembered
         v.handle("hz who Sara", "a"); assertTrue(st().contains("J|")); v.handle("hz who khaled", "a"); assertTrue(st().contains("J|30"))
+        // read: the phone listens, and each word is written on the TV when it is recited
+        v.handle("hz part 112:1-4 read", "a"); assertEquals("4", head()[0]); shot("hifz_read"); assertTrue(st().any { it.startsWith("W|0|0|0|15|") })
+        fun hear(id: Int, t: String, fin: Int = 1) = v.handle("hz heard $id $fin 0 " + java.net.URLEncoder.encode(t, "UTF-8").replace("+", "%20"), "a")
+        hear(1, "بسم الله الرحمن الرحيم قل هو", 0); assertTrue(st().any { it.startsWith("W|0|0|2|15|") }); shot("hifz_read_two")
+        hear(1, "بسم الله الرحمن الرحيم قل هو الله الصمد"); assertTrue(st().any { it.startsWith("W|1|1|3|15|") }); shot("hifz_read_wrong")
+        assertFalse("the phone is in the reciter's hand: it never shows a word before it is said", java.net.URLDecoder.decode(st().first { it.startsWith("X|") }, "UTF-8").contains(v.hifz.quran.words(112, 1)[3]))
+        hear(2, "احد الله الصمد"); assertEquals("3", head()[4]); shot("hifz_read_on"); v.handle("hz reveal", "a"); v.handle("hz ok", "a"); assertTrue(st().any { it.startsWith("W|0|2|8|15|") })
+        hear(3, "ولم يولد ولم يكن له كفوا احد"); assertEquals("3", head()[0]); assertTrue(st().any { it == "R|2|4|0|1" }); shot("hifz_read_result")
+        v.handle("hz read 2 255 255", "a"); hear(4, "الله لا اله الا هو الحي القيوم لا تاخذه سنة"); shot("hifz_read_long")
+        v.handle("hz read 36 1 12", "a"); hear(5, "ياسين والقران الحكيم انك لمن المرسلين", 0); shot("hifz_read_page")
         v.handle("hz close", "a"); assertFalse(v.hifz.active)
         // the challenge: asked from the memorised juz, answered on the phones
         fun qs() = v.quiz.status("a").split("|")

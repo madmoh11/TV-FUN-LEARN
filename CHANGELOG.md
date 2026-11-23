@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.20
+
+- The memoriser's journey: **recite to the microphone**. The TV shows only the ayah numbers and a line for each word.
+  The phone listens, and every word is written the moment it is recited right.
+  - A wrong or forgotten word writes nothing: the TV turns red and waits until the right word is said. Words that
+    needed a second try stay in another colour, and the part goes into the revision plan with its mistakes.
+  - Going back a few words for a run-up, putting a word right in the same breath, and the opening "أعوذ بالله" and
+    basmala are not mistakes.
+  - Two buttons for a grown-up: "Show the word" (a mistake) and "It was right", for when the microphone misheard.
+  - It uses the speech recognition of the phone's browser (Chrome or Safari, Arabic) on the secure link, so the
+    phone needs the internet and the speech goes to Google or Apple. It follows words, not vowel marks or tajweed.
+    The Tanzil "simple clean" text is included to know how each word of the mushaf is written when it is heard.
+
 ## 3.19
 
 - The memoriser's journey: the recitation is now saved first and then played, which works on TV boxes whose player

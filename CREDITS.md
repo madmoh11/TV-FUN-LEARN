@@ -29,6 +29,8 @@ Text is set in **Baloo Bhaijaan 2** by Ek Type, used under the
 - Flag images come from [flagcdn.com](https://flagcdn.com) (Flagpedia), which offers them free of charge. The flags themselves are in the public domain.
 - The Quran text is the Uthmani text of the [Tanzil Project](https://tanzil.net), version 1.1, used unchanged under the
   Creative Commons Attribution 3.0 licence. The file keeps its copyright notice: `app/src/main/assets/quran/quran-uthmani.txt`.
+  The Tanzil "simple clean" text, under the same terms, is in `quran-simple-clean.txt` next to it. It is never shown: it tells the app
+  how a word of the mushaf is spelled when a speech recogniser hears it.
 - The recitation of Sheikh Mahmoud Khalil Al-Husary is streamed from [EveryAyah.com](https://everyayah.com); it is not part of the app.
 - The mushaf typeface is [Amiri Quran](https://www.amirifont.org) by Khaled Hosny, under the SIL Open Font Licence.
 - Surah names and juz boundaries come from [alquran.cloud](https://alquran.cloud).

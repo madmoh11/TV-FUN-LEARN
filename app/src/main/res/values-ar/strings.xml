@@ -132,6 +132,9 @@
     <string name="hz_tomorrow">المراجعة الجاية: بكرا</string>
     <string name="hz_next_in">المراجعة الجاية بعد %d أيام</string>
     <string name="hz_streak">%d أيام ورا بعض</string>
+    <string name="hz_read">اقرأ من حفظك: كل كلمة بتنكتب لما تقرأها</string>
+    <string name="hz_read_wrong">✗ أخطأت. أعد الكلمة الصحيحة</string>
+    <string name="hz_read_mistakes">الأخطاء: %d</string>
     <string name="quiz_quran">📖 تحدي القرآن</string>
     <string name="quiz_quran_how">بتطلع آية هون، واختار اللي بعدها من تليفونك.</string>
     <string name="quiz_q_next">شو الآية اللي بعدها؟</string>
