@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.21
+
+- The memoriser's journey: the Quran quiz is now titled "Memorisation quiz" ("مسابقة الحفظ" in Arabic), because the
+  old Arabic title could be read the wrong way.
+
 ## 3.20
 
 - The memoriser's journey: **recite to the microphone**. The TV shows only the ayah numbers and a line for each word.

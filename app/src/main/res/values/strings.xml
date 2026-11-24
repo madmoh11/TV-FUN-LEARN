@@ -144,7 +144,7 @@
     <string name="hz_read">Recite from memory: each word is written when you say it</string>
     <string name="hz_read_wrong">✗ Not right. Say the right word again</string>
     <string name="hz_read_mistakes">Mistakes: %d</string>
-    <string name="quiz_quran">📖 Quran challenge</string>
+    <string name="quiz_quran">📖 Memorisation quiz</string>
     <string name="quiz_quran_how">An ayah appears here. Pick what comes after it on your phone.</string>
     <string name="quiz_q_next">Which ayah comes next?</string>
     <string name="quiz_q_complete">How does this ayah go on?</string>
