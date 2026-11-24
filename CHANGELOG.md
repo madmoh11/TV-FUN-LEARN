@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.22
+
+- The memoriser's journey has moved out of the games into its own **Quran** tab on the phone page, and the Quran
+  quiz is no longer listed among the games quiz modes; it starts only from the memoriser's journey.
+
 ## 3.21
 
 - The memoriser's journey: the Quran quiz is now titled "Memorisation quiz" ("مسابقة الحفظ" in Arabic), because the

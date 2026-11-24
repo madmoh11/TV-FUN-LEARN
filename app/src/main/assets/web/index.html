@@ -36,7 +36,7 @@ select{flex:1;min-width:0;font-size:16px;padding:12px 8px;border-radius:12px;bor
 #bugk{flex-wrap:wrap}#bugk button{flex:1;background:#2f2759;padding:10px 6px;font-size:15px}#bugk button.on{background:#ffd60a;color:#111}#bugsv{min-width:48px;text-align:end}
 .frow.al,.frow.ch{display:flex;gap:8px;align-items:center;margin:0 0 8px}.frow.al span:nth-child(2),.frow.ch span:first-child{flex:1;min-width:0;overflow-wrap:anywhere}.frow.ch span:nth-child(2){color:#ffd60a;font-weight:800}.frow.ch.done span:first-child{opacity:.55;text-decoration:line-through}.frow button{padding:8px 12px;font-size:15px;flex:none}.frow .fx{background:#3a2030;padding:8px 11px}#alq button.on{background:#34c759}
 @font-face{font-family:"Mushaf";src:url(/app/AmiriQuran.ttf) format("truetype");font-display:swap}
-#hzplay{background:#0e1e1a;touch-action:auto;user-select:auto;-webkit-user-select:auto}#hzbody{flex:1;min-height:0;overflow-y:auto;touch-action:pan-y;padding-top:6px;grid-column:1/3}
+.qcard{background:#0e1e1a;border:1px solid #ffd60a55}.qcard h3{color:#ffd60a}#zplay.qr .zmrow{display:none}#hzplay{background:#0e1e1a;touch-action:auto;user-select:auto;-webkit-user-select:auto}#hzbody{flex:1;min-height:0;overflow-y:auto;touch-action:pan-y;padding-top:6px;grid-column:1/3}
 #hzplay h4{margin:16px 0 8px;font-size:16px;color:#ffd60a}#hzplay input[type=number]{width:74px;flex:none;text-align:center}#hzplay select{flex:1;min-width:0}
 #hzdue button{display:flex;width:100%;gap:8px;align-items:center;justify-content:space-between;margin:0 0 8px;padding:10px 14px;background:#16352d;font-family:"Mushaf","Lamma",serif;font-size:21px}#hzdue button small{font-family:"Lamma",system-ui;font-size:13px;color:#ffd60a;flex:none}
 #hzjuz{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}#hzjuz button{padding:10px 0;background:#16352d;font-size:16px}#hzjuz button.on{background:#ffd60a;color:#111}
@@ -173,9 +173,6 @@ main{padding:10px 16px 20px;padding-inline-start:104px}
 <div class=sc id=qrk></div>
 <button id=qjoin style="width:100%;padding:18px;font-size:18px;font-weight:600;background:#7a3fd8"><span data-i=q_join>x</span></button>
 <p class=hint id=qh></p></div>
-<div class=card><h3><span data-i=hz_title>x</span></h3>
-<p class=cd><span data-i=hz_desc>x</span></p>
-<button id=hzopen style="width:100%;padding:18px;font-size:18px;font-weight:600;background:#1a6f55"><span data-i=hz_open>x</span></button></div>
 <div class=card><h3><span data-i=m_title>x</span><small><span data-i=m_players>x</span></small></h3>
 <p class=cd><span data-i=m_desc>x</span></p>
 <button id=mjoin style="width:100%;padding:18px;font-size:18px;font-weight:600;background:#d9308a"><span data-i=m_join>x</span></button>
@@ -184,6 +181,13 @@ main{padding:10px 16px 20px;padding-inline-start:104px}
 <p class=cd><span data-i=z_desc>x</span></p>
 <div class=row3 id=zjoin><button data-m=0 style="background:#1f6fff"><span data-i=z_flags>x</span></button><button data-m=1 style="background:#7a3fd8"><span data-i=z_caps>x</span></button><button data-m=2 style="background:#1f9d46"><span data-i=z_spell>x</span></button></div>
 <p class=hint id=zh><span data-i=z_hint>x</span></p></div>
+</section>
+
+<section class=tab id=t-quran hidden>
+<div class="card qcard"><h3><span data-i=hz_title>x</span></h3>
+<p class=cd><span data-i=hz_desc>x</span></p>
+<button id=hzopen style="width:100%;padding:18px;font-size:18px;font-weight:600;background:#1a6f55"><span data-i=hz_open>x</span></button>
+<p class=hint><span data-i=hz_credit>x</span></p></div>
 </section>
 
 <section class=tab id=t-draw hidden>
@@ -371,7 +375,7 @@ main{padding:10px 16px 20px;padding-inline-start:104px}
 <div class=ctl id=zplay hidden>
 <div class=cbar><button class=cx id=zleave data-ia=exit aria-label="Exit">✕</button><div class=chud id=zhud></div><button class=cset data-o=zopt data-ia=options aria-label="Options">⚙️</button></div>
 <div class=copt id=zopt hidden>
-<div class=row2 style="margin-top:0"><span data-i=z_mode>x</span><select id=zmode><option value=0 data-i=z_flags>x<option value=1 data-i=z_caps>x<option value=2 data-i=z_spell>x<option value=3 data-i=z_quran>x</select></div>
+<div class="row2 zmrow" style="margin-top:0"><span data-i=z_mode>x</span><select id=zmode><option value=0 data-i=z_flags>x<option value=1 data-i=z_caps>x<option value=2 data-i=z_spell>x<option value=3 data-i=z_quran>x</select></div>
 <div class=row2><span data-i=z_rounds>x</span><select id=zrounds><option>5<option>10<option>15</select><select id=zlevel><option value=0 data-i=lvl_easy>x<option value=1 data-i=lvl_medium>x<option value=2 data-i=lvl_hard>x</select></div>
 <label class=ck><input type=checkbox id=zsnd checked><span data-i=z_say>x</span></label>
 <button class=g id=zstop style="width:100%;margin-top:12px"><span data-i=end_all>x</span></button></div>
@@ -399,7 +403,7 @@ main{padding:10px 16px 20px;padding-inline-start:104px}
 <button class=go id=qstart><span data-i=q_start>x</span></button>
 </div></div>
 <div id=camfloat hidden><video id=camv playsinline muted autoplay style="transform:scaleX(-1)"></video></div>
-<nav id=tabs><button data-t=play><b>🎮</b><span data-i=tab_play>Games</span></button><button data-t=draw><b>✏️</b><span data-i=tab_draw>Draw</span></button><button data-t=chat><b>💬</b><span data-i=tab_chat>Interact</span></button><button data-t=fam><b>🏆</b><span data-i=tab_fam>Family</span></button><button data-t=prank><b>😈</b><span data-i=tab_prank>Pranks</span></button><button data-t=set><b>⚙️</b><span data-i=tab_set>Settings</span></button></nav>
+<nav id=tabs><button data-t=play><b>🎮</b><span data-i=tab_play>Games</span></button><button data-t=quran><b>📖</b><span data-i=tab_quran>Quran</span></button><button data-t=draw><b>✏️</b><span data-i=tab_draw>Draw</span></button><button data-t=chat><b>💬</b><span data-i=tab_chat>Interact</span></button><button data-t=fam><b>🏆</b><span data-i=tab_fam>Family</span></button><button data-t=prank><b>😈</b><span data-i=tab_prank>Pranks</span></button><button data-t=set><b>⚙️</b><span data-i=tab_set>Settings</span></button></nav>
 
 <div class=ctl id=gplay hidden>
 <div class=cbar><button class=cx id=gleave data-ia=exit aria-label="Exit">✕</button><div class=chud id=ghud></div><button class=cset data-o=gopt data-ia=options aria-label="Options">⚙️</button></div>
@@ -881,7 +885,7 @@ E('zstart').onclick=()=>send('qz start');E('zstop').onclick=()=>{send('qz stop')
 function zpoll(){fetch('/n?c='+CID).then(r=>r.text()).then(t=>{const a=t.split('|');if(a.length<16)return;const st=+a[0],mode=+a[1],typed=mode===2;
 if(a[11]!=='1'){if(zin||st===0){zout();return}if(+a[8]>=6)E('zh').textContent=T('k_full');return}
 if(!zin){zin=true;E('zplay').hidden=false;document.body.classList.add('playing')}
-[['zmode',1],['zrounds',3],['zlevel',10]].forEach(x=>{if(document.activeElement!==E(x[0]))E(x[0]).value=a[x[1]]});
+{const o=E('zmode').options[3];o.hidden=o.disabled=mode!==3}[['zmode',1],['zrounds',3],['zlevel',10]].forEach(x=>{if(document.activeElement!==E(x[0]))E(x[0]).value=a[x[1]]});
 E('zhud').textContent=(st===3||st===4?a[2]+'/'+a[3]+'  •  ':'')+'⭐ '+a[5]+(st===3?'  •  ⏱ '+a[4]:'');E('zstart').hidden=!(st===1||st===5);
 const key=[st,mode,a[2],a[6],a[8]].join('|');if(key===zkey)return;zkey=key;
 E('zplay').classList.toggle('qr',mode===3);const asking=st===3&&a[6]==='0';E('zans').hidden=typed||!(st===3||st===4);E('ztype').hidden=!(typed&&asking);E('zans').dataset.live=asking?'1':'0';E('zinfo').textContent='';
