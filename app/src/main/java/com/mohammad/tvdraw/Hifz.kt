@@ -21,7 +21,7 @@ class Hifz(private val view: View) {
     companion object { const val OFF = 0; const val LISTEN = 1; const val TEST = 2; const val RESULT = 3; const val READ = 4; const val PAGE_WORDS = 36
         const val GONE_MS = 600000L
         val RECITERS = arrayOf("Husary_Muallim_128kbps", "Husary_64kbps")
-        fun url(reciter: Int, surah: Int, ayah: Int) = "https://everyayah.com/data/" + RECITERS[reciter.coerceIn(0, RECITERS.size - 1)] + "/" + "%03d%03d.mp3".format(surah, ayah) }
+        fun url(reciter: Int, surah: Int, ayah: Int) = "https://everyayah.com/data/" + RECITERS[reciter.coerceIn(0, RECITERS.size - 1)] + "/" + String.format(java.util.Locale.US, "%03d%03d.mp3", surah, ayah) }
     var sfx: Sfx? = null
     /** Plays one recording from the internet and calls back when it has ended (or could not be played). */
     var play: ((String, () -> Unit) -> Unit)? = null

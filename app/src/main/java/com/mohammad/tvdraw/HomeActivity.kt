@@ -283,7 +283,9 @@ class PageView(c: Context, private val title: String, private val pages: List<Da
         pages.getOrNull(at + 1)?.let { if (it.surah != 0) audio.prepare(url(it)) }
         val mine = at
         audio.onError = { invalidate() }
-        audio.play(url(pg)) { if (mine == at && !paused) { if (at < pages.size - 1) show(at + 1) else { paused = true; invalidate() } } }
+        audio.play(url(pg)) { if (mine == at && !paused) {
+            if (audio.error.isNotEmpty()) invalidate()               // stay on the ayah that could not be played
+            else if (at < pages.size - 1) show(at + 1) else { paused = true; invalidate() } } }
     }
 
     /** Returns true when the key was used. */
@@ -312,6 +314,7 @@ class PageView(c: Context, private val title: String, private val pages: List<Da
 
     override fun onDraw(cv: Canvas) {
         val w = width.toFloat(); val h = height.toFloat(); val k = h / 1080f
+        p.color = Color.BLACK; cv.drawRect(0f, 0f, w, h, p)          // nothing of the home screen may show through the page
         p.shader = LinearGradient(0f, 0f, 0f, h, 0xFF06262B.toInt(), 0xFF0A2F36.toInt(), Shader.TileMode.CLAMP); cv.drawRect(0f, 0f, w, h, p); p.shader = null
         val pg = pages[at]; val ctx = context
         Ui.text(cv, this, title, w / 2, 96f * k, 56f * k, Ui.GOLD, false)

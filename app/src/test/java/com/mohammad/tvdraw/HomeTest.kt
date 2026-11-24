@@ -69,6 +69,24 @@ class HomeTest {
         assertEquals(listOf(0, 301 + 1440 - 1200), Daily.next(1200, t, 301).toList())
     }
 
+    @Test fun theRecitationAddressUsesPlainDigitsOnAnArabicTv() {
+        val before = java.util.Locale.getDefault()
+        try { java.util.Locale.setDefault(java.util.Locale("ar", "JO"))
+            assertEquals("https://everyayah.com/data/Husary_64kbps/055001.mp3", Hifz.url(1, 55, 1))
+            assertEquals("https://everyayah.com/data/Husary_Muallim_128kbps/002286.mp3", Hifz.url(0, 2, 286))
+        } finally { java.util.Locale.setDefault(before) }
+    }
+
+    @Test fun aPageStaysOpaqueWhenItIsDrawnAgain() {
+        val a = Robolectric.buildActivity(HomeActivity::class.java).setup().get()
+        val v = PageView(a, "x", Daily.surah(quran, 55), true, AyahAudio(a))
+        v.measure(View.MeasureSpec.makeMeasureSpec(1920, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(1080, View.MeasureSpec.EXACTLY)); v.layout(0, 0, 1920, 1080)
+        val b = Bitmap.createBitmap(1920, 1080, Bitmap.Config.ARGB_8888)
+        repeat(3) { b.eraseColor(0xFFFF0000.toInt()); v.draw(Canvas(b)) }
+        val px = b.getPixel(40, 600)
+        assertEquals(255, android.graphics.Color.alpha(px)); assertTrue(android.graphics.Color.red(px) < 40)       // no red showing through
+    }
+
     @Test fun render() {
         val a = Robolectric.buildActivity(HomeActivity::class.java).setup().get()
         for (i in 0 until 40) { Thread.sleep(100); shadowOf(Looper.getMainLooper()).idle() }

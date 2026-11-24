@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.24
+
+- Fixed: on a TV set to Arabic the recitation was never found (HTTP 404), because the file number in its address was
+  written in Arabic digits. This silenced the surahs of the home screen and the memoriser's journey alike.
+- Fixed: the home screen showed through a surah or adhkar page after its first moment, which made it hard to read.
+- A surah no longer runs on to the next ayah when an ayah could not be played; it stays and says why.
+
 ## 3.23
 
 - New: a **home screen for the TV**. Opening Lamma now shows the clock, the Gregorian and Hijri dates, the next
