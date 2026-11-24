@@ -17,6 +17,11 @@ class PrayerAlerts(private val ctx: Context, private val view: DrawView, private
     private val tick = object : Runnable {
         override fun run() { try { check() } catch (e: Throwable) { }; ui.postDelayed(this, 20000) }
     }
+    init {      // Jordan's timetable puts Maghrib 6 minutes after sunset; earlier versions saved 5
+        if (!sp.getBoolean("mag6", false)) { val e = sp.edit().putBoolean("mag6", true)
+            if (sp.getInt("magMin", 6) == 5 && sp.getFloat("fajr", 18f) == 18f) e.putInt("magMin", 6)
+            e.apply() }
+    }
     fun start() { ui.post(tick); if (adhanOn()) fetchAdhan() }
 
     // Defaults: Amman, Jordan (Ministry of Awqaf angles), 15 minutes before.
@@ -117,11 +122,11 @@ const val ADHAN_URL = "https://upload.wikimedia.org/wikipedia/commons/7/7d/The_A
 
 /** The five prayer times of a day in minutes, for the place and method saved from the phone (Amman by default). */
 fun prayerMinutes(sp: android.content.SharedPreferences, cal: Calendar): IntArray {
-    val m = Prayer.Method(sp.getFloat("fajr", 18f).toDouble(), sp.getFloat("isha", 18f).toDouble(), sp.getInt("ishaMin", 0), sp.getInt("magMin", 5))
+    val m = Prayer.Method(sp.getFloat("fajr", 18f).toDouble(), sp.getFloat("isha", 18f).toDouble(), sp.getInt("ishaMin", 0), sp.getInt("magMin", 6))
     val tz = TimeZone.getDefault().getOffset(cal.timeInMillis) / 3600000.0
     val t = Prayer.times(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH),
         sp.getFloat("lat", 31.9539f).toDouble(), sp.getFloat("lon", 35.9106f).toDouble(), tz, m)
-    return IntArray(5) { Math.round(t[it] * 60).toInt() }
+    return Prayer.minutes(t)
 }
 
 /** Starts the overlay again after the box restarts, so alerts keep working without opening the app. */

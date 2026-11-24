@@ -62,6 +62,12 @@ class HomeTest {
         assertFalse(json.contains('﴿'))
     }
 
+    @Test fun ammanMatchesThePrintedTimetable() {
+        // 25 November 2026 in Amman: Fajr 5:48, Dhuhr 12:24, Asr 3:14, Maghrib 5:39, Isha 6:59
+        val t = Prayer.minutes(Prayer.times(2026, 11, 25, 31.9539, 35.9106, 3.0, Prayer.Method(18.0, 18.0, 0, 6)))
+        assertEquals(listOf(5 * 60 + 48, 12 * 60 + 24, 15 * 60 + 14, 17 * 60 + 39, 18 * 60 + 59), t.toList())
+    }
+
     @Test fun theNextPrayerCountsDownAndWrapsToTomorrow() {
         val t = intArrayOf(300, 720, 930, 1050, 1130)
         assertEquals(listOf(0, 60), Daily.next(240, t, 301).toList())

@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.25
+
+- Prayer times now match the printed timetable of Amman to the minute: a time is rounded up to the next minute, and
+  Maghrib in the Jordanian cities is 6 minutes after sunset.
+
 ## 3.24
 
 - Fixed: on a TV set to Arabic the recitation was never found (HTTP 404), because the file number in its address was

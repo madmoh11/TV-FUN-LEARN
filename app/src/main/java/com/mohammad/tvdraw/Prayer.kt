@@ -65,6 +65,12 @@ object Prayer {
         return doubleArrayOf(fajr, dhuhr, asrT, maghrib, isha)
     }
 
+    /**
+     * The times as whole minutes of the day. A time is rounded up to the next minute, as printed timetables do, so a
+     * prayer is never announced before it has begun.
+     */
+    fun minutes(t: DoubleArray) = IntArray(t.size) { Math.ceil(t[it] * 60 - 0.001).toInt() }
+
     fun hhmm(h: Double): String {
         val mins = Math.round(fix(h, 24.0) * 60).toInt() % 1440
         return (mins / 60).toString() + ":" + (mins % 60).toString().padStart(2, '0')
