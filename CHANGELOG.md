@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.26
+
+- The home screen can have a **background picture**: four that come with the app (a mosque at dusk, a geometric
+  pattern, a desert night and misty mountains) or a photo sent from the phone. A dark veil keeps the text readable.
+- Fixed the clock in Jordan and Syria: old TV boxes still take an hour off in winter, as before 2022. Lamma now keeps
+  both at three hours ahead of UTC all year, for its clock, the prayer times, the family reminders and the day's
+  portion. A setting on the phone page moves the clock an hour either way for any other wrong box.
+
 ## 3.25
 
 - Prayer times now match the printed timetable of Amman to the minute: a time is rounded up to the next minute, and

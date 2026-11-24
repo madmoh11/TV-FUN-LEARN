@@ -37,7 +37,7 @@ class Hifz(private val view: View) {
     private var plan = loadPlan()
     private fun loadPlan() = HifzPlan().apply { load(sp.getString("hifz:" + who.lowercase(), "") ?: "") }
     private fun store() = sp.edit().putString("hifz:" + who.lowercase(), plan.save()).putString("hifz_who", who).apply()
-    private fun today() = Calendar.getInstance().let { (it.timeInMillis + it.timeZone.getOffset(it.timeInMillis)) / 86400000L }.toInt()
+    private fun today() = TvClock.now().let { (it.timeInMillis + it.timeZone.getOffset(it.timeInMillis)) / 86400000L }.toInt()
 
     private var state = OFF
     private var surah = 1; private var from = 1; private var to = 1; private var cur = 1

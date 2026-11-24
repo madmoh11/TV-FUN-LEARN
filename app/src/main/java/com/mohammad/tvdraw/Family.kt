@@ -39,7 +39,7 @@ class Family(private val view: View) {
     private fun fit(cv: Canvas, t: String, x: Float, y: Float, size: Float, maxWidth: Float, color: Int, align: Paint.Align = Paint.Align.CENTER) {
         val wd = Ui.width(view, t, size); text(cv, t, x, y, if (wd > maxWidth) size * maxWidth / wd else size, color, false, align)
     }
-    private fun weekNow() = Calendar.getInstance().let { it.get(Calendar.YEAR) * 100 + it.get(Calendar.WEEK_OF_YEAR) }
+    private fun weekNow() = TvClock.now().let { it.get(Calendar.YEAR) * 100 + it.get(Calendar.WEEK_OF_YEAR) }
     fun nameOf(cid: String) = names[cid] ?: ""
 
     /** Called by a game when it ends: every named player gets points on the board. */

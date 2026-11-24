@@ -14,7 +14,7 @@ import kotlin.concurrent.thread
  */
 class Server(private val page: () -> String, private val words: () -> ByteArray, private val font: () -> ByteArray, private val keyDir: java.io.File, private val onLines: (List<String>, String) -> Unit, private val onAudio: (ByteArray) -> Unit,
              private val onImage: (ByteArray) -> Unit, private val onFace: (ByteArray, String) -> Unit, private val onVideo: (ByteArray, String) -> Unit, private val status: (String) -> String,
-             private val extra: (String) -> ByteArray? = { null }) {
+             private val extra: (String) -> ByteArray? = { null }, private val onWall: (ByteArray) -> Unit = { }) {
     var httpPort = 0; private set
     var httpsPort = 0; private set
 
@@ -63,12 +63,13 @@ class Server(private val page: () -> String, private val words: () -> ByteArray,
                 var type = "text/plain"; var resp = ByteArray(0); var cache = false
                 if (parts[0] == "POST" && path.startsWith("/a")) onAudio(body)
                 else if (parts[0] == "POST" && path.startsWith("/i")) onImage(body)
+                else if (parts[0] == "POST" && path.startsWith("/b")) onWall(body)
                 else if (parts[0] == "POST" && path.startsWith("/f")) onFace(body, path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12).ifEmpty { "x" })
                 else if (parts[0] == "POST" && path.startsWith("/v")) onVideo(body, path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12).ifEmpty { "x" })
                 else if (parts[0] == "GET" && path.startsWith("/font.ttf")) { type = "font/ttf"; cache = true; resp = font() }
                 else if (parts[0] == "GET" && path.startsWith("/app/")) {      // home-screen icon and web app manifest
                     val name = path.substring(5).substringBefore('?').filter { it.isLetterOrDigit() || it == '.' || it == '-' }
-                    type = if (name.endsWith(".png")) "image/png" else if (name.endsWith(".ttf")) "font/ttf" else if (name.endsWith(".txt")) "text/plain; charset=utf-8" else "application/manifest+json"; cache = true; resp = extra(name) ?: ByteArray(0)
+                    type = if (name.endsWith(".png")) "image/png" else if (name.endsWith(".jpg")) "image/jpeg" else if (name.endsWith(".ttf")) "font/ttf" else if (name.endsWith(".txt")) "text/plain; charset=utf-8" else "application/manifest+json"; cache = true; resp = extra(name) ?: ByteArray(0)
                 }
                 else if (parts[0] == "GET" && path.startsWith("/w")) { type = "application/json; charset=utf-8"; resp = words() }
                 else if (path.startsWith("/y") || path.startsWith("/m") || path.startsWith("/n") || path.startsWith("/c") || path.startsWith("/t") || path.startsWith("/q") || path.startsWith("/u") || path.startsWith("/s") || path.startsWith("/p") || path.startsWith("/g") || path.startsWith("/h") || path.startsWith("/j")) resp = status(path).toByteArray(Charsets.UTF_8)

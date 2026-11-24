@@ -68,6 +68,18 @@ class HomeTest {
         assertEquals(listOf(5 * 60 + 48, 12 * 60 + 24, 15 * 60 + 14, 17 * 60 + 39, 18 * 60 + 59), t.toList())
     }
 
+    @Test fun ammanAndDamascusStayThreeHoursAheadAllYear() {
+        // an old box still believes Amman is two hours ahead in winter
+        assertEquals(180, TvClock.baseMinutes("Asia/Amman", 2 * 3600000)); assertEquals(180, TvClock.baseMinutes("Asia/Damascus", 2 * 3600000))
+        assertEquals(180, TvClock.baseMinutes("Asia/Riyadh", 3 * 3600000)); assertEquals(60, TvClock.baseMinutes("Europe/Berlin", 3600000))
+        val before = java.util.TimeZone.getDefault()
+        try { java.util.TimeZone.setDefault(java.util.SimpleTimeZone(2 * 3600000, "Asia/Amman"))
+            assertEquals(3 * 3600000, TvClock.zone().rawOffset)
+            val utc = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC")).get(java.util.Calendar.HOUR_OF_DAY)
+            assertEquals((utc + 3) % 24, TvClock.now().get(java.util.Calendar.HOUR_OF_DAY))
+        } finally { java.util.TimeZone.setDefault(before) }
+    }
+
     @Test fun theNextPrayerCountsDownAndWrapsToTomorrow() {
         val t = intArrayOf(300, 720, 930, 1050, 1130)
         assertEquals(listOf(0, 60), Daily.next(240, t, 301).toList())
@@ -97,6 +109,12 @@ class HomeTest {
         val a = Robolectric.buildActivity(HomeActivity::class.java).setup().get()
         for (i in 0 until 40) { Thread.sleep(100); shadowOf(Looper.getMainLooper()).idle() }
         png(a.window.decorView, "home")
+        a.getSharedPreferences("prayer", 0).edit().putString("bg", "1").apply()
+        for (i in 0 until 30) { Thread.sleep(100); shadowOf(Looper.getMainLooper()).idle() }
+        png(a.window.decorView, "home_wall1")
+        a.getSharedPreferences("prayer", 0).edit().putString("bg", "2").apply()
+        for (i in 0 until 30) { Thread.sleep(100); shadowOf(Looper.getMainLooper()).idle() }
+        png(a.window.decorView, "home_wall2")
         val audio = AyahAudio(a)
         png(PageView(a, "سورة الكهف", Daily.surah(quran, 18).drop(1), true, audio), "home_surah")
         png(PageView(a, "سورة البقرة", Daily.surah(quran, 2).drop(282), true, audio), "home_long_ayah")

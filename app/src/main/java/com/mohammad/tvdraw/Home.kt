@@ -27,8 +27,8 @@ class Home(private val view: View, private val family: Family) {
     private fun enc(t: String) = URLEncoder.encode(t, "UTF-8")
     private fun dec(t: String) = URLDecoder.decode(t, "UTF-8")
     private fun store() = sp.edit().putString("home", core.save()).apply()
-    private fun today() = Calendar.getInstance().let { it.get(Calendar.YEAR) * 1000 + it.get(Calendar.DAY_OF_YEAR) }
-    private fun minuteNow() = Calendar.getInstance().let { it.get(Calendar.HOUR_OF_DAY) * 60 + it.get(Calendar.MINUTE) }
+    private fun today() = TvClock.now().let { it.get(Calendar.YEAR) * 1000 + it.get(Calendar.DAY_OF_YEAR) }
+    private fun minuteNow() = TvClock.now().let { it.get(Calendar.HOUR_OF_DAY) * 60 + it.get(Calendar.MINUTE) }
 
     private val tick = object : Runnable { override fun run() { check(); view.postDelayed(this, 20000) } }
     fun start() { view.removeCallbacks(tick); view.postDelayed(tick, 3000) }

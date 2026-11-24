@@ -52,7 +52,7 @@ class HomeActivity : Activity() {
     private var adhkarJson = ""
     private var friday = false
     private val sp by lazy { getSharedPreferences("prayer", 0) }
-    private val tick = object : Runnable { override fun run() { refresh(); ui.postDelayed(this, 1000L * (60 - Calendar.getInstance().get(Calendar.SECOND)).coerceIn(1, 60)) } }
+    private val tick = object : Runnable { override fun run() { refresh(); ui.postDelayed(this, 1000L * (60 - TvClock.now().get(Calendar.SECOND)).coerceIn(1, 60)) } }
 
     private fun px(v: Float) = (v * k).toInt()
     private fun font() = Ui.font(this)
@@ -63,7 +63,13 @@ class HomeActivity : Activity() {
         k = resources.displayMetrics.heightPixels / 1080f
         root = FrameLayout(this); root.layoutDirection = View.LAYOUT_DIRECTION_LOCALE
         root.background = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(0xFF06262B.toInt(), 0xFF0B3C44.toInt(), 0xFF0A2540.toInt()))
+        TvClock.init(this)
+        wall = ImageView(this); wall.scaleType = ImageView.ScaleType.CENTER_CROP
+        root.addView(wall, FrameLayout.LayoutParams(-1, -1))
+        shade = View(this); root.addView(shade, FrameLayout.LayoutParams(-1, -1))
         setContentView(root)
+        wallpaper()
+        sp.registerOnSharedPreferenceChangeListener(watch)
         build()
         thread {
             fun read(n: String) = try { assets.open(n).use { it.readBytes().toString(Charsets.UTF_8) } } catch (e: Throwable) { "" }
@@ -71,6 +77,32 @@ class HomeActivity : Activity() {
             ui.post { quran = q; adhkarJson = a }
         }
     }
+    override fun onDestroy() { super.onDestroy(); sp.unregisterOnSharedPreferenceChangeListener(watch) }
+
+    private lateinit var wall: ImageView
+    private lateinit var shade: View
+    private var wallIs = ""
+    private val watch = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        if (key == "bg") ui.post { wallpaper() } else if (key == "shift" || key == "lat" || key == "magMin") ui.post { refresh() } }
+
+    /** The picture behind the home screen: one that comes with the app, or a photo sent from the phone. A dark veil keeps the text readable. */
+    private fun wallpaper() {
+        val want = sp.getString("bg", "0") ?: "0"
+        if (want == wallIs) return
+        wallIs = want
+        thread {
+            val bmp = try { when {
+                want.startsWith("c") -> android.graphics.BitmapFactory.decodeFile(java.io.File(filesDir, "wallpaper.jpg").path, android.graphics.BitmapFactory.Options().apply {
+                    inJustDecodeBounds = true; android.graphics.BitmapFactory.decodeFile(java.io.File(filesDir, "wallpaper.jpg").path, this)
+                    var ss = 1; while (outWidth / ss > 2400 || outHeight / ss > 2400) ss *= 2
+                    inJustDecodeBounds = false; inSampleSize = ss })
+                want in listOf("1", "2", "3", "4") -> Ui.bitmap(this, "bg/bg$want.webp")
+                else -> null } } catch (e: Throwable) { null }
+            ui.post { if (wallIs == want) { wall.setImageBitmap(bmp)
+                shade.setBackgroundColor(if (bmp == null) Color.TRANSPARENT else Color.argb(if (want.startsWith("c") || want == "2") 130 else 70, 0, 12, 16)) } }
+        }
+    }
+
     override fun onResume() { super.onResume(); ui.removeCallbacks(tick); ui.post(tick) }
     override fun onPause() { super.onPause(); ui.removeCallbacks(tick); page?.let { closeExtra() } }
 
@@ -97,7 +129,7 @@ class HomeActivity : Activity() {
 
     private fun row(into: LinearLayout, title: String, tiles: List<View>) {
         if (tiles.isEmpty()) return
-        into.addView(label(title, 34f, Color.argb(235, 255, 214, 10)).apply { setPadding(px(70f), px(18f), px(70f), 0) })
+        into.addView(label(title, 34f, Color.argb(235, 255, 214, 10)).apply { setShadowLayer(10f * k, 0f, 2f * k, Color.argb(200, 0, 0, 0)); setPadding(px(70f), px(18f), px(70f), 0) })
         val line = LinearLayout(this); line.orientation = LinearLayout.HORIZONTAL; line.setPadding(px(56f), 0, px(56f), 0)
         line.clipChildren = false; line.clipToPadding = false
         for (t in tiles) line.addView(t)
@@ -110,21 +142,22 @@ class HomeActivity : Activity() {
     }
 
     private fun build() {
-        root.removeAllViews()
+        if (::home.isInitialized) root.removeView(home)
         val col = LinearLayout(this); col.orientation = LinearLayout.VERTICAL; col.clipChildren = false
         // the clock, the dates and the next prayer
         val head = LinearLayout(this); head.orientation = LinearLayout.HORIZONTAL; head.gravity = Gravity.CENTER_VERTICAL
         head.setPadding(px(70f), px(44f), px(70f), px(6f))
-        clock = label("", 150f); clock.layoutDirection = View.LAYOUT_DIRECTION_LTR
+        clock = label("", 150f); clock.setShadowLayer(14f * k, 0f, 3f * k, Color.argb(160, 0, 0, 0)); clock.layoutDirection = View.LAYOUT_DIRECTION_LTR
         val side = LinearLayout(this); side.orientation = LinearLayout.VERTICAL; side.setPadding(px(44f), 0, px(44f), 0)
         dates = label("", 34f, Color.argb(230, 190, 235, 240)); nextUp = label("", 46f, Ui.GOLD)
+        dates.setShadowLayer(10f * k, 0f, 2f * k, Color.argb(200, 0, 0, 0)); nextUp.setShadowLayer(10f * k, 0f, 2f * k, Color.argb(200, 0, 0, 0))
         side.addView(dates); side.addView(nextUp)
         head.addView(clock); head.addView(side)
         col.addView(head)
         times = LinearLayout(this); times.orientation = LinearLayout.HORIZONTAL; times.setPadding(px(70f), 0, px(70f), px(8f))
         col.addView(times)
 
-        val cal = Calendar.getInstance(); friday = cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY
+        val cal = TvClock.now(); friday = cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY
         val names = surahNames()
         val order = if (friday) Daily.SURAHS.toList() else Daily.SURAHS.toList()      // al-Kahf already leads; on Friday it is marked
         val qt = ArrayList<View>()
@@ -176,13 +209,13 @@ class HomeActivity : Activity() {
     private fun hijri(cal: Calendar): String = try {
         val loc = android.icu.util.ULocale(resources.configuration.locales[0].language + "@calendar=islamic-umalqura")
         val f = android.icu.text.SimpleDateFormat("d MMMM y", loc)
-        f.calendar = android.icu.util.Calendar.getInstance(loc); f.format(cal.time)
+        f.calendar = android.icu.util.Calendar.getInstance(loc); f.timeZone = android.icu.util.TimeZone.getTimeZone("GMT" + (if (cal.timeZone.rawOffset < 0) "-" else "+") + Math.abs(cal.timeZone.rawOffset) / 3600000 + ":" + (Math.abs(cal.timeZone.rawOffset) / 60000 % 60).toString().padStart(2, '0')); f.format(cal.time)
     } catch (e: Throwable) { "" }
 
     private fun refresh() {
-        val cal = Calendar.getInstance(); val now = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE)
+        val cal = TvClock.now(); val now = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE)
         clock.text = clock12(now)
-        val day = java.text.SimpleDateFormat("EEEE d MMMM", resources.configuration.locales[0]).format(cal.time)
+        val day = java.text.SimpleDateFormat("EEEE d MMMM", resources.configuration.locales[0]).apply { timeZone = cal.timeZone }.format(cal.time)
         val h = hijri(cal)
         dates.text = if (h.isEmpty()) day else "$day  •  $h"
         val today = prayerMinutes(sp, cal)
@@ -194,7 +227,7 @@ class HomeActivity : Activity() {
         times.removeAllViews()
         for (i in 0..4) { val on = i == nx[0] && today[i] > now
             val chip = label(name(i) + "  " + clock12(today[i]), 28f, if (on) Ui.INK else Color.argb(230, 255, 255, 255))
-            chip.background = GradientDrawable().apply { cornerRadius = 40f * k; setColor(if (on) Ui.GOLD else Color.argb(50, 255, 255, 255)) }
+            chip.background = GradientDrawable().apply { cornerRadius = 40f * k; setColor(if (on) Ui.GOLD else Color.argb(110, 0, 20, 26)) }
             chip.setPadding(px(26f), px(10f), px(26f), px(10f))
             times.addView(chip, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = px(14f) }) }
         if ((cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) != friday && extra == null) build()        // the day changed while the screen was open

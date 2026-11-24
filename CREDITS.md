@@ -47,3 +47,7 @@ keeps only the ayah numbers and shows the Tanzil text.
 "The Adhan - Muslim Call to Prayer - Aaqib Azeez", uploaded to Wikimedia Commons by Atcovi, licensed
 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). The recording is not part of the app: the TV
 downloads it unchanged from Wikimedia Commons the first time.
+
+## Home screen backgrounds
+
+The four background pictures were generated for this app with an AI image model.

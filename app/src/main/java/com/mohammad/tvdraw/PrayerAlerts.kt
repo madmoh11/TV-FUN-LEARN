@@ -17,7 +17,7 @@ class PrayerAlerts(private val ctx: Context, private val view: DrawView, private
     private val tick = object : Runnable {
         override fun run() { try { check() } catch (e: Throwable) { }; ui.postDelayed(this, 20000) }
     }
-    init {      // Jordan's timetable puts Maghrib 6 minutes after sunset; earlier versions saved 5
+    init { TvClock.init(ctx)      // Jordan's timetable puts Maghrib 6 minutes after sunset; earlier versions saved 5
         if (!sp.getBoolean("mag6", false)) { val e = sp.edit().putBoolean("mag6", true)
             if (sp.getInt("magMin", 6) == 5 && sp.getFloat("fajr", 18f) == 18f) e.putInt("magMin", 6)
             e.apply() }
@@ -38,7 +38,7 @@ class PrayerAlerts(private val ctx: Context, private val view: DrawView, private
 
     private fun check() {
         if (!on()) return
-        val cal = Calendar.getInstance()
+        val cal = TvClock.now()
         val now = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE)
         val t = todayMinutes(cal)
         val b = before()
@@ -100,6 +100,8 @@ class PrayerAlerts(private val ctx: Context, private val view: DrawView, private
                 e.putInt("ishaMin", p[6].toInt()); e.putInt("magMin", p[7].toInt()) }
             "adhan" -> { e.putBoolean("adhan", p[2] == "1"); if (p[2] != "1") stopAdhan() else fetchAdhan() }
             "boot" -> e.putBoolean("boot", p[2] == "1")
+            "shift" -> e.putInt("shift", p[2].toInt().coerceIn(-3, 3))
+            "bg" -> e.putString("bg", p[2].filter { it.isLetterOrDigit() }.take(20))
             "stop" -> stopAdhan()
             "call" -> call(ctx.str(R.string.prayer_now, ctx.getString(R.string.prayer_test)))
             "test" -> notify(ctx.str(R.string.prayer_before, before(), ctx.getString(R.string.asr), ctx.getString(R.string.prayer_test)))
@@ -108,10 +110,10 @@ class PrayerAlerts(private val ctx: Context, private val view: DrawView, private
     }
 
     fun status(): String {
-        val cal = Calendar.getInstance()
+        val cal = TvClock.now()
         val t = todayMinutes(cal)
         val now = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE)
-        return "on=" + (if (on()) 1 else 0) + "|before=" + before() + "|at=" + (if (atTime()) 1 else 0) + "|adhan=" + (if (adhanOn()) 1 else 0) + "|boot=" + (if (sp.getBoolean("boot", true)) 1 else 0) + "|saved=" + (if (adhanFile.exists() && adhanFile.length() > 100000) 1 else 0) +
+        return "on=" + (if (on()) 1 else 0) + "|before=" + before() + "|at=" + (if (atTime()) 1 else 0) + "|adhan=" + (if (adhanOn()) 1 else 0) + "|boot=" + (if (sp.getBoolean("boot", true)) 1 else 0) + "|shift=" + sp.getInt("shift", 0) + "|bg=" + (sp.getString("bg", "0") ?: "0").take(1) + "|zone=" + TimeZone.getDefault().id + "|saved=" + (if (adhanFile.exists() && adhanFile.length() > 100000) 1 else 0) +
             "|lat=" + sp.getFloat("lat", 31.9539f) + "|lon=" + sp.getFloat("lon", 35.9106f) + "|clock=" + clock12(now) +
             "|times=" + t.joinToString(",") { clock12(it) }
     }
@@ -123,7 +125,7 @@ const val ADHAN_URL = "https://upload.wikimedia.org/wikipedia/commons/7/7d/The_A
 /** The five prayer times of a day in minutes, for the place and method saved from the phone (Amman by default). */
 fun prayerMinutes(sp: android.content.SharedPreferences, cal: Calendar): IntArray {
     val m = Prayer.Method(sp.getFloat("fajr", 18f).toDouble(), sp.getFloat("isha", 18f).toDouble(), sp.getInt("ishaMin", 0), sp.getInt("magMin", 6))
-    val tz = TimeZone.getDefault().getOffset(cal.timeInMillis) / 3600000.0
+    val tz = cal.timeZone.getOffset(cal.timeInMillis) / 3600000.0
     val t = Prayer.times(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH),
         sp.getFloat("lat", 31.9539f).toDouble(), sp.getFloat("lon", 35.9106f).toDouble(), tz, m)
     return Prayer.minutes(t)

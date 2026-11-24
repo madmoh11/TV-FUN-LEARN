@@ -564,7 +564,12 @@ class OverlayService : Service() {
                     else if (path.startsWith("/j")) view.snake.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/h")) view.hockey.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/g")) view.game.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
-                    else sfx.status() }, { webFile(it) })
+                    else sfx.status() }, { webFile(it) }, { bytes -> try {
+                    // a photo sent from the phone to sit behind the home screen
+                    val o = BitmapFactory.Options().apply { inJustDecodeBounds = true }; BitmapFactory.decodeByteArray(bytes, 0, bytes.size, o)
+                    if (o.outWidth > 0 && o.outHeight > 0) { val f = File(filesDir, "wallpaper.jpg"); val part = File(f.path + ".part"); part.writeBytes(bytes); part.renameTo(f)
+                        getSharedPreferences("prayer", 0).edit().putString("bg", "c" + System.currentTimeMillis() % 100000000).apply() }
+                } catch (e: Throwable) { } })
             server.start()
             val ok = server.httpPort != 0
             val msg = if (ok) "http://" + localIp() + ":" + server.httpPort else getString(R.string.no_port)
@@ -591,7 +596,7 @@ class OverlayService : Service() {
     /** What lets a phone keep the page as an icon on its home screen. */
     private val webFiles = HashMap<String, ByteArray?>()
     private fun webFile(name: String): ByteArray? {
-        val path = when (name) { "manifest.json", "icon-192.png", "icon-512.png" -> "web/$name"; "AmiriQuran.ttf" -> "fonts/$name"; "surahs.txt" -> "quran/$name"; else -> return null }
+        val path = when (name) { "manifest.json", "icon-192.png", "icon-512.png", "bg1.jpg", "bg2.jpg", "bg3.jpg", "bg4.jpg" -> "web/$name"; "AmiriQuran.ttf" -> "fonts/$name"; "surahs.txt" -> "quran/$name"; else -> return null }
         return synchronized(webFiles) { webFiles.getOrPut(name) { try { assets.open(path).use { it.readBytes() } } catch (e: Throwable) { null } } }
     }
 
