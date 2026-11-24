@@ -31,6 +31,7 @@ microphone uses the speech recognition of the phone's browser, which sends that 
 
 | | |
 | --- | --- |
+| 🏠 **A home screen for the TV** | The clock, the Hijri date and the next prayer, surahs of the Quran recited by Al-Husary, the morning and evening adhkar, the ruqyah and the apps of the TV, all with the remote. The call to prayer at its time. |
 | 🎮 **Games** | Five games played on the TV with phones as controllers: see [the games](#the-games) below. |
 | ✏️ **Drawing** | Several phones draw at once. Pen, brush, highlighter, neon, eraser, shapes and an Arabic calligraphy nib. |
 | 📄 **Pages** | Draw over the picture, or on ruled paper, a calligraphy sheet, squares, dots or a blackboard. |

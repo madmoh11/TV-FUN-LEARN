@@ -296,6 +296,10 @@ main{padding:10px 16px 20px;padding-inline-start:104px}
 <div class=row style="margin:12px 0 0"><select id=zcity><option value="31.9539 35.9106 18 18 0 5" data-i=c_amman>Amman</option><option value="32.0728 36.088 18 18 0 5" data-i=c_zarqa>Zarqa</option><option value="32.5556 35.85 18 18 0 5" data-i=c_irbid>Irbid</option><option value="29.5321 35.0063 18 18 0 5" data-i=c_aqaba>Aqaba</option><option value="32.0392 35.7272 18 18 0 5" data-i=c_salt>Salt</option><option value="31.716 35.7939 18 18 0 5" data-i=c_madaba>Madaba</option><option value="32.2808 35.8993 18 18 0 5" data-i=c_jerash>Jerash</option><option value="32.3326 35.7517 18 18 0 5" data-i=c_ajloun>Ajloun</option><option value="32.3429 36.208 18 18 0 5" data-i=c_mafraq>Mafraq</option><option value="31.1853 35.7048 18 18 0 5" data-i=c_karak>Karak</option><option value="30.8375 35.6044 18 18 0 5" data-i=c_tafilah>Tafilah</option><option value="30.1962 35.7341 18 18 0 5" data-i=c_maan>Ma'an</option><option value="21.4225 39.8262 18.5 0 90 0" data-i=c_makkah>Makkah</option><option value="24.4672 39.6111 18.5 0 90 0" data-i=c_madinah>Madinah</option><option value="24.7136 46.6753 18.5 0 90 0" data-i=c_riyadh>Riyadh</option><option value="21.5433 39.1728 18.5 0 90 0" data-i=c_jeddah>Jeddah</option><option value="30.0444 31.2357 19.5 17.5 0 0" data-i=c_cairo>Cairo</option><option value="25.2048 55.2708 18.2 18.2 0 0" data-i=c_dubai>Dubai</option><option value="29.3759 47.9774 18 17.5 0 0" data-i=c_kuwait>Kuwait City</option><option value="25.2854 51.531 18 0 90 0" data-i=c_doha>Doha</option></select>
 <select id=zbef><option value=5 data-i=bef5>5 minutes before</option><option value=10 data-i=bef10>10 minutes before</option><option value=15 data-i=bef15>15 minutes before</option><option value=20 data-i=bef20>20 minutes before</option><option value=30 data-i=bef30>30 minutes before</option></select></div>
 <label class=ck><input type=checkbox id=zat><span data-i=prayer_at>Second alert when the prayer time starts</span></label>
+<label class=ck><input type=checkbox id=zad><span data-i=prayer_adhan>x</span></label>
+<p class=hint id=zadh></p>
+<div class=two><button class=g id=zcall><span data-i=prayer_call>x</span></button><button id=zadstop style="background:#b3261e"><span data-i=prayer_stop>x</span></button></div>
+<label class=ck><input type=checkbox id=zboot><span data-i=prayer_boot>x</span></label>
 <p class=hint id=zt></p>
 <button class=g id=ztest style="width:100%;margin-top:10px"><span data-i=prayer_try>Try the alert on the TV</span></button></div>
 <div class=card><h3><span data-i=sound_title>🔊 Sound and connection</span></h3>
@@ -534,14 +538,14 @@ E('camflip').onclick=async()=>{camFace=camFace==='user'?'environment':'user';cam
 E('campos').onchange=E('camsize').onchange=()=>{if(camOn)camSet()};nm.addEventListener('change',()=>{if(camOn)camSet()});
 const PN=['fajr','dhuhr','asr','maghrib','isha'].map(k=>T(k));
 function zload(){fetch('/p').then(r=>r.text()).then(t=>{const o={};t.split('|').forEach(x=>{const i=x.indexOf('=');o[x.slice(0,i)]=x.slice(i+1)});
-E('zon').checked=o.on==='1';E('zat').checked=o.at==='1';E('zbef').value=o.before;let c='';
+E('zon').checked=o.on==='1';E('zat').checked=o.at==='1';E('zad').checked=o.adhan==='1';E('zboot').checked=o.boot==='1';E('zadh').textContent=o.adhan==='1'&&o.saved!=='1'?T('prayer_adhan_wait'):'';E('zbef').value=o.before;let c='';
 [...E('zcity').options].forEach(x=>{const v=x.value.split(' ');if(Math.abs(v[0]-o.lat)<.001&&Math.abs(v[1]-o.lon)<.001){E('zcity').value=x.value;c=x.textContent}});const tm=(o.times||'').split(',');
 E('zt').textContent=T('prayer_times',c,PN.map((n,i)=>n+' '+tm[i]).join(' • '),o.clock)}).catch(()=>{})}
 function zs(l){send(l);setTimeout(zload,400)}
 E('zon').onchange=()=>zs('z on '+(E('zon').checked?1:0));E('zat').onchange=()=>zs('z at '+(E('zat').checked?1:0));
 E('zbef').onchange=()=>zs('z before '+E('zbef').value);
 E('zcity').onchange=()=>zs('z city '+E('zcity').value+' '+enc(E('zcity').selectedOptions[0].textContent));
-E('ztest').onclick=()=>send('z test');zload();
+E('ztest').onclick=()=>send('z test');E('zad').onchange=()=>zs('z adhan '+(E('zad').checked?1:0));E('zboot').onchange=()=>zs('z boot '+(E('zboot').checked?1:0));E('zcall').onclick=()=>send('z call');E('zadstop').onclick=()=>send('z stop');zload();
 const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true,ios=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 E('homecard').hidden=standalone;E('homesteps').innerHTML=[1,2,3].map(i=>'<li>'+T((ios?'home_i':'home_a')+i)+'</li>').join('');
 let homeEvt=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();homeEvt=e;E('homego').hidden=false});E('homego').onclick=()=>{if(homeEvt){homeEvt.prompt();homeEvt=null;E('homego').hidden=true}};

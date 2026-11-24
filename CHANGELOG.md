@@ -1,5 +1,19 @@
 # Changelog
 
+## 3.23
+
+- New: a **home screen for the TV**. Opening Lamma now shows the clock, the Gregorian and Hijri dates, the next
+  prayer with a countdown and the five prayer times of the day, and rows of large tiles for the remote:
+  - **The Holy Quran**: al-Kahf (marked on Fridays), al-Baqara, Ya-Sin, al-Mulk, al-Waqi'a, ar-Rahman and a list of all
+    114 surahs. A surah is read ayah by ayah in mushaf script with Al-Husary's recitation.
+  - **Adhkar and ruqyah**: the morning and evening adhkar with their counts, the ruqyah verses and ayat al-Kursi.
+    Passages of the Quran inside the adhkar are taken from the Tanzil text, never typed.
+  - **TV apps**: the other apps of the box, so the screen can stand in for its launcher.
+- The home screen can open by itself when the TV starts (a setting on the phone page), and it can be made the home
+  screen of the box with one ADB command.
+- The call to prayer can be sounded when a prayer time starts. The TV saves the recording the first time it is
+  online; the phone page has buttons to try it and to stop it.
+
 ## 3.22
 
 - The memoriser's journey has moved out of the games into its own **Quran** tab on the phone page, and the Quran

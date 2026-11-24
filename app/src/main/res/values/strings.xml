@@ -169,4 +169,23 @@
     <string name="prayer_before">%2$s prayer in %1$d minutes  •  %3$s</string>
     <string name="prayer_now">It is time for %s prayer</string>
     <string name="prayer_test">test</string>
+    <string name="home_quran">The Holy Quran</string>
+    <string name="home_adhkar">Adhkar and ruqyah</string>
+    <string name="home_apps">TV apps</string>
+    <string name="home_all_surahs">All surahs</string>
+    <string name="home_friday">Sunnah of Friday</string>
+    <string name="home_morning">Morning adhkar</string>
+    <string name="home_evening">Evening adhkar</string>
+    <string name="home_ruqyah">Ruqyah</string>
+    <string name="home_kursi">Ayat al-Kursi</string>
+    <string name="home_phone">📱 Control from the phone</string>
+    <string name="home_phone_how">Open this address in your phone\'s browser on the same Wi-Fi to find the games, the memoriser\'s journey and the family board.</string>
+    <string name="home_back">Back</string>
+    <string name="home_next">%1$s in %2$s</string>
+    <string name="home_keys">◀ next   •   ▶ back   •   middle button: pause   •   Back: leave</string>
+    <string name="home_keys_dhikr">Middle button: count one   •   ◀ next   •   ▶ back   •   Back: leave</string>
+    <string name="home_paused">Paused: press the middle button to go on</string>
+    <string name="home_done">The end  •  press the middle button to start again</string>
+    <string name="home_count">%1$d of %2$d</string>
+    <string name="home_once">Once</string>
 </resources>

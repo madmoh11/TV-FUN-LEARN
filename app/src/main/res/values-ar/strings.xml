@@ -159,4 +159,23 @@
     <string name="prayer_before">باقي %1$d دقيقة على أذان %2$s  •  %3$s</string>
     <string name="prayer_now">حان الآن موعد أذان %s</string>
     <string name="prayer_test">تجربة</string>
+    <string name="home_quran">القرآن الكريم</string>
+    <string name="home_adhkar">الأذكار والرقية</string>
+    <string name="home_apps">تطبيقات التلفزيون</string>
+    <string name="home_all_surahs">كل السور</string>
+    <string name="home_friday">سنّة يوم الجمعة</string>
+    <string name="home_morning">أذكار الصباح</string>
+    <string name="home_evening">أذكار المساء</string>
+    <string name="home_ruqyah">الرقية الشرعية</string>
+    <string name="home_kursi">آية الكرسي</string>
+    <string name="home_phone">📱 تحكّم من الهاتف</string>
+    <string name="home_phone_how">افتح هذا العنوان من متصفح هاتفك وهو على نفس شبكة الواي فاي، وبتلاقي الألعاب ورحلة الحافظ ولوحة العيلة.</string>
+    <string name="home_back">رجوع</string>
+    <string name="home_next">%1$s بعد %2$s</string>
+    <string name="home_keys">◀ التالي   •   ▶ السابق   •   الزر الأوسط: إيقاف مؤقت   •   رجوع: خروج</string>
+    <string name="home_keys_dhikr">الزر الأوسط: عُدّ مرة   •   ◀ التالي   •   ▶ السابق   •   رجوع: خروج</string>
+    <string name="home_paused">متوقف مؤقتاً: اكبس الزر الأوسط للمتابعة</string>
+    <string name="home_done">انتهت التلاوة  •  اكبس الزر الأوسط للإعادة</string>
+    <string name="home_count">%1$d من %2$d</string>
+    <string name="home_once">مرة واحدة</string>
 </resources>

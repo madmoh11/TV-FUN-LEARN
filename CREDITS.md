@@ -34,3 +34,16 @@ Text is set in **Baloo Bhaijaan 2** by Ek Type, used under the
 - The recitation of Sheikh Mahmoud Khalil Al-Husary is streamed from [EveryAyah.com](https://everyayah.com); it is not part of the app.
 - The mushaf typeface is [Amiri Quran](https://www.amirifont.org) by Khaled Hosny, under the SIL Open Font Licence.
 - Surah names and juz boundaries come from [alquran.cloud](https://alquran.cloud).
+
+## Adhkar
+
+The morning and evening adhkar come from
+[Seen-Arabic/Morning-And-Evening-Adhkar-DB](https://github.com/Seen-Arabic/Morning-And-Evening-Adhkar-DB) (MIT licence),
+which follows the book Hisn al-Muslim. The passages of the Quran among them are not taken from that file: the app
+keeps only the ayah numbers and shows the Tanzil text.
+
+## Call to prayer
+
+"The Adhan - Muslim Call to Prayer - Aaqib Azeez", uploaded to Wikimedia Commons by Atcovi, licensed
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). The recording is not part of the app: the TV
+downloads it unchanged from Wikimedia Commons the first time.
