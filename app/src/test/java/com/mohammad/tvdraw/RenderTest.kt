@@ -331,6 +331,31 @@ class RenderTest {
         v.handle("qz join 0 Sara", "a"); assertFalse(v.rps.active)
     }
 
+    @Test fun lettersAndNumbers() {
+        val act = org.robolectric.Robolectric.buildActivity(android.app.Activity::class.java).setup().get()
+        v = DrawView(act); act.window.setContentView(v)
+        fill = { v.measure(View.MeasureSpec.makeMeasureSpec(1920, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(1080, View.MeasureSpec.EXACTLY)); v.layout(0, 0, 1920, 1080) }
+        fill()
+        fun st() = v.kids.status().split("|")
+        fun dec(x: String) = java.net.URLDecoder.decode(x, "UTF-8")
+        v.handle("kd open 0", "a"); tick(300); shot("kids_ar"); assertEquals("1", st()[0]); assertEquals("أ", dec(st()[9])); assertEquals("ألف، أسد", dec(st()[10])); assertEquals("28", st()[3]); assertEquals("ar-SA", st()[14])
+        v.handle("kd next", "a"); tick(300); shot("kids_ar2"); assertEquals("ب", dec(st()[9])); assertEquals("بطة", dec(st()[11])); assertEquals("🦆", dec(st()[12]))
+        v.handle("kd open 1", "a"); v.handle("kd next", "a"); v.handle("kd next", "a"); tick(300); shot("kids_en"); assertEquals("C", dec(st()[9])); assertEquals("C. Cat", dec(st()[10])); assertEquals("en-US", st()[14])
+        v.handle("kd open 2", "a"); for (i in 1..6) v.handle("kd next", "a"); tick(300); shot("kids_num"); assertEquals("7", dec(st()[9])); assertEquals("7", st()[13])
+        v.handle("kd open 0", "a"); v.handle("kd play", "a"); tick(200); shot("kids_ask")
+        var t = st(); assertEquals("2", t[0]); assertEquals(18, t.size); assertEquals("-1", t[7]); val opts = t.subList(15, 18).map { dec(it) }; val right = opts.indexOf(dec(t[9])); assertTrue(right >= 0)
+        val wrong = (0..2).first { it != right }
+        v.handle("kd ans $wrong", "a"); tick(100); shot("kids_wrong"); t = st(); assertEquals("still the same question", "2", t[0]); assertEquals("" + (1 shl wrong), t[8])
+        v.handle("kd ans $right", "a"); tick(300); shot("kids_right"); t = st(); assertEquals("3", t[0]); assertEquals("" + right, t[7]); assertEquals("no star after a wrong try", "0", t[4])
+        tick(2700); shot("kids_step"); assertEquals("2", st()[0]); assertEquals("2", st()[5])
+        for (n in 2..KidsCore.ROUND) { t = st(); v.handle("kd ans " + t.subList(15, 18).map { dec(it) }.indexOf(dec(t[9])), "a"); tick(2700); shot("kids_step") }
+        shot("kids_done"); assertEquals("4", st()[0]); assertEquals("7", st()[4])
+        v.handle("kd open 2", "a"); v.handle("kd play", "a"); tick(200); shot("kids_count"); assertTrue(st()[13].toInt() in 1..10)
+        // another game taking over closes it, and so does a phone that went away
+        v.handle("rps join Sara", "a"); assertFalse(v.kids.active)
+        v.handle("rps leave", "a"); v.handle("kd open 0", "a"); assertTrue(v.kids.active); tick(21000); shot("kids_step"); assertFalse(v.kids.active)
+    }
+
     @Test fun quiz() {
         val act = org.robolectric.Robolectric.buildActivity(android.app.Activity::class.java).setup().get()
         act.getSharedPreferences("family", 0).edit().clear().commit()

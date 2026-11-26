@@ -36,7 +36,13 @@ select{flex:1;min-width:0;font-size:16px;padding:12px 8px;border-radius:12px;bor
 #bugk{flex-wrap:wrap}#bugk button{flex:1;background:#2f2759;padding:10px 6px;font-size:15px}#bugk button.on{background:#ffd60a;color:#111}#bugsv{min-width:48px;text-align:end}
 .frow.al,.frow.ch{display:flex;gap:8px;align-items:center;margin:0 0 8px}.frow.al span:nth-child(2),.frow.ch span:first-child{flex:1;min-width:0;overflow-wrap:anywhere}.frow.ch span:nth-child(2){color:#ffd60a;font-weight:800}.frow.ch.done span:first-child{opacity:.55;text-decoration:line-through}.frow button{padding:8px 12px;font-size:15px;flex:none}.frow .fx{background:#3a2030;padding:8px 11px}#alq button.on{background:#34c759}
 @font-face{font-family:"Mushaf";src:url(/app/AmiriQuran.ttf) format("truetype");font-display:swap}
-.qcard{background:#0e1e1a;border:1px solid #ffd60a55}.qcard h3{color:#ffd60a}#zplay.qr .zmrow{display:none}#rplay{display:flex!important;flex-direction:column}#rplay[hidden]{display:none!important}#rmain{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;min-height:0}
+.qcard{background:#0e1e1a;border:1px solid #ffd60a55}.qcard h3{color:#ffd60a}#zplay.qr .zmrow{display:none}#xplay{display:flex!important;flex-direction:column;background:#141c40}#xplay[hidden]{display:none!important}#xjoin button{padding:18px 4px;font-size:19px;font-weight:700}#xmode{margin:8px 0}#xmode button{padding:14px 4px;font-size:18px;font-weight:700;background:#2c2358}#xmode button.on{background:#7a3fd8}
+#xmain{flex:1;display:flex;flex-direction:column;justify-content:center;gap:12px;min-height:0}#xcard{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;text-align:center}
+#xsign{font-size:min(30vw,150px);line-height:1.1;color:#ffd60a;font-weight:700}#xpic{font-style:normal;font-size:min(24vw,120px);line-height:1.1}#xword{flex-basis:100%;font-size:min(11vw,54px);font-weight:700}
+#xnav button{padding:20px 0;font-size:28px}#xopts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}#xopts[hidden]{display:none}#xopts button{padding:26px 0;font-size:min(20vw,96px);line-height:1.15;font-weight:700;touch-action:manipulation}
+#xopts button:nth-child(1){background:#d92d20}#xopts button:nth-child(2){background:#1f6fff}#xopts button:nth-child(3){background:#1f9d46}#xopts button.off{opacity:.25}#xopts button.ok{outline:5px solid #ffd60a}
+#xmsg{margin:0;min-height:40px;text-align:center;font-size:24px;font-weight:700;color:#5ee08a}
+#rplay{display:flex!important;flex-direction:column}#rplay[hidden]{display:none!important}#rmain{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;min-height:0}
 #rmsg{margin:0;min-height:64px;text-align:center;font-size:24px;font-weight:700;color:#ffd60a;display:flex;align-items:center;justify-content:center}#rmsg.ok{color:#5ee08a}#rmsg.no{color:#ff9d8a}
 #rhands{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;direction:ltr}#rhands button{padding:22px 0 14px;font-size:min(17vw,84px);line-height:1.1;background:#2c2358;display:flex;flex-direction:column;align-items:center;gap:6px;touch-action:manipulation}
 #rhands button small{font-size:16px;font-weight:600;color:#c8bfee}#rhands button.on{background:#e0780a;outline:3px solid #ffd60a}#rhands.off button:not(.on){opacity:.35}#rstart{padding:16px;font-size:20px;font-weight:700}
@@ -181,6 +187,9 @@ main{padding:10px 16px 20px;padding-inline-start:104px}
 <p class=cd><span data-i=m_desc>x</span></p>
 <button id=mjoin style="width:100%;padding:18px;font-size:18px;font-weight:600;background:#d9308a"><span data-i=m_join>x</span></button>
 <p class=hint id=mh><span data-i=m_hint>x</span></p></div>
+<div class=card><h3><span data-i=x_title>x</span><small><span data-i=x_age>x</span></small></h3>
+<p class=cd><span data-i=x_desc>x</span></p>
+<div class=row3 id=xjoin><button data-t=0 style="background:#1f9d46"><span data-i=x_ar>x</span></button><button data-t=1 style="background:#1f6fff">A B C</button><button data-t=2 style="background:#d9308a">1 2 3</button></div></div>
 <div class=card><h3><span data-i=r_title>x</span><small><span data-i=k_players>x</span></small></h3>
 <p class=cd><span data-i=r_desc>x</span></p>
 <button id=rjoin style="width:100%;padding:18px;font-size:18px;font-weight:600;background:#e0780a"><span data-i=r_join>x</span></button>
@@ -405,6 +414,15 @@ main{padding:10px 16px 20px;padding-inline-start:104px}
 <div id=mpad><button data-k=2 style="background:#e0a800;color:#111">▲<small data-i=m_jump>x</small></button><button data-k=0 style="background:#1f6fff">◀<small data-i=m_left>x</small></button><button data-k=1 style="background:#d9308a">▶<small data-i=m_right>x</small></button><button data-k=3 style="background:#e8651a">▼<small data-i=m_duck>x</small></button></div>
 <button class=go id=mstart><span data-i=z_start>x</span></button>
 </div></div>
+<div class=ctl id=xplay hidden>
+<div class=cbar><button class=cx id=xleave data-ia=exit aria-label="Exit">✕</button><div class=chud id=xhud></div><button class=cset id=xsnd aria-label="Sound">🔊</button></div>
+<div class=two id=xmode><button id=xlearn><span data-i=x_learn>x</span></button><button id=xgo><span data-i=x_play>x</span></button></div>
+<div id=xmain>
+<div id=xcard><b id=xsign></b><i id=xpic></i><span id=xword></span></div>
+<div id=xnav class=row3><button class=g id=xprev>▶</button><button id=xsay style="background:#1a6f55">🔊</button><button class=g id=xnext>◀</button></div>
+<div id=xopts hidden><button></button><button></button><button></button></div>
+<p id=xmsg></p></div>
+</div>
 <div class=ctl id=rplay hidden>
 <div class=cbar><button class=cx id=rleave data-ia=exit aria-label="Exit">✕</button><div class=chud id=rhud></div><button class=cset data-o=ropt data-ia=options aria-label="Options">⚙️</button></div>
 <div class=copt id=ropt hidden>
@@ -929,6 +947,25 @@ E('mcal').hidden=st!==1||!E('msense').checked;
 if(st!==mst){mst=st;if(mcal&&st!==1)mcalEnd(false);if(st===2||st===3)mreset();info.className='';if(st===1)info.textContent=mgot||!E('msense').checked?T('m_wait'):info.textContent||T('m_wait');else if(st===2)info.textContent=T('st_ready');else if(st===3)info.textContent=T('m_go');
 else if(st===5){info.textContent=+a[7]>1&&a[8]==='1'?T('you_win'):T('m_end',a[4],a[11]);if(navigator.vibrate)navigator.vibrate(200)}}}).catch(()=>{})}
 /* ---- room quiz: flags, capitals, spelling. The TV asks, every phone answers. ---- */
+/* ---- letters and numbers for small children: cards to learn from, and three big choices to play with ---- */
+function say(t,l){if(!t)return;try{if(window.LammaNative&&LammaNative.speak){LammaNative.speak(t,l);return}if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=l;u.rate=.8;speechSynthesis.speak(u)}catch(e){}}
+let xin=false,xt=0,xkey='',xsound=true,xsayT='',xsayL='';try{xsound=localStorage.xsound!=='0'}catch(e){}const xob=[...E('xopts').children];
+function xsndUI(){E('xsnd').textContent=xsound?'🔊':'🔇'}xsndUI();E('xsnd').onclick=()=>{xsound=!xsound;try{localStorage.xsound=xsound?1:0}catch(e){}xsndUI();if(xsound)say(xsayT,xsayL)};
+function xout(){fs(false);xin=false;clearInterval(xt);xt=0;xkey='';E('xplay').hidden=true;try{if(window.speechSynthesis)speechSynthesis.cancel()}catch(e){}}
+function xpoll(){fetch('/x').then(r=>r.text()).then(t=>{const a=t.split('|');if(a.length<15)return;const st=+a[0];if(st===0){if(xin)xout();return}if(!xin)return;
+const play=st>=2;E('xlearn').classList.toggle('on',!play);E('xgo').classList.toggle('on',play);E('xhud').textContent=play?'⭐ '+a[4]+'  •  '+Math.min(+a[5],+a[6])+'/'+a[6]:a[2]+' / '+a[3];
+const key=[st,a[1],a[2],a[5],a[7],a[8]].join('|');if(key===xkey)return;const fresh=[st,a[1],a[2],a[5]].join('|')!==xkey.split('|').slice(0,4).join('|');xkey=key;
+const num=a[1]==='2',sign=fdec(a[9]),pic=fdec(a[12]),n=+a[13];xsayT=fdec(a[10]);xsayL=a[14];
+E('xnav').hidden=play;E('xopts').hidden=!(st===2||st===3);E('xcard').hidden=st===4;E('xmsg').textContent=st===3?T('x_yes'):st===4?T('x_done',a[4],a[6]):'';
+E('xsign').hidden=play&&st!==3;E('xsign').textContent=sign;E('xpic').textContent=num?pic.repeat(n):pic;E('xpic').style.fontSize=num?'min(11vw,54px)':'';E('xword').textContent=num&&play&&st!==3?T('x_count'):fdec(a[11]);
+if(st===2||st===3)xob.forEach((b,i)=>{b.textContent=fdec(a[15+i]||'');b.className=(+a[8]>>i&1)||(st===3&&+a[7]!==i)?'off':st===3?'ok':''});
+if(st===3&&navigator.vibrate)navigator.vibrate([60,40,120]);
+if(xsound&&(st===1&&fresh||st===3))say(xsayT,xsayL);else if(xsound&&st===2&&fresh&&!num)say(fdec(a[11]),xsayL)}).catch(()=>{})}
+document.querySelectorAll('#xjoin button').forEach(b=>b.onclick=()=>{if(gside>=0){send('y leave');gout()}if(hside>=0){send('h leave');hout()}if(jside>=0){send('j leave');jout()}if(kside>=0){send('tug leave');kout()}if(qin){send('sr leave');qout()}if(min){send('mv leave');mout()}if(zin){send('qz leave');zout()}if(rin){send('rps leave');rout()}
+fs(true);send('kd open '+b.dataset.t);xin=true;xkey='';E('xplay').hidden=false;document.body.classList.add('playing');if(!xt)xt=setInterval(xpoll,300);setTimeout(xpoll,150)});
+E('xnext').onclick=()=>{send('kd next');setTimeout(xpoll,120)};E('xprev').onclick=()=>{send('kd prev');setTimeout(xpoll,120)};E('xsay').onclick=()=>say(xsayT,xsayL);
+E('xlearn').onclick=()=>{send('kd learn');setTimeout(xpoll,120)};E('xgo').onclick=()=>{send('kd play');setTimeout(xpoll,120)};E('xleave').onclick=()=>{send('kd close');xout()};
+xob.forEach((b,i)=>b.onclick=()=>{if(b.classList.contains('off'))return;send('kd ans '+i);if(navigator.vibrate)navigator.vibrate(20);setTimeout(xpoll,120)});
 /* ---- rock, paper, scissors: three buttons, one secret choice a round ---- */
 let rin=false,rt=0,rkey='',rround='';const rhb=[...E('rhands').children];
 function rout(){fs(false);E('ropt').hidden=true;rin=false;clearInterval(rt);rt=0;rkey='';rround='';E('rplay').hidden=true}
@@ -996,7 +1033,7 @@ E('tilt').onchange=async()=>{const on=E('tilt').checked;E('tcal').hidden=!on;if(
 try{if(window.DeviceOrientationEvent&&DeviceOrientationEvent.requestPermission)await DeviceOrientationEvent.requestPermission()}catch(e){}
 tb=null;tgot=false;addEventListener('deviceorientation',ori);setTimeout(()=>{if(!tgot&&E('tilt').checked)E('lh').textContent=T('no_motion_laser')},1500)};
 E('tcal').onclick=()=>{tb=null};
-document.querySelectorAll('.cset').forEach(b=>b.onclick=()=>{const o=E(b.dataset.o);o.hidden=!o.hidden;hfit()});
+document.querySelectorAll('.cset[data-o]').forEach(b=>b.onclick=()=>{const o=E(b.dataset.o);o.hidden=!o.hidden;hfit()});
 document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>tab(b.dataset.t));
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>tab(b.dataset.go));
 let t0='play';try{t0=sessionStorage.tab||'play'}catch(e){}tab(t0);

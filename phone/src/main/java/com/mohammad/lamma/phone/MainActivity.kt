@@ -238,11 +238,21 @@ class MainActivity : Activity() {
     }
     private fun stopListening() { try { sr?.destroy() } catch (e: Throwable) { }; sr = null; ui.removeCallbacks(unhush); ui.postDelayed(unhush, 1500) }
 
+    // ---- a voice for the page: letters and words are read aloud by the phone ----
+    private var tts: android.speech.tts.TextToSpeech? = null
+    private var ttsReady = false
+    private fun speak(text: String, lang: String) {
+        fun now() { try { val t = tts ?: return; t.language = java.util.Locale.forLanguageTag(lang); t.setSpeechRate(0.85f); t.speak(text, android.speech.tts.TextToSpeech.QUEUE_FLUSH, null, "w") } catch (e: Throwable) { } }
+        if (tts == null) tts = android.speech.tts.TextToSpeech(this) { st -> if (st == android.speech.tts.TextToSpeech.SUCCESS) { ttsReady = true; now() } }
+        else if (ttsReady) now()
+    }
+
     /** What the page can ask of the phone. Every call comes from the page's own thread, so the work is passed to the UI thread. */
     inner class Bridge {
         @JavascriptInterface fun listen(lang: String) { ui.post { this@MainActivity.listen(lang.take(12).ifEmpty { "ar-SA" }) } }
         @JavascriptInterface fun stopListen() { ui.post { stopListening() } }
         @JavascriptInterface fun pickTv() { ui.post { tv = null; sp.edit().remove("ip").apply(); lost(); status.text = ""; search() } }
+        @JavascriptInterface fun speak(text: String, lang: String) { ui.post { this@MainActivity.speak(text.take(200), lang) } }
         @JavascriptInterface fun version(): String = try { packageManager.getPackageInfo(packageName, 0).versionName ?: "" } catch (e: Throwable) { "" }
     }
 
@@ -257,7 +267,7 @@ class MainActivity : Activity() {
         if (sr != null) { stopListening(); web.evaluateJavascript("try{hzdeaf()}catch(e){}", null) }      // the page stops asking for the recogniser while the app is away
         ui.removeCallbacks(unhush); hush(false)
     }
-    override fun onDestroy() { try { sr?.destroy() } catch (e: Throwable) { }; hush(false); web.destroy(); super.onDestroy() }
+    override fun onDestroy() { try { tts?.shutdown() } catch (e: Throwable) { }; try { sr?.destroy() } catch (e: Throwable) { }; hush(false); web.destroy(); super.onDestroy() }
 
     companion object { const val ASK = 11; const val ASK_MIC = 12; const val PICK = 13 }
 }

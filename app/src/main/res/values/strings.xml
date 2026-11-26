@@ -208,4 +208,12 @@
     <string name="rps_choose">Choose!</string>
     <string name="rps_round_to">%s takes the round</string>
     <string name="rps_round_many">More than one winner this round</string>
+    <string name="kids_ar">🔤 Arabic letters</string>
+    <string name="kids_en">🔤 English letters</string>
+    <string name="kids_num">🔢 Numbers</string>
+    <string name="kids_q_letter">Which letter does the word start with?</string>
+    <string name="kids_q_num">How many? Count with me</string>
+    <string name="kids_yes">Well done! 🎉</string>
+    <string name="kids_done">Great job! 👏</string>
+    <string name="kids_score">%1$d stars out of %2$d</string>
 </resources>

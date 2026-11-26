@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.34
+
+- New for children of four and five: **letters and numbers**. The 28 Arabic letters, the 26 English letters and the
+  numbers one to ten, each as a big card on the TV with a word and a picture. "Learn" turns the cards and the phone
+  says the letter and its word; "play" shows a picture and asks which letter the word starts with, or how many things
+  there are, with three big choices and no clock. A wrong choice only goes dim. The pictures are emoji.
+- Lamma for the phone 1.1 reads the letters aloud with the phone's own voice.
+
 ## 3.33
 
 - New game: **rock, paper, scissors** for one to six players. Everyone chooses in secret on their phone, the TV chants

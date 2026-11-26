@@ -10,6 +10,7 @@
     <uses-feature android:name="android.hardware.microphone" android:required="false"/>
     <queries>
         <intent><action android:name="android.speech.RecognitionService"/></intent>
+        <intent><action android:name="android.intent.action.TTS_SERVICE"/></intent>
         <intent><action android:name="android.intent.action.GET_CONTENT"/><data android:mimeType="image/*"/></intent>
     </queries>
     <!-- The TV is reached by its address on the home Wi-Fi, over plain http or its own self-made certificate. -->
