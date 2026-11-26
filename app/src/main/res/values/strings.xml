@@ -188,4 +188,10 @@
     <string name="home_done">The end  •  press the middle button to start again</string>
     <string name="home_count">%1$d of %2$d</string>
     <string name="home_once">Once</string>
+    <string name="home_app_first">Make it the first</string>
+    <string name="home_app_earlier">One step earlier</string>
+    <string name="home_app_later">One step later</string>
+    <string name="home_app_hide">Hide it from the row</string>
+    <string name="home_app_show_all">Bring back the hidden apps</string>
+    <string name="home_app_tip">hold the middle button on an app to arrange it</string>
 </resources>

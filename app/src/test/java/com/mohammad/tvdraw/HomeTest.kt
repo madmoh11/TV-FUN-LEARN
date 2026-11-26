@@ -80,6 +80,19 @@ class HomeTest {
         } finally { java.util.TimeZone.setDefault(before) }
     }
 
+    @Test fun appsAreArrangedByTheFamilyWithYouTubeFirstUntilThen() {
+        val apps = listOf("b.netflix" to "Netflix", "com.google.android.youtube.tv" to "YouTube", "a.shahid" to "Shahid", "c.play" to "Google Play")
+        assertEquals(listOf("com.google.android.youtube.tv", "c.play", "b.netflix", "a.shahid"), Daily.appOrder(apps, emptyList(), emptySet()))
+        var shown = Daily.appOrder(apps, emptyList(), emptySet())
+        shown = Daily.moveApp(shown, "a.shahid", "first"); assertEquals("a.shahid", shown[0]); assertEquals("com.google.android.youtube.tv", shown[1])
+        shown = Daily.moveApp(shown, "a.shahid", "later"); assertEquals(listOf("com.google.android.youtube.tv", "a.shahid", "c.play", "b.netflix"), shown)
+        shown = Daily.moveApp(shown, "b.netflix", "later"); assertEquals("the last one stays last", "b.netflix", shown.last())
+        // the saved order is kept, a newly installed app joins after it, a removed one drops out, a hidden one is left out
+        val later = apps.filter { it.first != "c.play" } + ("d.new" to "Anghami")
+        assertEquals(listOf("com.google.android.youtube.tv", "a.shahid", "b.netflix", "d.new"), Daily.appOrder(later, shown, emptySet()))
+        assertEquals(listOf("com.google.android.youtube.tv", "b.netflix", "d.new"), Daily.appOrder(later, shown, setOf("a.shahid")))
+    }
+
     @Test fun theNextPrayerCountsDownAndWrapsToTomorrow() {
         val t = intArrayOf(300, 720, 930, 1050, 1130)
         assertEquals(listOf(0, 60), Daily.next(240, t, 301).toList())

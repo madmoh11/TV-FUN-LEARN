@@ -178,4 +178,10 @@
     <string name="home_done">انتهت التلاوة  •  اكبس الزر الأوسط للإعادة</string>
     <string name="home_count">%1$d من %2$d</string>
     <string name="home_once">مرة واحدة</string>
+    <string name="home_app_first">خلّيه أول واحد</string>
+    <string name="home_app_earlier">قدّمه خطوة</string>
+    <string name="home_app_later">أخّره خطوة</string>
+    <string name="home_app_hide">أخفِه من القائمة</string>
+    <string name="home_app_show_all">رجّع التطبيقات المخفية</string>
+    <string name="home_app_tip">اكبس مطوّلاً على تطبيق لترتيبه</string>
 </resources>

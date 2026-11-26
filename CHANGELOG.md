@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.28
+
+- The apps on the home screen can be arranged: hold the middle button of the remote on an app to make it the first,
+  move it a step earlier or later, or hide it. YouTube leads the row until the family arranges it.
+
 ## 3.27
 
 - Reciting to the microphone is easier to live with:

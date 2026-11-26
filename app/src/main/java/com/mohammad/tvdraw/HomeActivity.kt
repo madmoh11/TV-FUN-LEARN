@@ -171,13 +171,14 @@ class HomeActivity : Activity() {
             tile(getString(R.string.home_kursi), "", 0xFF1F7A4D.toInt(), 300f, 170f) { openPages(getString(R.string.home_kursi), { Daily.ranges(it, listOf(intArrayOf(2, 255, 255))) }, true) }))
         row(col, getString(R.string.app_name), listOf(
             tile(getString(R.string.home_phone), "", 0xFF5B3FA8.toInt(), 420f, 170f) { showPhone() }))
-        row(col, getString(R.string.home_apps), appTiles())
+        row(col, getString(R.string.home_apps) + "   •   " + getString(R.string.home_app_tip), appTiles())
         col.addView(View(this), LinearLayout.LayoutParams(1, px(60f)))
 
         home = ScrollView(this); home.isVerticalScrollBarEnabled = false; home.clipChildren = false; home.addView(col)
         root.addView(home, FrameLayout.LayoutParams(-1, -1))
         refresh()
-        qt[0].requestFocus()
+        val stand = focusApp?.let { p -> col.findViewWithTag<View>(p) }; focusApp = null
+        (stand ?: qt[0]).requestFocus()
     }
 
     private fun surahNames(): List<String> = try {
@@ -186,21 +187,43 @@ class HomeActivity : Activity() {
     } catch (e: Throwable) { emptyList() }.let { l -> if (l.size == 114) l else List(114) { (it + 1).toString() } }
 
     /** The other apps of the TV, so the home screen can stand in for the launcher of the box. */
+    private var focusApp: String? = null                         // the app to stand on again after the row is rebuilt
+    private fun saved(key: String) = (sp.getString(key, "") ?: "").split(',').filter { it.isNotEmpty() }
+
+    /** The other apps of the TV, in the order the family chose (YouTube first until then). Holding the middle button on one arranges it. */
     private fun appTiles(): List<View> {
         val out = ArrayList<View>()
         try {
-            val pm = packageManager; val seen = HashSet<String>()
-            for (cat in arrayOf(Intent.CATEGORY_LEANBACK_LAUNCHER, Intent.CATEGORY_LAUNCHER)) {
-                val list = pm.queryIntentActivities(Intent(Intent.ACTION_MAIN).addCategory(cat), 0).sortedBy { it.loadLabel(pm).toString().lowercase() }
-                for (r in list) { val pkg = r.activityInfo.packageName
-                    if (pkg == packageName || !seen.add(pkg)) continue
+            val pm = packageManager; val info = LinkedHashMap<String, Triple<String, android.graphics.drawable.Drawable?, Intent>>()
+            for (cat in arrayOf(Intent.CATEGORY_LEANBACK_LAUNCHER, Intent.CATEGORY_LAUNCHER))
+                for (r in pm.queryIntentActivities(Intent(Intent.ACTION_MAIN).addCategory(cat), 0)) { val pkg = r.activityInfo.packageName
+                    if (pkg == packageName || pkg in info) continue
                     val icon = try { r.activityInfo.loadBanner(pm) ?: r.activityInfo.applicationInfo.loadBanner(pm) ?: r.loadIcon(pm) } catch (e: Throwable) { null }
                     val go = (if (cat == Intent.CATEGORY_LEANBACK_LAUNCHER) pm.getLeanbackLaunchIntentForPackage(pkg) else null) ?: pm.getLaunchIntentForPackage(pkg) ?: continue
-                    out.add(tile(r.loadLabel(pm).toString(), "", 0xFF16323A.toInt(), 300f, 200f, false, icon) { try { startActivity(go) } catch (e: Throwable) { } })
-                    if (out.size >= 40) return out }
-            }
+                    info[pkg] = Triple(r.loadLabel(pm).toString(), icon, go) }
+            val shown = Daily.appOrder(info.map { it.key to it.value.first }, saved("apps"), saved("apps_hidden").toSet())
+            for (pkg in shown.take(40)) { val a = info[pkg] ?: continue
+                val t = tile(a.first, "", 0xFF16323A.toInt(), 300f, 200f, false, a.second) { try { startActivity(a.third) } catch (e: Throwable) { } }
+                t.tag = pkg; t.isLongClickable = true
+                t.setOnLongClickListener { arrange(pkg, a.first, shown); true }
+                out.add(t) }
         } catch (e: Throwable) { }
         return out
+    }
+
+    private fun arrange(pkg: String, title: String, shown: List<String>) {
+        val hidden = saved("apps_hidden")
+        val items = arrayListOf(getString(R.string.home_app_first), getString(R.string.home_app_earlier), getString(R.string.home_app_later), getString(R.string.home_app_hide))
+        if (hidden.isNotEmpty()) items.add(getString(R.string.home_app_show_all))
+        android.app.AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert).setTitle(title).setItems(items.toTypedArray()) { _, which ->
+            val e = sp.edit()
+            when (which) {
+                0, 1, 2 -> e.putString("apps", Daily.moveApp(shown, pkg, arrayOf("first", "earlier", "later")[which]).joinToString(","))
+                3 -> { e.putString("apps", shown.joinToString(",")); e.putString("apps_hidden", (hidden + pkg).distinct().joinToString(",")) }
+                else -> e.putString("apps_hidden", "")
+            }
+            e.apply(); focusApp = if (which == 3) null else pkg; build()
+        }.show()
     }
 
     // ---- the clock and the prayer times ----

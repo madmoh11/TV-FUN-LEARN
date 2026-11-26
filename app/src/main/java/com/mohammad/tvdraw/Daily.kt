@@ -52,6 +52,26 @@ object Daily {
         return out
     }
 
+    /** Apps that lead the row until the family arranges it: YouTube first. */
+    val APPS_FIRST = listOf("com.google.android.youtube.tv", "com.google.android.youtube", "com.google.android.youtube.tvkids")
+
+    /**
+     * The order of the apps on the home screen. apps are package names with their titles; saved is the order the
+     * family chose. Apps not arranged yet follow: YouTube, then the rest by title. Hidden apps are left out.
+     */
+    fun appOrder(apps: List<Pair<String, String>>, saved: List<String>, hidden: Set<String>): List<String> {
+        val have = apps.map { it.first }.toSet()
+        val placed = saved.filter { it in have }.distinct()
+        val rest = apps.filter { it.first !in placed }.sortedWith(compareBy({ APPS_FIRST.indexOf(it.first).let { i -> if (i < 0) 99 else i } }, { it.second.lowercase() })).map { it.first }
+        return (placed + rest).filter { it !in hidden }
+    }
+    /** The shown order after one app is moved: how is "first", "earlier" or "later". */
+    fun moveApp(shown: List<String>, pkg: String, how: String): List<String> {
+        val l = shown.toMutableList(); val i = l.indexOf(pkg); if (i < 0) return shown
+        val to = when (how) { "first" -> 0; "earlier" -> i - 1; "later" -> i + 1; else -> i }.coerceIn(0, l.size - 1)
+        l.removeAt(i); l.add(to, pkg); return l
+    }
+
     /** Which prayer comes next and how many minutes away it is. today holds the five times in minutes of the day. */
     fun next(now: Int, today: IntArray, tomorrowFajr: Int): IntArray {
         for (i in today.indices) if (today[i] > now) return intArrayOf(i, today[i] - now)
