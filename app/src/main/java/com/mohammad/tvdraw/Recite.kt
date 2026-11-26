@@ -17,6 +17,23 @@ object Arabic {
         (expected.endsWith('ت') && heard.length == expected.length && heard.endsWith('ه') && heard.regionMatches(0, expected, 0, expected.length - 1) && OPEN_TA.any { expected.endsWith(it) })
     /** Words the mushaf writes with an open ta where everyday spelling has a ta marbuta: "رحمت" for "رحمة". */
     private val OPEN_TA = listOf("رحمت", "نعمت", "امرات", "سنت", "شجرت", "جنت", "لعنت", "كلمت", "بقيت", "قرت", "فطرت", "معصيت", "ابنت")
+    /** Letters a recogniser often writes for one another, written the same way: the heavy letters as their light twins. */
+    private fun sound(n: String, wide: Boolean): String { val sb = StringBuilder()
+        for (c in n) sb.append(when (c) { 'ص', 'ث' -> 'س'; 'ض' -> 'د'; 'ذ', 'ظ' -> 'ز'; 'ط' -> 'ت'; 'ق' -> if (wide) 'ك' else c; 'ح' -> if (wide) 'ه' else c; else -> c })
+        return sb.toString() }
+    /**
+     * Whether a heard word is close enough to the expected one to be the recogniser's slip and not the reciter's.
+     * ease 0 allows nothing; 1 forgives letters that sound alike; 2 also forgives one letter in a word of four or more
+     * and two in a word of seven or more, which lets some look-alike words through.
+     */
+    fun near(heard: String, expected: String, ease: Int): Boolean {
+        if (ease <= 0 || heard.isEmpty()) return false
+        val a = sound(heard, ease >= 2); val b = sound(expected, ease >= 2)
+        if (a == b || (a.length >= 4 && b.length >= 4 && loose(a) == loose(b))) return true
+        if (ease < 2 || expected.length < 4) return false
+        val d = distance(a, b)
+        return d <= 1 || (expected.length >= 7 && d <= 2)
+    }
     fun distance(a: String, b: String): Int { var p = IntArray(b.length + 1) { it }
         for (i in 1..a.length) { val q = IntArray(b.length + 1); q[0] = i
             for (j in 1..b.length) q[j] = minOf(p[j] + 1, q[j - 1] + 1, p[j - 1] + (if (a[i - 1] == b[j - 1]) 0 else 1)); p = q }
@@ -29,10 +46,10 @@ object Arabic {
  * until the right word is said. Going back a few words to take a run-up, and the opening "أعوذ بالله" and basmala,
  * are not mistakes. Plain Kotlin, so the rules can be tested on their own.
  */
-class Recite(val items: List<Item>) {
+class Recite(val items: List<Item>, var ease: Int = 1) {
     /** One word of the mushaf (words from..to of its ayah) and the plain words that are heard for it. */
     class Item(val ayah: Int, val from: Int, val to: Int, val say: List<String>, val whole: String?)
-    companion object { const val ADVANCED = 1; const val MISTAKE = 2; const val AYAH = 4; const val DONE = 8; const val BACK = 12
+    companion object { const val ADVANCED = 1; const val MISTAKE = 2; const val AYAH = 4; const val DONE = 8; const val BACK = 12; const val HELPED = 16; const val TRIES = 3
         private val REFUGE = listOf("اعوذ", "بالله", "من", "الشيطان", "الرجيم"); private val BASMALA = listOf("بسم", "الله", "الرحمن", "الرحيم") }
 
     private val tok = ArrayList<String>(); private val itemOf = ArrayList<Int>(); private val first = IntArray(items.size)
@@ -51,17 +68,27 @@ class Recite(val items: List<Item>) {
 
     private var session = -1; private val seen = ArrayList<String>(); private var consumed = 0; private var replayTo = 0
     private var back = -1; private var pre = 0; private var errAt = -1; private var errItem = -1
+    private var misses = 0; private var missAt = -1; private var missItem = -1
+    private fun ok(h: String, e: String) = Arabic.same(h, e) || Arabic.near(h, e, ease)
+    /** Where a run-up may begin: the start of the ayah that is being recited, or of the one before it when a new ayah is about to start. */
+    private fun runStart(): Int {
+        if (tp <= 0) return 0
+        val at = itemOf[minOf(tp, tok.size - 1)]; var i = at
+        while (i > 0 && items[i - 1].ayah == items[at].ayah) i--
+        if (first[i] >= tp && i > 0) { val prev = items[i - 1].ayah; i--; while (i > 0 && items[i - 1].ayah == prev) i-- }
+        return first[i]
+    }
 
     /** Tries one heard word (and the one after it) at the place that is waited for: the place after it and how many heard words it took, or null. */
     private fun match(h: String, h2: String?): IntArray? {
         if (tp >= tok.size) return null
         val e = tok[tp]; val it = itemOf[tp]; val opens = items[it].whole != null && tp == first[it]; val after = first[it] + items[it].say.size
-        if (Arabic.same(h, e)) return intArrayOf(tp + 1, 1)
+        if (ok(h, e)) return intArrayOf(tp + 1, 1)
         if (opens && h == items[it].whole) return intArrayOf(after, 1)
         var cat = e                                              // two or three words heard as one: "ياايها"
-        for (k in 1..2) { if (tp + k >= tok.size) break; cat += tok[tp + k]; if (Arabic.same(h, cat)) return intArrayOf(tp + k + 1, 1) }
-        if (h2 != null && Arabic.same(h + h2, e)) return intArrayOf(tp + 1, 2)      // one word heard as two
-        if (opens && after < tok.size && Arabic.same(h, tok[after])) return intArrayOf(after + 1, 1)      // opening letters the recogniser could not write
+        for (k in 1..2) { if (tp + k >= tok.size) break; cat += tok[tp + k]; if (ok(h, cat)) return intArrayOf(tp + k + 1, 1) }
+        if (h2 != null && ok(h + h2, e)) return intArrayOf(tp + 1, 2)      // one word heard as two
+        if (opens && after < tok.size && ok(h, tok[after])) return intArrayOf(after + 1, 1)      // opening letters the recogniser could not write
         return null
     }
     private fun advance(to: Int, at: Int): Int {
@@ -77,7 +104,7 @@ class Recite(val items: List<Item>) {
      * Returns ADVANCED, MISTAKE, AYAH (an ayah was finished) and DONE as flags.
      */
     fun heard(sessionId: Int, final: Boolean, offset: Int, words: List<String>, alts: List<List<String>> = emptyList()): Int {
-        if (sessionId != session) { session = sessionId; seen.clear(); consumed = 0; replayTo = 0; back = -1; errAt = -1; if (tp == 0) pre = 0 }
+        if (sessionId != session) { session = sessionId; seen.clear(); consumed = 0; replayTo = 0; back = -1; errAt = -1; missAt = -1; if (tp == 0) pre = 0 }
         if (words.isNotEmpty()) lastHeard = words.takeLast(6).joinToString(" ")
         val end = offset + words.size
         for (k in words.indices) { val a = offset + k; val n = Arabic.norm(words[k])
@@ -99,20 +126,32 @@ class Recite(val items: List<Item>) {
                 else if (match(h, h2) != null) pre = -1
                 else { if (last && !final) break; i++; continue }
             }
+            if (back in 0 until tp) {                            // going over words already said, up to the word that is waited for
+                if (ok(h, tok[back])) { if (++back >= tp) back = -1; i++; continue }
+                val m0 = match(h, h2)
+                if (m0 != null) { flags = flags or advance(m0[0], i); i += m0[1]; continue }      // jumped straight to the missing word
+                if (last && !final) break
+                if (++back >= tp) back = -1; i++; continue        // misheard while repeating: it is not judged
+            }
             val m = match(h, h2)
             if (m != null) { flags = flags or advance(m[0], i); i += m[1]; continue }
-            if (back in 0 until tp && Arabic.same(h, tok[back])) { if (++back >= tp) back = -1; i++; continue }      // going over words already said
-            // a run-up starts at the word just said, or at an earlier one when the word after it follows too
-            val near = (tp - 1 downTo maxOf(0, tp - BACK)).filter { Arabic.same(h, tok[it]) }
-            val b = near.firstOrNull { it + 1 >= tp || (h2 != null && Arabic.same(h2, tok[it + 1])) }
+            // a run-up starts at the word just said, or at an earlier one (back to the start of the ayah) when the word after it follows too
+            val near = (tp - 1 downTo maxOf(0, minOf(tp - BACK, runStart()))).filter { ok(h, tok[it]) }
+            val b = near.firstOrNull { it + 1 >= tp || (h2 != null && ok(h2, tok[it + 1])) }
             if (b != null) { back = if (b + 1 >= tp) -1 else b + 1; i++; continue }
             if (near.isNotEmpty() && h2 == null && !final) break
             if (i < replayTo) { i++; continue }                   // old words the recogniser rewrote
             if (!final && end - 1 - i < 2) break                 // too fresh to judge: it may still change
             if (h2 != null && match(h2, if (i + 2 < end) seen[i + 2].ifEmpty { null } else null) != null) { i++; continue }      // put right straight away, or a stray sound
-            if (final && alts.any { a -> (i - 1..i + 1).any { j -> a.getOrNull(j - offset)?.let { Arabic.same(Arabic.norm(it), tok[tp]) } == true } }) { flags = flags or advance(tp + 1, i); i++; continue }
+            if (final && alts.any { a -> (i - 1..i + 1).any { j -> a.getOrNull(j - offset)?.let { ok(Arabic.norm(it), tok[tp]) } == true } }) { flags = flags or advance(tp + 1, i); i++; continue }
             if (!pending) flags = flags or MISTAKE
-            errItem = itemOf[tp]; wrong[errItem] = true; pending = true; errAt = i; back = -1; i++
+            errItem = itemOf[tp]; wrong[errItem] = true; pending = true; errAt = i; back = -1
+            if (missItem != errItem) { missItem = errItem; misses = 0; missAt = -1 }
+            if (i > missAt) { missAt = i; misses++ }              // a word the recogniser rewrote is one try, not two
+            i++
+            if (ease >= 2 && misses >= TRIES) {                   // stuck: the word is shown, it stays a mistake, and the recitation goes on
+                val it = errItem; misses = 0; missItem = -1
+                flags = flags or HELPED or advance(first[it] + items[it].say.size, Int.MAX_VALUE); wrong[it] = true }
         }
         consumed = i
         return flags

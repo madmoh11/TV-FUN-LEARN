@@ -46,6 +46,7 @@ class Hifz(private val view: View) {
     private var partId = ""; private var playing = false; private var token = 0
     private var touched = 0L; private var stateAt = 0L; private var wrongAyah = 0; private var wrongAt = 0L
     private var result: HifzPlan.Entry? = null
+    private var ease = sp.getInt("hifz_ease", 1)                                           // how forgiving the listening is: 0 exact, 1 usual, 2 easy
     private var rec: Recite? = null                                    // read: follows the recitation word by word
     private var pages: List<IntRange> = emptyList()                    // read: the ayahs shown together on the TV
     val active get() = state != OFF
@@ -83,7 +84,7 @@ class Hifz(private val view: View) {
         state = mode; stateAt = SystemClock.uptimeMillis()
         rec = null
         if (mode == READ) {
-            rec = Recite((from..to).flatMap { a -> quran.spoken(s, a).map { Recite.Item(a, it.from, it.to, it.say, it.whole) } })
+            rec = Recite((from..to).flatMap { a -> quran.spoken(s, a).map { Recite.Item(a, it.from, it.to, it.say, it.whole) } }, ease)
             val pg = ArrayList<IntRange>(); var start = from; var count = 0
             for (a in from..to) { val n = quran.words(s, a).size; if (a > start && count + n > PAGE_WORDS) { pg.add(start until a); start = a; count = 0 }; count += n }
             pg.add(start..to); pages = pg
@@ -93,7 +94,7 @@ class Hifz(private val view: View) {
     /** After something was heard or a grown-up helped: sounds, the ayah that is waited for, and the end. */
     private fun followed(flags: Int, now: Long) {
         val r = rec ?: return
-        if (flags and Recite.MISTAKE != 0) sfx?.play("thump", 0.5f, true)
+        // a mistake makes no sound: the TV turns red and the phone that listens gives a short buzz in the hand
         if (r.done) { for (a in from..to) marks[a - from] = if (r.items.indices.any { r.items[it].ayah == a && r.wrong[it] }) 2 else 1; cur = to; finish(now) }
         else { cur = r.items[r.current].ayah; if (flags and Recite.AYAH != 0) sfx?.play("blip", 0.5f, true) }
     }
@@ -114,6 +115,7 @@ class Hifz(private val view: View) {
             "part" -> quran.part(pp[2])?.let { open(when (pp.getOrElse(3) { "test" }) { "listen" -> LISTEN; "read" -> READ; else -> TEST }, it.surah, it.from, it.to, it.id) }
             "heard" -> if (state == READ) rec?.let { r -> fun list(t: String) = URLDecoder.decode(t, "UTF-8").split(' ').filter { it.isNotEmpty() }
                 followed(r.heard(pp[2].toInt(), pp[3] == "1", pp[4].toInt(), list(pp.getOrElse(5) { "" }), pp.getOrElse(6) { "" }.split("%7C", "|").filter { it.isNotEmpty() }.map { list(it) }), now) }
+            "ease" -> { ease = pp[2].toInt().coerceIn(0, 2); sp.edit().putInt("hifz_ease", ease).apply(); rec?.ease = ease }
             "reveal" -> if (state == READ) rec?.let { followed(it.reveal(), now) }
             "ok" -> if (state == READ) rec?.let { followed(it.accept(), now) }
             "next" -> if (state == LISTEN && cur < to) { cur++; recite() }

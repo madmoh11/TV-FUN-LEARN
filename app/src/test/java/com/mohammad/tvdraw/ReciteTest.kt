@@ -68,6 +68,54 @@ class ReciteTest {
         assertTrue(Arabic.same(Arabic.norm("آمَنُوا"), Arabic.norm("امنو"))); assertFalse(Arabic.same(Arabic.norm("الله"), Arabic.norm("إله"))); assertFalse(Arabic.same(Arabic.norm("يعلمون"), Arabic.norm("تعلمون"))); assertFalse(Arabic.same(Arabic.norm("قال"), Arabic.norm("قل")))
         assertTrue(Arabic.same(Arabic.norm("رحمة"), "رحمت")); assertFalse(Arabic.same(Arabic.norm("جعله"), "جعلت"))
     }
+    private fun rec(s: Int, a: Int, b: Int, ease: Int) = Recite((a..b).flatMap { n -> q.spoken(s, n).map { Recite.Item(n, it.from, it.to, it.say, it.whole) } }, ease)
+
+    @Test fun lettersThatSoundAlikeAreTheRecognisersSlip() {
+        val heard = plain(1, 6).replace('ص', 'س').replace('ط', 'ت')                 // the heavy letters written as their light twins
+        assertNotEquals(plain(1, 6), heard)
+        var r = rec(1, 6, 6, 1); assertEquals(0, r.say(heard) and Recite.MISTAKE); assertTrue(r.done); assertEquals(0, r.mistakes)
+        r = rec(1, 6, 6, 0); assertTrue("exact listening does not forgive it", r.say(heard) and Recite.MISTAKE != 0)
+        // look-alike words are still mistakes at the usual level, and only the easy level lets them through
+        for (pair in listOf("تعلمون" to "يعلمون", "عليكم" to "عليهم", "قالوا" to "قال", "عليها" to "عليه", "نزل" to "انزل", "قتلوا" to "قاتلوا")) {
+            assertFalse(pair.toString(), Arabic.near(Arabic.norm(pair.first), Arabic.norm(pair.second), 1))
+            assertFalse(pair.toString(), Arabic.same(Arabic.norm(pair.first), Arabic.norm(pair.second))) }
+        assertTrue(Arabic.near("عليكم", "عليهم", 2)); assertFalse("short words are never guessed", Arabic.near("من", "عن", 2)); assertFalse(Arabic.near("قال", "قل", 2))
+        assertFalse(Arabic.near("الله", "اله", 1))
+    }
+
+    @Test fun startingTheAyahAgainIsFollowedHoweverLongItIs() {
+        val w = plain(2, 255).split(' '); assertTrue(w.size > 40)
+        // a slip at word 21, then the whole ayah from its first word
+        var r = rec(2, 255, 255); var f = r.say((w.take(20) + "خطا").joinToString(" ")); assertTrue(f and Recite.MISTAKE != 0); val stuck = r.current
+        f = r.say(w.take(30).joinToString(" ")); assertEquals("going over the ayah raises no new mistake", 0, f and Recite.MISTAKE)
+        assertFalse(r.pending); assertTrue("and it goes on past the word that was missed", r.current > stuck + 5); assertEquals(1, r.mistakes)
+        // the same with no slip at all: just starting again
+        r = rec(2, 255, 255); r.say(w.take(25).joinToString(" ")); val at = r.current
+        f = r.say(w.take(35).joinToString(" ")); assertEquals(0, f and Recite.MISTAKE); assertEquals(0, r.mistakes); assertTrue(r.current > at)
+        // only the missed word, said right, is enough
+        r = rec(2, 255, 255); r.say((w.take(20) + "خطا").joinToString(" ")); val miss = r.current
+        f = r.say(w.subList(20, 26).joinToString(" ")); assertEquals(0, f and Recite.MISTAKE); assertFalse(r.pending); assertTrue(r.current > miss + 3)
+        // a word misheard while going over what was already said is not judged
+        r = rec(2, 255, 255); r.say(w.take(25).joinToString(" "))
+        val again = w.take(32).toMutableList(); again[7] = "شيء"; again[15] = "كذا"
+        f = r.say(again.joinToString(" ")); assertEquals(0, f and Recite.MISTAKE); assertEquals(0, r.mistakes); assertFalse(r.pending)
+        // a new ayah about to begin: the one before it may be said again
+        r = rec(1, 2, 4); r.say(plain(1, 2) + " " + plain(1, 3)); val two = r.current
+        f = r.say(plain(1, 3) + " " + plain(1, 4)); assertEquals(0, f and Recite.MISTAKE); assertTrue(r.done); assertTrue(two < r.items.size)
+    }
+
+    @Test fun theEasyLevelShowsAWordAfterThreeTries() {
+        var r = rec(112, 1, 4, 2); r.say("قل هو الله"); assertEquals(3, r.current)
+        assertEquals(0, r.say("الصمد") and Recite.HELPED); assertEquals(0, r.say("الصمد") and Recite.HELPED); assertTrue(r.pending)
+        val f = r.say("الصمد"); assertTrue(f and Recite.HELPED != 0); assertEquals("the word is shown and the recitation goes on", 4, r.current); assertFalse(r.pending)
+        assertTrue("it stays a mistake", r.wrong[3]); assertEquals(1, r.mistakes)
+        // the usual level waits for as long as it takes
+        r = rec(112, 1, 4, 1); r.say("قل هو الله"); repeat(6) { r.say("الصمد") }; assertEquals(3, r.current); assertTrue(r.pending)
+        // one word that the recogniser rewrites several times is one try
+        r = rec(112, 1, 4, 2); r.say("قل هو الله")
+        for (n in 0..5) r.heard(500, false, 0, listOf("الصمد", "ثم", "بعد")); assertEquals(3, r.current)
+    }
+
     @Test fun wordsHeardAsTwoOrAsOneAndOpeningLetters() {
         var r = rec(2, 21, 21); r.say("يا ايها الناس اعبدوا"); assertEquals(3, r.current)
         r = rec(2, 21, 21); r.say("ياايها الناس"); assertEquals(2, r.current); r = rec(2, 21, 21); r.say("يأيها الناس"); assertEquals(2, r.current)

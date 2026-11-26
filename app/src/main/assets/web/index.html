@@ -343,7 +343,8 @@ main{padding:10px 16px 20px;padding-inline-start:104px}
 <div class=row2><select id=hzsur></select></div>
 <div class=row2><span data-i=hz_from>x</span><input type=number id=hzfrom min=1 value=1 inputmode=numeric><span data-i=hz_to>x</span><input type=number id=hzto min=1 value=1 inputmode=numeric></div>
 <div class=two><button id=hzlisten style="background:#1a6f55"><span data-i=hz_listen>x</span></button><button id=hztest style="background:#7a5a00"><span data-i=hz_do_test>x</span></button></div>
-<label class=ck><input type=checkbox id=hzmic><span data-i=hz_mic>x</span></label><p class=hint id=hzmich></p><a id=hzsec class=btn hidden><span data-i=open_secure>x</span></a>
+<label class=ck><input type=checkbox id=hzmic><span data-i=hz_mic>x</span></label><p class=hint id=hzmich></p>
+<div class=row2><span data-i=hz_ease>x</span><select id=hzease><option value=0 data-i=hz_ease0>x<option value=1 data-i=hz_ease1>x<option value=2 data-i=hz_ease2>x</select></div><p class=hint id=hzeaseh></p><a id=hzsec class=btn hidden><span data-i=open_secure>x</span></a>
 <h4><span data-i=hz_chal>x</span></h4>
 <div class=two><button id=hzquizS style="background:#7a3fd8"><span data-i=hz_chal_s>x</span></button><button id=hzquizJ style="background:#7a3fd8"><span data-i=hz_chal_j>x</span></button></div>
 <p class=hint><span data-i=hz_chal_hint>x</span></p>
@@ -794,7 +795,9 @@ E('hzback').onclick=()=>{hzdeaf();send('hz close');setTimeout(hzpoll,250)};
 const SRC=window.SpeechRecognition||window.webkitSpeechRecognition,hzcan=!!(SRC&&window.isSecureContext);let hzsr=null,hzlis=false,hzsid=Date.now()%100000,hzsent='';
 function hzmicOn(){return hzcan&&E('hzmic').checked}
 function hzmicUI(){E('hzmicb').textContent=T(hzlis?'hz_mic_on':'hz_mic_off');E('hzmicb').style.background=hzlis?'#b3261e':'#1a6f55'}
-function hzhear(){if(hzlis||!hzcan)return;hzlis=true;E('hzheard').textContent='';hzgo();hzmicUI();if(navigator.wakeLock)navigator.wakeLock.request('screen').then(l=>{wl=l}).catch(()=>{})}
+function hzeaseUI(){E('hzeaseh').textContent=T('hz_ease_h'+E('hzease').value)}
+try{E('hzease').value=localStorage.hzease||1}catch(e){}hzeaseUI();E('hzease').onchange=()=>{try{localStorage.hzease=E('hzease').value}catch(e){}hzeaseUI();send('hz ease '+E('hzease').value)};
+function hzhear(){send('hz ease '+E('hzease').value);if(hzlis||!hzcan)return;hzlis=true;E('hzheard').textContent='';hzgo();hzmicUI();if(navigator.wakeLock)navigator.wakeLock.request('screen').then(l=>{wl=l}).catch(()=>{})}
 function hzdeaf(){hzlis=false;if(hzsr){try{hzsr.abort()}catch(e){}hzsr=null}hzmicUI()}
 function hzgo(){if(!hzlis)return;let r;try{r=new SRC()}catch(e){hzlis=false;hzmicUI();return}hzsr=r;const sid=++hzsid;r.lang='ar-SA';r.interimResults=true;r.continuous=true;r.maxAlternatives=3;
 r.onresult=e=>{const R=e.results,n=R.length;if(!n)return;const x=R[n-1],prev=n>1?R[n-2][0].transcript.trim():'';let pre='';

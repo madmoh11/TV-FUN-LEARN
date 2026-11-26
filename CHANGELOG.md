@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.27
+
+- Reciting to the microphone is easier to live with:
+  - Starting the ayah again is followed however long the ayah is, after a mistake or without one, and so is saying
+    only the missed word. A word misheard while going over what was already said is not judged.
+  - Letters that sound alike (the heavy letters and their light twins) are taken as the recogniser's slip.
+  - A choice on the phone, **how easy the listening is**: exact, usual or easy. The easy level forgives one letter in a
+    long word and writes a word after three tries, still counted as a mistake.
+  - A mistake no longer makes a sound on the TV: the screen turns red and the phone buzzes.
+
 ## 3.26
 
 - The home screen can have a **background picture**: four that come with the app (a mosque at dusk, a geometric
