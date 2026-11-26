@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">لمّة</string>
+    <string name="looking">عم ندوّر على التلفزيون على هاي الشبكة…</string>
+    <string name="none">ما لقينا تلفزيون شغّال عليه لمّة. تأكد إنه التليفون والتلفزيون على نفس الواي فاي وإنه لمّة مفتوحة على التلفزيون.</string>
+    <string name="found">اختار تلفزيونك</string>
+    <string name="tv_at">لمّة %1$s  •  %2$s</string>
+    <string name="again">دوّر مرة ثانية</string>
+    <string name="manual">أو اكتب عنوان التلفزيون</string>
+    <string name="go">افتح</string>
+    <string name="lost">التلفزيون ما ردّ. هو شغّال؟</string>
+    <string name="no_wifi">وصّل التليفون بالواي فاي أول.</string>
+    <string name="saving">عم ينحفظ الفيديو بمجلد التنزيلات…</string>
+    <string name="exit_hint">اكبس رجوع مرة ثانية للخروج</string>
+</resources>

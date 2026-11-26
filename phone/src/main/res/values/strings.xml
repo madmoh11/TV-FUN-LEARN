@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Lamma</string>
+    <string name="looking">Looking for the TV on this Wi-Fi…</string>
+    <string name="none">No TV running Lamma was found. Check that the phone and the TV are on the same Wi-Fi and that Lamma is open on the TV.</string>
+    <string name="found">Choose your TV</string>
+    <string name="tv_at">Lamma %1$s  •  %2$s</string>
+    <string name="again">Search again</string>
+    <string name="manual">Or type the TV\'s address</string>
+    <string name="go">Open</string>
+    <string name="lost">The TV did not answer. Is it on?</string>
+    <string name="no_wifi">Connect the phone to the Wi-Fi first.</string>
+    <string name="saving">The video is being saved to Downloads…</string>
+    <string name="exit_hint">Press Back again to leave</string>
+</resources>

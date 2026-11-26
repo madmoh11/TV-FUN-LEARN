@@ -194,4 +194,6 @@
     <string name="home_app_hide">Hide it from the row</string>
     <string name="home_app_show_all">Bring back the hidden apps</string>
     <string name="home_app_tip">hold the middle button on an app to arrange it</string>
+    <string name="keys_name">Lamma remote</string>
+    <string name="keys_about">Lets your phone press Back and Home on the TV from the Lamma page. It reads nothing from the screen.</string>
 </resources>

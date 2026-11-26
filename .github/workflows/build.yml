@@ -47,11 +47,14 @@ jobs:
         run: |
           ./gradlew assembleRelease
           cp app/build/outputs/apk/release/app-release.apk lamma.apk
+          cp phone/build/outputs/apk/release/phone-release.apk lamma-phone.apk
 
       - uses: actions/upload-artifact@v4
         with:
           name: lamma-apk
-          path: lamma.apk
+          path: |
+            lamma.apk
+            lamma-phone.apk
 
       - name: Publish release
         if: startsWith(github.ref, 'refs/tags/v') || inputs.release_tag != ''
@@ -60,5 +63,7 @@ jobs:
           tag_name: ${{ inputs.release_tag || github.ref_name }}
           name: Lamma ${{ inputs.release_tag || github.ref_name }}
           target_commitish: ${{ github.sha }}
-          files: lamma.apk
+          files: |
+            lamma.apk
+            lamma-phone.apk
           generate_release_notes: true

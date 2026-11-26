@@ -1,0 +1,47 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+// The phone side of Lamma: finds the TV on the Wi-Fi and shows its control page as an app, with the microphone,
+// the camera and speech recognition allowed without the browser's secure-link step.
+android {
+    namespace 'com.mohammad.lamma.phone'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.mohammad.lamma.phone'
+        minSdk 26
+        targetSdk 33
+        versionCode 1
+        versionName '1.0'
+    }
+
+    def ksFile = System.getenv('TVDRAW_KEYSTORE')
+    signingConfigs {
+        if (ksFile) {
+            release {
+                storeFile file(ksFile)
+                storePassword System.getenv('TVDRAW_KEYSTORE_PASSWORD')
+                keyAlias System.getenv('TVDRAW_KEY_ALIAS')
+                keyPassword System.getenv('TVDRAW_KEY_PASSWORD')
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig ksFile ? signingConfigs.release : signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions { jvmTarget = '17' }
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+}

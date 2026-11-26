@@ -36,7 +36,7 @@ select{flex:1;min-width:0;font-size:16px;padding:12px 8px;border-radius:12px;bor
 #bugk{flex-wrap:wrap}#bugk button{flex:1;background:#2f2759;padding:10px 6px;font-size:15px}#bugk button.on{background:#ffd60a;color:#111}#bugsv{min-width:48px;text-align:end}
 .frow.al,.frow.ch{display:flex;gap:8px;align-items:center;margin:0 0 8px}.frow.al span:nth-child(2),.frow.ch span:first-child{flex:1;min-width:0;overflow-wrap:anywhere}.frow.ch span:nth-child(2){color:#ffd60a;font-weight:800}.frow.ch.done span:first-child{opacity:.55;text-decoration:line-through}.frow button{padding:8px 12px;font-size:15px;flex:none}.frow .fx{background:#3a2030;padding:8px 11px}#alq button.on{background:#34c759}
 @font-face{font-family:"Mushaf";src:url(/app/AmiriQuran.ttf) format("truetype");font-display:swap}
-.qcard{background:#0e1e1a;border:1px solid #ffd60a55}.qcard h3{color:#ffd60a}#zplay.qr .zmrow{display:none}#bgpick{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}#bgpick button{aspect-ratio:16/9;padding:0;background:#0b3c44 center/cover;font-size:12px;border:2px solid transparent}#bgpick button.on{border-color:#ffd60a}#hzplay{background:#0e1e1a;touch-action:auto;user-select:auto;-webkit-user-select:auto}#hzbody{flex:1;min-height:0;overflow-y:auto;touch-action:pan-y;padding-top:6px;grid-column:1/3}
+.qcard{background:#0e1e1a;border:1px solid #ffd60a55}.qcard h3{color:#ffd60a}#zplay.qr .zmrow{display:none}body.napp #homecard{display:none}#rcpad{display:grid;grid-template-areas:". u ." "l o r" ". d .";grid-template-columns:repeat(3,1fr);gap:10px;max-width:330px;margin:4px auto 0;direction:ltr}#rcpad button{padding:22px 0;font-size:26px;background:#2c2358;touch-action:manipulation}#rcpad button.go{background:#7a3fd8;font-size:22px}#tabs button{min-width:0}#bgpick{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}#bgpick button{aspect-ratio:16/9;padding:0;background:#0b3c44 center/cover;font-size:12px;border:2px solid transparent}#bgpick button.on{border-color:#ffd60a}#hzplay{background:#0e1e1a;touch-action:auto;user-select:auto;-webkit-user-select:auto}#hzbody{flex:1;min-height:0;overflow-y:auto;touch-action:pan-y;padding-top:6px;grid-column:1/3}
 #hzplay h4{margin:16px 0 8px;font-size:16px;color:#ffd60a}#hzplay input[type=number]{width:74px;flex:none;text-align:center}#hzplay select{flex:1;min-width:0}
 #hzdue button{display:flex;width:100%;gap:8px;align-items:center;justify-content:space-between;margin:0 0 8px;padding:10px 14px;background:#16352d;font-family:"Mushaf","Lamma",serif;font-size:21px}#hzdue button small{font-family:"Lamma",system-ui;font-size:13px;color:#ffd60a;flex:none}
 #hzjuz{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}#hzjuz button{padding:10px 0;background:#16352d;font-size:16px}#hzjuz button.on{background:#ffd60a;color:#111}
@@ -285,6 +285,18 @@ main{padding:10px 16px 20px;padding-inline-start:104px}
 <p class=hint><span data-i=prank_hint>“Cracked screen”: every tap adds more cracks. “Insect”: one tap brings it, a second tap sends it away; pick its kind and size below. “Lion” takes 7 seconds: a black frame closes on the screen, the lion runs in from far away and jumps out of the frame.</span></p></div>
 </section>
 
+<section class=tab id=t-rc hidden>
+<div class=card><h3><span data-i=rc_title>x</span></h3>
+<div id=rcpad><button data-rc=up style="grid-area:u">▲</button><button data-rc=left style="grid-area:l">◀</button><button data-rc=ok style="grid-area:o" class=go>OK</button><button data-rc=right style="grid-area:r">▶</button><button data-rc=down style="grid-area:d">▼</button></div>
+<div class=row3 style="margin-top:12px"><button class=g data-rc=back><span data-i=rc_back>x</span></button><button class=g data-rc=home>🏠</button><button class=g data-rc=hold><span data-i=rc_hold>x</span></button></div>
+<div class=row3 style="margin-top:8px"><button class=g data-vol=down>🔉 −</button><button class=g data-vol=mute>🔇</button><button class=g data-vol=up>🔊 +</button></div>
+<p class=hint><span data-i=rc_note>x</span></p><p class=hint id=rcacc></p></div>
+<div class=card><h3><span data-i=rec_title>x</span></h3>
+<p class=cd><span data-i=rec_desc>x</span></p>
+<button id=recb style="width:100%;padding:18px;font-size:18px;font-weight:600;background:#b3261e"><span data-i=rec_start>x</span></button>
+<p class=hint id=rech></p><a id=recdl class=btn hidden><span data-i=rec_get>x</span></a></div>
+</section>
+
 <section class=tab id=t-set hidden>
 <div class=card id=homecard><h3><span data-i=home_title>📲 Put Lamma on your home screen</span></h3>
 <p class=hint style="margin-top:0"><span data-i=home_why>One tap opens it like an app, with no address to type.</span></p>
@@ -297,7 +309,8 @@ main{padding:10px 16px 20px;padding-inline-start:104px}
 <button class=g id=bgup style="width:100%;margin-top:10px"><span data-i=tvhome_up>x</span></button><input type=file id=bgfile accept="image/*" hidden>
 <p class=hint id=bgh></p>
 <div class=row2 style="margin-top:12px"><span data-i=tvhome_clock>x</span><select id=zshift><option value=-1 data-i=tvhome_m1>x<option value=0 data-i=tvhome_0>x<option value=1 data-i=tvhome_p1>x</select></div>
-<p class=hint id=zclock></p><p class=hint id=zver style="font-weight:600"></p></div>
+<p class=hint id=zclock></p><p class=hint id=zver style="font-weight:600"></p>
+<button class=g id=napp style="width:100%;margin-top:10px" hidden><span data-i=app_other_tv>x</span></button></div>
 <div class=card><h3><span data-i=prayer_title>🕌 Prayer alert</span></h3>
 <label class=ck style="margin-top:0"><input type=checkbox id=zon><span data-i=prayer_on>Show the alert on the TV</span></label>
 <div class=row style="margin:12px 0 0"><select id=zcity><option value="31.9539 35.9106 18 18 0 6" data-i=c_amman>Amman</option><option value="32.0728 36.088 18 18 0 6" data-i=c_zarqa>Zarqa</option><option value="32.5556 35.85 18 18 0 6" data-i=c_irbid>Irbid</option><option value="29.5321 35.0063 18 18 0 6" data-i=c_aqaba>Aqaba</option><option value="32.0392 35.7272 18 18 0 6" data-i=c_salt>Salt</option><option value="31.716 35.7939 18 18 0 6" data-i=c_madaba>Madaba</option><option value="32.2808 35.8993 18 18 0 6" data-i=c_jerash>Jerash</option><option value="32.3326 35.7517 18 18 0 6" data-i=c_ajloun>Ajloun</option><option value="32.3429 36.208 18 18 0 6" data-i=c_mafraq>Mafraq</option><option value="31.1853 35.7048 18 18 0 6" data-i=c_karak>Karak</option><option value="30.8375 35.6044 18 18 0 6" data-i=c_tafilah>Tafilah</option><option value="30.1962 35.7341 18 18 0 6" data-i=c_maan>Ma'an</option><option value="21.4225 39.8262 18.5 0 90 0" data-i=c_makkah>Makkah</option><option value="24.4672 39.6111 18.5 0 90 0" data-i=c_madinah>Madinah</option><option value="24.7136 46.6753 18.5 0 90 0" data-i=c_riyadh>Riyadh</option><option value="21.5433 39.1728 18.5 0 90 0" data-i=c_jeddah>Jeddah</option><option value="30.0444 31.2357 19.5 17.5 0 0" data-i=c_cairo>Cairo</option><option value="25.2048 55.2708 18.2 18.2 0 0" data-i=c_dubai>Dubai</option><option value="29.3759 47.9774 18 17.5 0 0" data-i=c_kuwait>Kuwait City</option><option value="25.2854 51.531 18 0 90 0" data-i=c_doha>Doha</option></select>
@@ -415,7 +428,7 @@ main{padding:10px 16px 20px;padding-inline-start:104px}
 <button class=go id=qstart><span data-i=q_start>x</span></button>
 </div></div>
 <div id=camfloat hidden><video id=camv playsinline muted autoplay style="transform:scaleX(-1)"></video></div>
-<nav id=tabs><button data-t=play><b>🎮</b><span data-i=tab_play>Games</span></button><button data-t=quran><b>📖</b><span data-i=tab_quran>Quran</span></button><button data-t=draw><b>✏️</b><span data-i=tab_draw>Draw</span></button><button data-t=chat><b>💬</b><span data-i=tab_chat>Interact</span></button><button data-t=fam><b>🏆</b><span data-i=tab_fam>Family</span></button><button data-t=prank><b>😈</b><span data-i=tab_prank>Pranks</span></button><button data-t=set><b>⚙️</b><span data-i=tab_set>Settings</span></button></nav>
+<nav id=tabs><button data-t=play><b>🎮</b><span data-i=tab_play>Games</span></button><button data-t=quran><b>📖</b><span data-i=tab_quran>Quran</span></button><button data-t=draw><b>✏️</b><span data-i=tab_draw>Draw</span></button><button data-t=chat><b>💬</b><span data-i=tab_chat>Interact</span></button><button data-t=fam><b>🏆</b><span data-i=tab_fam>Family</span></button><button data-t=prank><b>😈</b><span data-i=tab_prank>Pranks</span></button><button data-t=rc><b>📺</b><span data-i=tab_rc>Remote</span></button><button data-t=set><b>⚙️</b><span data-i=tab_set>Settings</span></button></nav>
 
 <div class=ctl id=gplay hidden>
 <div class=cbar><button class=cx id=gleave data-ia=exit aria-label="Exit">✕</button><div class=chud id=ghud></div><button class=cset data-o=gopt data-ia=options aria-label="Options">⚙️</button></div>
@@ -553,7 +566,17 @@ function zs(l){send(l);setTimeout(zload,400)}
 E('zon').onchange=()=>zs('z on '+(E('zon').checked?1:0));E('zat').onchange=()=>zs('z at '+(E('zat').checked?1:0));
 E('zbef').onchange=()=>zs('z before '+E('zbef').value);
 E('zcity').onchange=()=>zs('z city '+E('zcity').value+' '+enc(E('zcity').selectedOptions[0].textContent));
-E('ztest').onclick=()=>send('z test');E('zshift').onchange=()=>zs('z shift '+E('zshift').value);document.querySelectorAll('#bgpick button').forEach(b=>b.onclick=()=>zs('z bg '+b.dataset.bg));
+E('ztest').onclick=()=>send('z test');if(window.LammaNative){document.body.classList.add('napp');E('napp').hidden=false;E('napp').onclick=()=>LammaNative.pickTv()}
+/* ---- the phone as a remote, and recording what the TV shows ---- */
+document.querySelectorAll('[data-rc]').forEach(b=>b.onclick=()=>{send('rc '+b.dataset.rc);if(navigator.vibrate)navigator.vibrate(12)});
+let recSt=0,recT=0;function recShow(o){recSt=+o.rec||0;const lab=E('recb').firstChild;lab.textContent=T(recSt===2?'rec_stop':'rec_start');E('recb').style.background=recSt===2?'#444':'#b3261e';
+E('rech').textContent=recSt===1?T('rec_ask'):recSt===2?T('rec_on',o.recs):recSt===3?T('rec_ready',(o.recb/1048576).toFixed(1)):o.rece?T('rec_fail')+' ('+decodeURIComponent(o.rece.replace(/\+/g,' '))+')':'';
+const d=E('recdl');d.hidden=recSt!==3;if(recSt===3){d.href='/rec.mp4';d.setAttribute('download','lamma-tv.mp4')}
+E('rcacc').textContent=o.acc==='1'?T(+o.sdk>=33?'rc_acc_full':'rc_acc_on'):T('rc_acc_off')}
+function recPoll(){fetch('/p').then(r=>r.text()).then(t=>{const o={};t.split('|').forEach(x=>{const i=x.indexOf('=');o[x.slice(0,i)]=x.slice(i+1)});recShow(o);clearTimeout(recT);if(recSt===1||recSt===2)recT=setTimeout(recPoll,1000)}).catch(()=>{})}
+E('recb').onclick=()=>{send(recSt===2?'rec stop':'rec start');clearTimeout(recT);recT=setTimeout(recPoll,700)};
+document.querySelector('#tabs [data-t=rc]').addEventListener('click',recPoll);recPoll();
+E('zshift').onchange=()=>zs('z shift '+E('zshift').value);document.querySelectorAll('#bgpick button').forEach(b=>b.onclick=()=>zs('z bg '+b.dataset.bg));
 E('bgup').onclick=()=>E('bgfile').click();E('bgfile').onchange=()=>{const f=E('bgfile').files[0];if(!f)return;const im=new Image();im.onload=()=>{const k=Math.min(1,1920/im.width,1920/im.height),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);
 c.toBlob(b=>{E('bgh').textContent=T('tvhome_sending');fetch('/b',{method:'POST',body:b}).then(()=>{E('bgh').textContent=T('tvhome_sent');setTimeout(zload,500)}).catch(()=>{E('bgh').textContent=T('tvhome_fail')})},'image/jpeg',.88);URL.revokeObjectURL(im.src)};im.onerror=()=>{E('bgh').textContent=T('tvhome_fail')};im.src=URL.createObjectURL(f);E('bgfile').value=''};
 E('zad').onchange=()=>zs('z adhan '+(E('zad').checked?1:0));E('zboot').onchange=()=>zs('z boot '+(E('zboot').checked?1:0));E('zcall').onclick=()=>send('z call');E('zadstop').onclick=()=>send('z stop');zload();
@@ -792,7 +815,10 @@ E('hzyes').onclick=()=>{send('hz mark 1');if(navigator.vibrate)navigator.vibrate
 E('hzback').onclick=()=>{hzdeaf();send('hz close');setTimeout(hzpoll,250)};
 /* The recitation can also come out of this phone, when the TV cannot play it. */
 // Reciting by voice: the browser's speech recogniser hears the reciter and the TV follows word by word.
-const SRC=window.SpeechRecognition||window.webkitSpeechRecognition,hzcan=!!(SRC&&window.isSecureContext);let hzsr=null,hzlis=false,hzsid=Date.now()%100000,hzsent='';
+/* Inside the Lamma phone app the browser has no speech recognition of its own: the phone's recogniser stands in for it. */
+if(window.LammaNative){let cur=null;window.webkitSpeechRecognition=window.SpeechRecognition=function(){const r=this;r.lang='ar-SA';r.start=()=>{cur=r;LammaNative.listen(r.lang)};r.abort=r.stop=()=>{if(cur===r){cur=null;LammaNative.stopListen()}}};
+window.__lammaSpeech=(k,a)=>{const r=cur;if(!r)return;if(k==='end'){cur=null;if(r.onend)r.onend()}else if(k==='error'){if(r.onerror)r.onerror({error:a[0]})}else{const x=a.map(t=>({transcript:t}));x.isFinal=k==='final';if(r.onresult)r.onresult({results:[x]})}}}
+const SRC=window.SpeechRecognition||window.webkitSpeechRecognition,hzcan=!!(SRC&&(window.isSecureContext||window.LammaNative));let hzsr=null,hzlis=false,hzsid=Date.now()%100000,hzsent='';
 function hzmicOn(){return hzcan&&E('hzmic').checked}
 function hzmicUI(){E('hzmicb').textContent=T(hzlis?'hz_mic_on':'hz_mic_off');E('hzmicb').style.background=hzlis?'#b3261e':'#1a6f55'}
 function hzeaseUI(){E('hzeaseh').textContent=T('hz_ease_h'+E('hzease').value)}

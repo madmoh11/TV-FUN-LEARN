@@ -14,7 +14,8 @@ import kotlin.concurrent.thread
  */
 class Server(private val page: () -> String, private val words: () -> ByteArray, private val font: () -> ByteArray, private val keyDir: java.io.File, private val onLines: (List<String>, String) -> Unit, private val onAudio: (ByteArray) -> Unit,
              private val onImage: (ByteArray) -> Unit, private val onFace: (ByteArray, String) -> Unit, private val onVideo: (ByteArray, String) -> Unit, private val status: (String) -> String,
-             private val extra: (String) -> ByteArray? = { null }, private val onWall: (ByteArray) -> Unit = { }) {
+             private val extra: (String) -> ByteArray? = { null }, private val onWall: (ByteArray) -> Unit = { },
+             private val file: (String) -> java.io.File? = { null }) {
     var httpPort = 0; private set
     var httpsPort = 0; private set
 
@@ -60,6 +61,13 @@ class Server(private val page: () -> String, private val words: () -> ByteArray,
                 if (r < len) break
                 val parts = req.split(" ")
                 val path = if (parts.size > 1) parts[1] else "/"
+                if (parts[0] == "GET" && path.startsWith("/rec.mp4")) {      // a recording is too large to hold in memory: it is sent straight from its file
+                    val f = file("rec.mp4")
+                    if (f == null || !f.exists()) out.write("HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n".toByteArray())
+                    else { out.write(("HTTP/1.1 200 OK\r\nContent-Type: video/mp4\r\nContent-Length: ${f.length()}\r\nContent-Disposition: attachment; filename=\"lamma-tv.mp4\"\r\nCache-Control: no-store\r\n\r\n").toByteArray())
+                        f.inputStream().use { it.copyTo(out) } }
+                    out.flush(); if (close) break; continue
+                }
                 var type = "text/plain"; var resp = ByteArray(0); var cache = false
                 if (parts[0] == "POST" && path.startsWith("/a")) onAudio(body)
                 else if (parts[0] == "POST" && path.startsWith("/i")) onImage(body)

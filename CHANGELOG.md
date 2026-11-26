@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.30
+
+- New: **Lamma for the phone**, a second small app (`lamma-phone.apk`). It finds the TV on the Wi-Fi by itself and shows
+  the control page as an app. The microphone, the camera and reciting to the microphone work in it without the
+  browser's secure link; speech is recognised by the phone's own recogniser.
+- New tab on the phone page: **Remote**. Arrows, OK, Back, Home, a long press and the volume. The keys work on
+  Lamma's own screens; with the "Lamma remote" accessibility service switched on, Back and Home work in every app, and
+  the arrows too on Android 13 and later.
+- New: **record the TV screen** from the phone, up to three minutes, then download the video. Android asks on the TV
+  before each recording. No sound is recorded.
+
 ## 3.29
 
 - The home screen and the phone page now say which version is running on the TV, so an update that did not go in is

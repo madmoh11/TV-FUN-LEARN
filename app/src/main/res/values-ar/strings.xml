@@ -184,4 +184,6 @@
     <string name="home_app_hide">أخفِه من القائمة</string>
     <string name="home_app_show_all">رجّع التطبيقات المخفية</string>
     <string name="home_app_tip">اكبس مطوّلاً على تطبيق لترتيبه</string>
+    <string name="keys_name">ريموت لمّة</string>
+    <string name="keys_about">بيخلّي تليفونك يكبس «رجوع» و«الرئيسية» على التلفزيون من صفحة لمّة. ما بيقرأ أي شي من الشاشة.</string>
 </resources>

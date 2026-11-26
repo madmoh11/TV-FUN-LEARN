@@ -450,6 +450,8 @@ class DrawView(c: Context) : View(c) {
                 "bug" -> bugCommand(p)
                 "b" -> sfx?.play("beep", 1f, true)
                 "z" -> onPrayerCmd?.invoke(p)
+                "rc" -> if (p.size > 1 && Remote.known(p[1])) Remote.press(context, p[1])
+                "rec" -> when (p.getOrNull(1)) { "start" -> Recorder.ask(context); "stop" -> Recorder.stop(); "forget" -> Recorder.forget(context) }
                 "i" -> { if (p[1] == "0") showImage(null) else if (p[1] == "d") { imgDim = p[2] == "1"; invalidate() } }
                 "f" -> cam.command(p, cid)
                 "fx" -> sfx?.voiceEffect(p[1])
@@ -535,6 +537,7 @@ class OverlayService : Service() {
         getSystemService(WindowManager::class.java).addView(view, lp)
 
         val sfx = Sfx(this); view.sfx = sfx; view.game.sfx = sfx; view.hockey.sfx = sfx; view.snake.sfx = sfx; view.tug.sfx = sfx; view.family.sfx = sfx; view.home.sfx = sfx; view.home.start(); view.quiz.sfx = sfx; view.hifz.sfx = sfx; view.hifz.play = { url, done -> playUrl(url, done) }; view.hifz.stop = { stopUrl() }; view.move.sfx = sfx; view.quiz.speak = { say(it) }; view.space.sfx = sfx; view.space.speak = { say(it) }
+        val ports = IntArray(2)
         val prayer = PrayerAlerts(this, view, sfx); view.onPrayerCmd = { prayer.command(it) }; prayer.start()
         thread {
             val server = Server({ page }, { words }, { font }, filesDir, { lines, cid -> ui.post { lines.forEach { view.handle(it, cid) }; view.invalidate() } }, { sfx.voice(it) },
@@ -553,7 +556,8 @@ class OverlayService : Service() {
                     val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
                     ui.post { if (bmp != null) view.cam.frame(cid, bmp); camBusy.set(false) }
                 } catch (e: Throwable) { camBusy.set(false) } },
-                { path -> if (path.startsWith("/p")) prayer.status()
+                { path -> if (path.startsWith("/p")) prayer.status() + "|http=" + ports[0] + "|https=" + ports[1] + "|acc=" + (if (KeysService.on) 1 else 0) + "|sdk=" + android.os.Build.VERSION.SDK_INT +
+                    "|rec=" + Recorder.state + "|recs=" + Recorder.seconds + "|recb=" + (if (Recorder.state == Recorder.READY) Recorder.file(this).length() else 0) + "|rece=" + java.net.URLEncoder.encode(Recorder.error, "UTF-8")
                     else if (path.startsWith("/c")) view.cam.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/u")) view.family.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12)) + view.home.status()
                     else if (path.startsWith("/y")) view.hifz.status()
@@ -569,8 +573,8 @@ class OverlayService : Service() {
                     val o = BitmapFactory.Options().apply { inJustDecodeBounds = true }; BitmapFactory.decodeByteArray(bytes, 0, bytes.size, o)
                     if (o.outWidth > 0 && o.outHeight > 0) { val f = File(filesDir, "wallpaper.jpg"); val part = File(f.path + ".part"); part.writeBytes(bytes); part.renameTo(f)
                         getSharedPreferences("prayer", 0).edit().putString("bg", "c" + System.currentTimeMillis() % 100000000).apply() }
-                } catch (e: Throwable) { } })
-            server.start()
+                } catch (e: Throwable) { } }, { name -> if (name == "rec.mp4" && Recorder.state == Recorder.READY) Recorder.file(this) else null })
+            server.start(); ports[0] = server.httpPort; ports[1] = server.httpsPort
             val ok = server.httpPort != 0
             val msg = if (ok) "http://" + localIp() + ":" + server.httpPort else getString(R.string.no_port)
             ui.post { view.setUrl(msg, ok) }
