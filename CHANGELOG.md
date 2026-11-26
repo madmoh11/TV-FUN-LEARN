@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.33
+
+- New game: **rock, paper, scissors** for one to six players. Everyone chooses in secret on their phone, the TV chants
+  and then shows all hands at once. A hand earns a point for every hand it beats; a lone player plays the TV. Three,
+  five or seven rounds, and the winner goes on the family board.
+
 ## 3.32
 
 - A recording of the TV screen stays downloadable after the app is restarted or updated.

@@ -304,6 +304,33 @@ class RenderTest {
         v.handle("j join g", "a"); assertTrue("joining another game closes this one", !v.tug.active)
     }
 
+    @Test fun rockPaperScissors() {
+        val act = org.robolectric.Robolectric.buildActivity(android.app.Activity::class.java).setup().get()
+        act.getSharedPreferences("family", 0).edit().clear().commit()
+        v = DrawView(act); act.window.setContentView(v)
+        fill = { v.measure(View.MeasureSpec.makeMeasureSpec(1920, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(1080, View.MeasureSpec.EXACTLY)); v.layout(0, 0, 1920, 1080) }
+        fill()
+        fun st(cid: String) = v.rps.status(cid).split("|")
+        fun go(ms: Long) { tick(ms); shot("rps_step") }                 // the game moves on only when the TV draws
+        v.handle("rps join Sara", "a"); v.handle("rps join Omar", "b"); v.handle("rps join Lina", "c"); v.handle("rps rounds 3", "a")
+        shot("rps_lobby"); assertEquals("1", st("a")[0]); assertEquals("3", st("a")[2]); assertEquals("3", st("a")[7])
+        v.handle("rps start", "a"); tick(900); shot("rps_chant"); assertEquals("2", st("a")[0])
+        v.handle("rps pick 1 0", "a"); v.handle("rps pick 1 2", "b"); assertEquals("0", st("a")[5]); assertEquals("-1", st("c")[5])
+        tick(1800); shot("rps_pick"); assertEquals("still waiting for Lina", "2", st("a")[0])
+        v.handle("rps pick 1 2", "c"); tick(300); shot("rps_reveal")
+        assertEquals("3", st("a")[0]); assertEquals("2", st("a")[6]); assertEquals("1", st("a")[10]); assertEquals("-1", st("b")[10])
+        v.handle("rps pick 1 1", "a"); assertEquals("the round is over", "2", st("a")[4])
+        go(4300); assertEquals("2", st("a")[0]); assertEquals("2", st("a")[1])
+        v.handle("rps pick 9 1", "a"); assertEquals("a pick for another round is ignored", "-1", st("a")[5])
+        for (r in 2..3) { v.handle("rps pick $r 1", "a"); v.handle("rps pick $r 0", "b"); v.handle("rps pick $r 0", "c"); go(2500); assertEquals("3", st("a")[0]); go(4300) }
+        shot("rps_end"); assertEquals("4", st("a")[0]); assertEquals("1", st("a")[8]); assertEquals("6", st("a")[4]); assertEquals("2", st("b")[8])
+        // alone against the TV
+        v.handle("rps leave", "b"); v.handle("rps leave", "c"); v.handle("rps start", "a"); go(600); assertEquals("1", st("a")[7])
+        v.handle("rps pick 1 1", "a"); tick(2200); shot("rps_vs_tv"); assertEquals("3", st("a")[0])
+        // another game taking over ends it
+        v.handle("qz join 0 Sara", "a"); assertFalse(v.rps.active)
+    }
+
     @Test fun quiz() {
         val act = org.robolectric.Robolectric.buildActivity(android.app.Activity::class.java).setup().get()
         act.getSharedPreferences("family", 0).edit().clear().commit()

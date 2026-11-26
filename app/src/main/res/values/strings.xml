@@ -198,4 +198,14 @@
     <string name="keys_about">Lets your phone press Back and Home on the TV from the Lamma page. It reads nothing from the screen.</string>
     <string name="weather_now">%1$d° %2$s  •  high %3$d° low %4$d°</string>
     <string-array name="weather"><item>clear</item><item>some cloud</item><item>cloudy</item><item>fog</item><item>drizzle</item><item>rain</item><item>snow</item><item>thunderstorm</item></string-array>
+    <string name="rps_title">✊ Rock, paper, scissors</string>
+    <string name="rps_how">Everyone chooses in secret on their phone, and all hands are shown together</string>
+    <string name="rps_setup">%1$d rounds  •  %2$d players</string>
+    <string name="rps_tv">The TV</string>
+    <string name="rps_rock">Rock</string>
+    <string name="rps_paper">Paper</string>
+    <string name="rps_scissors">Scissors</string>
+    <string name="rps_choose">Choose!</string>
+    <string name="rps_round_to">%s takes the round</string>
+    <string name="rps_round_many">More than one winner this round</string>
 </resources>

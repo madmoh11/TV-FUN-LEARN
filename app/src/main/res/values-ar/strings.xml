@@ -188,4 +188,14 @@
     <string name="keys_about">بيخلّي تليفونك يكبس «رجوع» و«الرئيسية» على التلفزيون من صفحة لمّة. ما بيقرأ أي شي من الشاشة.</string>
     <string name="weather_now">%1$d° %2$s  •  العظمى %3$d° والصغرى %4$d°</string>
     <string-array name="weather"><item>صافي</item><item>غيوم خفيفة</item><item>غائم</item><item>ضباب</item><item>رذاذ</item><item>مطر</item><item>ثلج</item><item>عواصف رعدية</item></string-array>
+    <string name="rps_title">✊ حجرة ورقة مقص</string>
+    <string name="rps_how">كل واحد بيختار من تليفونه بالسر، والكل بينكشف مع بعض</string>
+    <string name="rps_setup">%1$d جولات  •  %2$d لاعبين</string>
+    <string name="rps_tv">التلفزيون</string>
+    <string name="rps_rock">حجرة</string>
+    <string name="rps_paper">ورقة</string>
+    <string name="rps_scissors">مقص</string>
+    <string name="rps_choose">اختاروا!</string>
+    <string name="rps_round_to">الجولة لـ %s</string>
+    <string name="rps_round_many">أكثر من فائز بهالجولة</string>
 </resources>
