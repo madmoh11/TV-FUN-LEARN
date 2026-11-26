@@ -172,7 +172,9 @@ class HomeActivity : Activity() {
         row(col, getString(R.string.app_name), listOf(
             tile(getString(R.string.home_phone), "", 0xFF5B3FA8.toInt(), 420f, 170f) { showPhone() }))
         row(col, getString(R.string.home_apps) + "   •   " + getString(R.string.home_app_tip), appTiles())
-        col.addView(View(this), LinearLayout.LayoutParams(1, px(60f)))
+        // which version is running, so an update that did not go in is easy to spot
+        val ver = try { packageManager.getPackageInfo(packageName, 0).versionName } catch (e: Throwable) { "" }
+        col.addView(label(getString(R.string.app_name) + " " + ver, 24f, Color.argb(150, 255, 255, 255)).apply { setPadding(px(70f), px(20f), px(70f), px(40f)) })
 
         home = ScrollView(this); home.isVerticalScrollBarEnabled = false; home.clipChildren = false; home.addView(col)
         root.addView(home, FrameLayout.LayoutParams(-1, -1))

@@ -62,7 +62,7 @@ object Daily {
     fun appOrder(apps: List<Pair<String, String>>, saved: List<String>, hidden: Set<String>): List<String> {
         val have = apps.map { it.first }.toSet()
         val placed = saved.filter { it in have }.distinct()
-        val rest = apps.filter { it.first !in placed }.sortedWith(compareBy({ APPS_FIRST.indexOf(it.first).let { i -> if (i < 0) 99 else i } }, { it.second.lowercase() })).map { it.first }
+        val rest = apps.filter { it.first !in placed }.sortedWith(compareBy({ APPS_FIRST.indexOf(it.first).let { i -> if (i >= 0) i else if (it.first.contains("youtube", true) || it.second.contains("youtube", true)) 50 else 99 } }, { it.second.lowercase() })).map { it.first }
         return (placed + rest).filter { it !in hidden }
     }
     /** The shown order after one app is moved: how is "first", "earlier" or "later". */

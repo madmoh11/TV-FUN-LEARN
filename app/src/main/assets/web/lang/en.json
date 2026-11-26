@@ -274,6 +274,7 @@
   "hz_ease_h0": "A word must be heard exactly as it is.",
   "hz_ease_h1": "Forgives letters that sound alike (the heavy letters and their light twins).",
   "hz_ease_h2": "Forgives one wrong letter in a long word, and after 3 tries it writes the word and goes on (counted as a mistake). A look-alike word may slip through.",
+  "tv_version": "Version running on the TV: {0}",
   "tab_play": "Games",
   "tab_draw": "Draw",
   "tab_chat": "Interact",

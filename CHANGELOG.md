@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.29
+
+- The home screen and the phone page now say which version is running on the TV, so an update that did not go in is
+  easy to spot. YouTube leads the apps under any of its package names.
+
 ## 3.28
 
 - The apps on the home screen can be arranged: hold the middle button of the remote on an app to make it the first,

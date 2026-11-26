@@ -87,6 +87,8 @@ class HomeTest {
         shown = Daily.moveApp(shown, "a.shahid", "first"); assertEquals("a.shahid", shown[0]); assertEquals("com.google.android.youtube.tv", shown[1])
         shown = Daily.moveApp(shown, "a.shahid", "later"); assertEquals(listOf("com.google.android.youtube.tv", "a.shahid", "c.play", "b.netflix"), shown)
         shown = Daily.moveApp(shown, "b.netflix", "later"); assertEquals("the last one stays last", "b.netflix", shown.last())
+        // a YouTube under another package name still leads
+        assertEquals("x.smart", Daily.appOrder(listOf("b.netflix" to "Netflix", "x.smart" to "YouTube TV", "a.aaa" to "Aaa"), emptyList(), emptySet())[0])
         // the saved order is kept, a newly installed app joins after it, a removed one drops out, a hidden one is left out
         val later = apps.filter { it.first != "c.play" } + ("d.new" to "Anghami")
         assertEquals(listOf("com.google.android.youtube.tv", "a.shahid", "b.netflix", "d.new"), Daily.appOrder(later, shown, emptySet()))

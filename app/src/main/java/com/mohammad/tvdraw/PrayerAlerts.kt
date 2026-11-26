@@ -113,7 +113,8 @@ class PrayerAlerts(private val ctx: Context, private val view: DrawView, private
         val cal = TvClock.now()
         val t = todayMinutes(cal)
         val now = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE)
-        return "on=" + (if (on()) 1 else 0) + "|before=" + before() + "|at=" + (if (atTime()) 1 else 0) + "|adhan=" + (if (adhanOn()) 1 else 0) + "|boot=" + (if (sp.getBoolean("boot", true)) 1 else 0) + "|shift=" + sp.getInt("shift", 0) + "|bg=" + (sp.getString("bg", "0") ?: "0").take(1) + "|zone=" + TimeZone.getDefault().id + "|saved=" + (if (adhanFile.exists() && adhanFile.length() > 100000) 1 else 0) +
+        val ver = try { ctx.packageManager.getPackageInfo(ctx.packageName, 0).versionName } catch (e: Throwable) { "" }
+        return "ver=" + ver + "|on=" + (if (on()) 1 else 0) + "|before=" + before() + "|at=" + (if (atTime()) 1 else 0) + "|adhan=" + (if (adhanOn()) 1 else 0) + "|boot=" + (if (sp.getBoolean("boot", true)) 1 else 0) + "|shift=" + sp.getInt("shift", 0) + "|bg=" + (sp.getString("bg", "0") ?: "0").take(1) + "|zone=" + TimeZone.getDefault().id + "|saved=" + (if (adhanFile.exists() && adhanFile.length() > 100000) 1 else 0) +
             "|lat=" + sp.getFloat("lat", 31.9539f) + "|lon=" + sp.getFloat("lon", 35.9106f) + "|clock=" + clock12(now) +
             "|times=" + t.joinToString(",") { clock12(it) }
     }
