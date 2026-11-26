@@ -4,9 +4,10 @@
 
 # Lamma (لمّة): fun and learning on your TV
 
-**Turn any Android TV into a shared family screen, controlled from your phone's browser.**
-Family games, learning games for maths and English, drawing, Arabic calligraphy, a live camera and microphone,
-harmless pranks and prayer alerts.
+**Turn any Android TV into a shared family screen, controlled from your phone.**
+A home screen with the Quran, adhkar, prayer times and the weather; family and learning games for maths, English
+and first letters; a journey for memorising the Quran; drawing and Arabic calligraphy; a live camera and microphone;
+a remote on the phone; and harmless pranks.
 
 [![Build](https://github.com/madmoh11/TV-FUN-LEARN/actions/workflows/build.yml/badge.svg)](https://github.com/madmoh11/TV-FUN-LEARN/actions/workflows/build.yml)
 [![Licence: MIT](https://img.shields.io/badge/licence-MIT-blue.svg)](LICENSE)
@@ -20,10 +21,20 @@ harmless pranks and prayer alerts.
 
 ## What is it?
 
-Lamma (Arabic for a family get-together) is a small app for Android TV and TV boxes. It draws on top of whatever is on the screen: a film, a football
-match, the home screen. Everyone in the room controls it from their own phone by opening a web page. Phones need no app
-and no account, and nothing leaves your home network. The one exception is optional: reciting the Quran to the
-microphone uses the speech recognition of the phone's browser, which sends that speech to Google or Apple.
+Lamma (Arabic for a family get-together) is a small app for Android TV and TV boxes. It has two faces:
+
+- **A home screen** that opens when the app starts: the clock, the Hijri date, the next prayer, the weather, surahs of
+  the Quran, the adhkar and the other apps of the TV, all with the remote.
+- **A layer over the screen** that draws on top of whatever is showing: a film, a match or any app. Everyone in the
+  room controls it from their own phone.
+
+A phone opens a web page in its browser, or uses the small **Lamma for the phone** app, which finds the TV by itself.
+There are no accounts, and the voice, pictures and drawings you send stay inside your home network.
+
+What needs the internet is optional and specific: the Quran recitation (an ayah is downloaded from EveryAyah the first
+time it is heard), the weather (Open-Meteo), the recording of the call to prayer (downloaded once from Wikimedia
+Commons), and reciting to the microphone, which uses the phone's speech recognition and so sends that speech to Google
+or Apple.
 
 ![The phone page: games, drawing, comments, and the controllers of the two learning games](docs/images/phone-en.jpg)
 
@@ -31,9 +42,13 @@ microphone uses the speech recognition of the phone's browser, which sends that 
 
 | | |
 | --- | --- |
-| 🏠 **A home screen for the TV** | The clock, the Hijri date and the next prayer, surahs of the Quran recited by Al-Husary, the morning and evening adhkar, the ruqyah and the apps of the TV, all with the remote. The call to prayer at its time. |
+| 🏠 **A home screen for the TV** | The clock, the Hijri date, the next prayer with a countdown, and the weather. Surahs of the Quran ayah by ayah in mushaf script with Al-Husary's recitation, the morning and evening adhkar with their counts, the ruqyah and ayat al-Kursi. The TV's apps in the order you choose, and a background you pick or send from your phone. |
+| 📱 **Lamma for the phone** | A second small app (`lamma-phone.apk`) that finds the TV on the Wi-Fi by itself and opens the control page without a browser. The microphone, the camera and reciting work in it without the secure-link step. |
+| 📺 **Remote** | Arrows, OK, Back, Home and the volume from the phone. It works on Lamma's own screens; with the "Lamma remote" service, Back works in every app. |
+| 🔴 **Screen recording** | Record what the TV shows for up to three minutes and download the video to your phone. |
+| 🔤 **Letters and numbers** | For ages four and five: the Arabic letters, the English letters and the numbers one to ten, each as a big card with a word and a picture, then a gentle game with three choices and no clock. |
 | 📱 **A phone app and a remote** | A small phone app finds the TV by itself and opens the control page without a browser, with a TV remote and a recorder for the TV screen. |
-| 🎮 **Games** | Five games played on the TV with phones as controllers: see [the games](#the-games) below. |
+| 🎮 **Games** | Nine games played on the TV with phones as controllers: see [the games](#the-games) below. |
 | ✏️ **Drawing** | Several phones draw at once. Pen, brush, highlighter, neon, eraser, shapes and an Arabic calligraphy nib. |
 | 📄 **Pages** | Draw over the picture, or on ruled paper, a calligraphy sheet, squares, dots or a blackboard. |
 | 🔦 **Pointer** | A laser dot or a spotlight, moved by finger or by tilting the phone. |
@@ -50,7 +65,7 @@ microphone uses the speech recognition of the phone's browser, which sends that 
 | 📖 **The memoriser's journey** | Learn the Quran by heart: listen and repeat with Al-Husary while the words hide, recite from memory with a grown-up marking each ayah, or recite to the phone's microphone and watch each word appear on the TV as you say it (a wrong word shows red until it is said right), and revise each part on the right day. |
 | 🔊 **Volume** | Turn the TV box volume up, down or mute it from your phone. |
 | 😈 **Pranks** | Cracked screen, a fly that walks around (any size, with a shadow), a person's shadow that walks past like in a cinema, a lion that jumps out of the screen, a fake shutdown message. |
-| 🕌 **Prayer alert** | A banner before each prayer, calculated on the device with no internet. |
+| 🕌 **Prayer** | A banner before each prayer, and the call to prayer aloud when the time starts if you want it. Times are calculated on the device with no internet and match Amman's printed timetable. |
 | 🌍 **Languages** | English and Arabic, with [an easy way to add more](docs/TRANSLATING.md). |
 
 ## The games
@@ -64,8 +79,24 @@ microphone uses the speech recognition of the phone's browser, which sends that 
 | 🚀 **Space race** | 1 to 6 | An English word appears on the phone and you pick its Arabic meaning. Correct answers fly your rocket to the planet. |
 | 🌍 **Flags, capitals and spelling** | 1 to 6 | One question on the TV for everybody: a flag, a country, or a spoken English word. Answer on your phone; faster right answers earn more. |
 | 🕺 **Move to the beat** | 1 or 2 | A workout on the beat: step left or right, jump or duck as the moves reach the line. The phone in your hand senses the movement. |
+| ✊ **Rock, paper, scissors** | 1 to 6 | Everyone chooses in secret on their phone and the TV shows all hands together. A point for every hand you beat; a lone player plays the TV. |
+| 🔤 **Letters and numbers** | small children with a grown-up | Cards to learn from (A apple, B ball…) that the phone reads aloud, then "which letter does the word start with?" and "how many?". A wrong choice only goes dim. |
+| 📖 **Memorisation quiz** | 1 to 6 | From the memoriser's journey: "which ayah comes next?" and "how does this ayah go on?", where every choice is real Quran text. |
 
 Every game can be played alone: the computer takes the empty side.
+
+### The Quran in Lamma
+
+It has its own section on the phone page, apart from the games, and its own row on the home screen.
+
+- **The text** is the Tanzil Uthmani text, unchanged. No ayah is typed by hand anywhere, including those inside the adhkar.
+- **The recitation** is by Sheikh Mahmoud Khalil Al-Husary, from EveryAyah. An ayah heard once plays again without the internet.
+- **The memoriser's journey:** listen and repeat, recite to a grown-up or to the microphone, and a daily portion with
+  spaced revision (after 1, 3, 7, 14, 30 and 60 days).
+- **Reciting to the microphone** follows the words, not the vowel marks or tajweed, so it does not replace a teacher.
+  It forgives letters that sound alike, follows you when you start the ayah again, and has three levels: exact, usual
+  and easy.
+- **The adhkar** come from the Seen-Arabic database, which follows the book Hisn al-Muslim, with the merit and count of each.
 
 ### Learning games in detail
 
@@ -95,7 +126,8 @@ to the TV: a computer with [platform-tools](https://developer.android.com/tools/
 app on your phone.
 
 1. On the TV, turn on **Developer options → USB debugging** (or **Network debugging**).
-2. Download `lamma.apk` from the [latest release](https://github.com/madmoh11/TV-FUN-LEARN/releases/latest).
+2. Download `lamma.apk` from the [latest release](https://github.com/madmoh11/TV-FUN-LEARN/releases/latest). The
+   same page has `lamma-phone.apk`, the optional app for the phone.
 3. Install it and allow it to draw over other apps. Replace the address with your TV's IP address:
 
    ```bash
@@ -104,8 +136,19 @@ app on your phone.
    adb shell appops set com.mohammad.tvdraw SYSTEM_ALERT_WINDOW allow
    ```
 
-4. Open **Lamma** from the TV's app list. A card appears with an address and a QR code.
-5. Open that address in your phone's browser, or scan the QR code.
+4. Open **Lamma** from the TV's app list. The home screen appears, with a card showing an address and a QR code.
+5. Open that address in your phone's browser, or scan the QR code. Or install `lamma-phone.apk` on your phone and open
+   it: it finds the TV by itself.
+
+The version number is written at the bottom of the home screen, so you can see that an update went in.
+
+**To make Lamma the TV's home screen for good (optional):** Lamma already opens by itself when the TV starts. If you
+also want the Home button to open it, switch off Google's own home screen; the second command brings it back:
+
+```bash
+adb shell pm disable-user --user 0 com.google.android.tvlauncher
+adb shell pm enable com.google.android.tvlauncher
+```
 
 The second command in step 3 matters: without that permission the app closes as soon as it starts.
 
@@ -115,8 +158,13 @@ The second command in step 3 matters: without that permission the app closes as 
   link; your browser will warn that the connection is "not private" because the TV signs its own certificate.
   Choose *Advanced → Proceed*. Each TV creates its own key the first time the app runs.
 - **Who can control the TV.** Anyone on the same Wi-Fi who opens the address. Use it on a home network you trust.
-- **Privacy.** No accounts, no analytics, no internet access needed. Voice, camera and pictures go from the phone
-  straight to the TV and are not saved. Learning progress stays in the phone's browser.
+- **Privacy.** No accounts and no analytics. Voice, camera and pictures go from the phone straight to the TV and are
+  not saved. Learning progress stays in the phone's browser. The internet is used only for the recitation, the weather,
+  the recording of the call to prayer and reciting to the microphone, as said at the top of this page.
+- **The remote in other apps.** Android does not let one app press keys inside another. With the "Lamma remote"
+  service switched on in the accessibility settings, Back works everywhere; the arrows inside other apps need
+  Android 13 or later.
+- **Screen recording** has no sound, and Android asks on the TV before each recording.
 - **Browsers.** If the page does not open in one browser, try another one (Samsung Internet, Chrome, Firefox).
 - **Tested on** a Xiaomi Mi Box running Android 9. Other devices should work; please
   [report](https://github.com/madmoh11/TV-FUN-LEARN/issues) what you find.

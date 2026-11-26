@@ -19,6 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-java@v4
         with:
@@ -56,6 +58,17 @@ jobs:
             lamma.apk
             lamma-phone.apk
 
+      # The release page shows every changelog entry since the release before this one.
+      - name: Release notes
+        if: startsWith(github.ref, 'refs/tags/v') || inputs.release_tag != ''
+        env:
+          TAG: ${{ inputs.release_tag || github.ref_name }}
+        run: |
+          PREV=$(git tag --sort=-v:refname | grep -vx "$TAG" | head -1)
+          awk -v stop="## ${PREV#v}" 'started && $0 == stop { exit } /^## / { started = 1 } started { print }' CHANGELOG.md > notes.md
+          test -s notes.md || echo "See CHANGELOG.md" > notes.md
+          printf '\n**Files:** `lamma.apk` is the app for the TV; `lamma-phone.apk` is the optional app for the phone.\n' >> notes.md
+
       - name: Publish release
         if: startsWith(github.ref, 'refs/tags/v') || inputs.release_tag != ''
         uses: softprops/action-gh-release@v2
@@ -66,4 +79,4 @@ jobs:
           files: |
             lamma.apk
             lamma-phone.apk
-          generate_release_notes: true
+          body_path: notes.md
