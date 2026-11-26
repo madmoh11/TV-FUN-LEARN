@@ -44,6 +44,8 @@ class HomeActivity : Activity() {
     private lateinit var dates: TextView
     private lateinit var nextUp: TextView
     private lateinit var times: LinearLayout
+    private lateinit var weather: TextView
+    private var weatherAt = 0L; private var weatherFor = ""
     private var extra: View? = null                              // a list or a reading page laid over the home screen
     private var lastFocus: View? = null
     private var page: PageView? = null
@@ -151,7 +153,9 @@ class HomeActivity : Activity() {
         val side = LinearLayout(this); side.orientation = LinearLayout.VERTICAL; side.setPadding(px(44f), 0, px(44f), 0)
         dates = label("", 34f, Color.argb(230, 190, 235, 240)); nextUp = label("", 46f, Ui.GOLD)
         dates.setShadowLayer(10f * k, 0f, 2f * k, Color.argb(200, 0, 0, 0)); nextUp.setShadowLayer(10f * k, 0f, 2f * k, Color.argb(200, 0, 0, 0))
-        side.addView(dates); side.addView(nextUp)
+        weather = label("", 38f); weather.setShadowLayer(10f * k, 0f, 2f * k, Color.argb(200, 0, 0, 0))
+        side.addView(dates); side.addView(nextUp); side.addView(weather)
+        showWeather()
         head.addView(clock); head.addView(side)
         col.addView(head)
         times = LinearLayout(this); times.orientation = LinearLayout.HORIZONTAL; times.setPadding(px(70f), 0, px(70f), px(8f))
@@ -248,6 +252,7 @@ class HomeActivity : Activity() {
         val nx = Daily.next(now, today, prayerMinutes(sp, tom)[0])
         val names = intArrayOf(R.string.fajr, R.string.dhuhr, R.string.asr, R.string.maghrib, R.string.isha)
         fun name(i: Int) = if (i == 1 && cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) getString(R.string.jumuah) else getString(names[i])
+        fetchWeather(); showWeather()
         nextUp.text = str(R.string.home_next, name(nx[0]), "" + nx[1] / 60 + ":" + (nx[1] % 60).toString().padStart(2, '0'))
         times.removeAllViews()
         for (i in 0..4) { val on = i == nx[0] && today[i] > now
@@ -256,6 +261,28 @@ class HomeActivity : Activity() {
             chip.setPadding(px(26f), px(10f), px(26f), px(10f))
             times.addView(chip, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = px(14f) }) }
         if ((cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) != friday && extra == null) build()        // the day changed while the screen was open
+    }
+
+    // ---- the weather for the chosen city ----
+    private fun showWeather() {
+        val w = Weather.parse(sp.getString("weather", "") ?: "")
+        // a forecast older than three hours says nothing about now
+        if (w == null || System.currentTimeMillis() - sp.getLong("weather_at", 0) > 3 * 3600000L) { weather.text = ""; return }
+        val words = resources.getStringArray(R.array.weather)
+        weather.text = Weather.icon(w.code, w.day) + "  " + str(R.string.weather_now, w.temp, words[Weather.kind(w.code)], w.high, w.low)
+    }
+    private fun fetchWeather() {
+        val lat = sp.getFloat("lat", 31.9539f).toDouble(); val lon = sp.getFloat("lon", 35.9106f).toDouble(); val place = "$lat,$lon"
+        val now = android.os.SystemClock.elapsedRealtime()
+        if (place == weatherFor && weatherAt != 0L && now - weatherAt < 30 * 60000L) return
+        weatherFor = place; weatherAt = now
+        thread {
+            try { val c = java.net.URL(Weather.url(lat, lon)).openConnection() as java.net.HttpURLConnection
+                c.connectTimeout = 8000; c.readTimeout = 10000
+                try { val body = c.inputStream.use { it.readBytes().toString(Charsets.UTF_8) }
+                    if (Weather.parse(body) != null) { sp.edit().putString("weather", body).putLong("weather_at", System.currentTimeMillis()).apply(); ui.post { showWeather() } } } finally { c.disconnect() }
+            } catch (e: Throwable) { weatherAt = now - 25 * 60000L }      // no answer: try again in five minutes
+        }
     }
 
     // ---- lists and reading pages over the home screen ----

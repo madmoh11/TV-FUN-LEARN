@@ -196,4 +196,6 @@
     <string name="home_app_tip">hold the middle button on an app to arrange it</string>
     <string name="keys_name">Lamma remote</string>
     <string name="keys_about">Lets your phone press Back and Home on the TV from the Lamma page. It reads nothing from the screen.</string>
+    <string name="weather_now">%1$d° %2$s  •  high %3$d° low %4$d°</string>
+    <string-array name="weather"><item>clear</item><item>some cloud</item><item>cloudy</item><item>fog</item><item>drizzle</item><item>rain</item><item>snow</item><item>thunderstorm</item></string-array>
 </resources>

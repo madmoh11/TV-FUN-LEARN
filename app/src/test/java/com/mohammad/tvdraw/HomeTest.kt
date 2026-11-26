@@ -7,6 +7,7 @@ import android.view.KeyEvent
 import android.view.View
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -95,6 +96,15 @@ class HomeTest {
         assertEquals(listOf("com.google.android.youtube.tv", "b.netflix", "d.new"), Daily.appOrder(later, shown, setOf("a.shahid")))
     }
 
+    @Test fun theWeatherIsReadFromTheForecast() {
+        val w = Weather.parse("""{"latitude":31.95,"current":{"time":"2026-11-26T14:00","interval":900,"temperature_2m":17.6,"weather_code":61,"is_day":1},"daily":{"time":["2026-11-26"],"temperature_2m_max":[19.4],"temperature_2m_min":[9.5]}}""")!!
+        assertEquals(18, w.temp); assertEquals(19, w.high); assertEquals(10, w.low); assertTrue(w.day); assertEquals(5, Weather.kind(w.code)); assertEquals("🌧️", Weather.icon(w.code, true))
+        assertEquals("🌙", Weather.icon(0, false)); assertEquals(7, Weather.kind(96)); assertEquals(6, Weather.kind(73))
+        assertNull(Weather.parse("""{"error":true,"reason":"limit"}""")); assertNull(Weather.parse(""))
+        val before = java.util.Locale.getDefault()
+        try { java.util.Locale.setDefault(java.util.Locale("ar", "JO")); assertTrue(Weather.url(31.9539, 35.9106).contains("latitude=31.9539&longitude=35.9106")) } finally { java.util.Locale.setDefault(before) }
+    }
+
     @Test fun theNextPrayerCountsDownAndWrapsToTomorrow() {
         val t = intArrayOf(300, 720, 930, 1050, 1130)
         assertEquals(listOf(0, 60), Daily.next(240, t, 301).toList())
@@ -123,6 +133,9 @@ class HomeTest {
     @Test fun render() {
         val a = Robolectric.buildActivity(HomeActivity::class.java).setup().get()
         for (i in 0 until 40) { Thread.sleep(100); shadowOf(Looper.getMainLooper()).idle() }
+        a.getSharedPreferences("prayer", 0).edit().putString("weather", """{"current":{"temperature_2m":17.6,"weather_code":2,"is_day":1},"daily":{"temperature_2m_max":[19.4],"temperature_2m_min":[9.5]}}""").putLong("weather_at", System.currentTimeMillis()).apply()
+        a.getSharedPreferences("prayer", 0).edit().putInt("shift", 0).apply()
+        for (i in 0 until 5) { Thread.sleep(100); shadowOf(Looper.getMainLooper()).idle() }
         png(a.window.decorView, "home")
         a.getSharedPreferences("prayer", 0).edit().putString("bg", "1").apply()
         for (i in 0 until 30) { Thread.sleep(100); shadowOf(Looper.getMainLooper()).idle() }

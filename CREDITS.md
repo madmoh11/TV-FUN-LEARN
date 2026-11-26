@@ -51,3 +51,7 @@ downloads it unchanged from Wikimedia Commons the first time.
 ## Home screen backgrounds
 
 The four background pictures were generated for this app with an AI image model.
+
+## Weather
+
+Weather data by [Open-Meteo](https://open-meteo.com/), licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).

@@ -186,4 +186,6 @@
     <string name="home_app_tip">اكبس مطوّلاً على تطبيق لترتيبه</string>
     <string name="keys_name">ريموت لمّة</string>
     <string name="keys_about">بيخلّي تليفونك يكبس «رجوع» و«الرئيسية» على التلفزيون من صفحة لمّة. ما بيقرأ أي شي من الشاشة.</string>
+    <string name="weather_now">%1$d° %2$s  •  العظمى %3$d° والصغرى %4$d°</string>
+    <string-array name="weather"><item>صافي</item><item>غيوم خفيفة</item><item>غائم</item><item>ضباب</item><item>رذاذ</item><item>مطر</item><item>ثلج</item><item>عواصف رعدية</item></string-array>
 </resources>

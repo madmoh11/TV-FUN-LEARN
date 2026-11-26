@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.31
+
+- The home screen shows the weather for the chosen city (Amman by default): how it is now and today's high and low,
+  from Open-Meteo, renewed every half hour.
+
 ## 3.30
 
 - New: **Lamma for the phone**, a second small app (`lamma-phone.apk`). It finds the TV on the Wi-Fi by itself and shows
