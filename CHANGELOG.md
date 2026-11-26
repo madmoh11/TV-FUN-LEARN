@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.32
+
+- A recording of the TV screen stays downloadable after the app is restarted or updated.
+
 ## 3.31
 
 - The home screen shows the weather for the chosen city (Amman by default): how it is now and today's high and low,

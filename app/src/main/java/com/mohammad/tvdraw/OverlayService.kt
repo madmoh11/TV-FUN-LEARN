@@ -537,7 +537,7 @@ class OverlayService : Service() {
         getSystemService(WindowManager::class.java).addView(view, lp)
 
         val sfx = Sfx(this); view.sfx = sfx; view.game.sfx = sfx; view.hockey.sfx = sfx; view.snake.sfx = sfx; view.tug.sfx = sfx; view.family.sfx = sfx; view.home.sfx = sfx; view.home.start(); view.quiz.sfx = sfx; view.hifz.sfx = sfx; view.hifz.play = { url, done -> playUrl(url, done) }; view.hifz.stop = { stopUrl() }; view.move.sfx = sfx; view.quiz.speak = { say(it) }; view.space.sfx = sfx; view.space.speak = { say(it) }
-        val ports = IntArray(2)
+        val ports = IntArray(2); Recorder.restore(this)
         val prayer = PrayerAlerts(this, view, sfx); view.onPrayerCmd = { prayer.command(it) }; prayer.start()
         thread {
             val server = Server({ page }, { words }, { font }, filesDir, { lines, cid -> ui.post { lines.forEach { view.handle(it, cid) }; view.invalidate() } }, { sfx.voice(it) },

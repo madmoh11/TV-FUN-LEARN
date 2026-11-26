@@ -117,6 +117,8 @@ object Recorder {
         release()
         if (ok) state = READY
     }
+    /** A recording made before the app was restarted or updated is still there to download. */
+    fun restore(c: Context) { if (state == IDLE && file(c).length() > 10000) state = READY }
     fun forget(c: Context) { if (state == READY) { file(c).delete(); state = IDLE } }
 }
 
