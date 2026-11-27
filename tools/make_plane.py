@@ -5,9 +5,10 @@ The shape is made here from numbers, so it belongs to this project. It is about 
 38 m long with a 35 m wingspan. glTF axes: +Z is the nose, +Y is up, +X is the left wing."""
 import json, math, struct, sys
 
-mats = {"white": ([0.93, 0.94, 0.96, 1], 0.15, 0.45), "blue": ([0.05, 0.22, 0.52, 1], 0.2, 0.4), "grey": ([0.62, 0.64, 0.68, 1], 0.6, 0.35),
+mats = {"tyre": ([0.05, 0.05, 0.06, 1], 0.0, 0.9), "white": ([0.93, 0.94, 0.96, 1], 0.15, 0.45), "blue": ([0.05, 0.22, 0.52, 1], 0.2, 0.4), "grey": ([0.62, 0.64, 0.68, 1], 0.6, 0.35),
         "dark": ([0.03, 0.04, 0.06, 1], 0.3, 0.2), "red": ([0.85, 0.08, 0.08, 1], 0.1, 0.5), "green": ([0.1, 0.8, 0.2, 1], 0.1, 0.5)}
-soup = {k: ([], []) for k in mats}          # material -> (positions, normals), three vertices to a triangle
+soup = {}          # (part, material) -> (positions, normals), three vertices to a triangle
+part = "airliner"     # the part being built: the wheels are their own part so the simulator can fold them away
 
 def sub(a, b): return (a[0] - b[0], a[1] - b[1], a[2] - b[2])
 def cross(a, b): return (a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0])
@@ -17,7 +18,8 @@ def unit(a):
 
 def tri(m, a, b, c, na=None, nb=None, nc=None):
     n = unit(cross(sub(b, a), sub(c, a)))
-    soup[m][0].extend([a, b, c]); soup[m][1].extend([na or n, nb or n, nc or n])
+    pos, nor = soup.setdefault((part, m), ([], []))
+    pos.extend([a, b, c]); nor.extend([na or n, nb or n, nc or n])
 
 def quad(m, a, b, c, d, n=None):
     if n: tri(m, a, b, c, n[0], n[1], n[2]); tri(m, a, c, d, n[0], n[2], n[3])
@@ -90,12 +92,32 @@ for s in (1, -1):
     pts = [a[0], mid[0], mid[1], a[1]]; quad("blue", *(pts if s > 0 else pts[::-1]))
     pts = [mid[0], a[3], a[2], mid[1]]; quad("blue", *(pts if s > 0 else pts[::-1]))
 
+def tube(m, p0, p1, r, seg=12):
+    """A closed cylinder from p0 to p1."""
+    ax = unit(sub(p1, p0)); side = unit(cross(ax, (0, 1, 0) if abs(ax[1]) < 0.9 else (1, 0, 0))); up = cross(ax, side)
+    ring = [tuple(side[i] * math.cos(2 * math.pi * k / seg) + up[i] * math.sin(2 * math.pi * k / seg) for i in range(3)) for k in range(seg)]
+    for k in range(seg):
+        n0, n1 = ring[k], ring[(k + 1) % seg]
+        a, b = tuple(p0[i] + n0[i] * r for i in range(3)), tuple(p0[i] + n1[i] * r for i in range(3))
+        c, d = tuple(p1[i] + n1[i] * r for i in range(3)), tuple(p1[i] + n0[i] * r for i in range(3))
+        quad(m, a, b, c, d, [n0, n1, n1, n0]); tri(m, p0, b, a); tri(m, p1, d, c)
+
+# the wheels: a nose leg and two main legs, their tyres resting 3.9 m under the middle of the body
+part = "gear"
+tube("grey", (0.0, -1.7, 13.4), (0.0, -3.45, 13.4), 0.13)
+for sx in (0.32, -0.32): tube("tyre", (sx - 0.13, -3.45, 13.4), (sx + 0.13, -3.45, 13.4), 0.45, 16)
+for sx in (2.9, -2.9):
+    tube("grey", (sx, -1.2, -1.6), (sx, -3.3, -1.6), 0.18)
+    tube("grey", (sx, -3.3, -2.3), (sx, -3.3, -0.9), 0.1, 8)
+    for wz in (-2.3, -0.9):
+        for wx in (0.38, -0.38): tube("tyre", (sx + wx - 0.17, -3.3, wz), (sx + wx + 0.17, -3.3, wz), 0.6, 16)
+
 out = sys.argv[1] if len(sys.argv) > 1 else "app/src/main/assets/fly/plane.glb"
-buf = bytearray(); views = []; accs = []; meshes = []; materials = []
-for name, (pos, nor) in soup.items():
-    if not pos: continue
-    col, metal, rough = mats[name]
-    materials.append({"name": name, "doubleSided": name in ("blue", "grey", "dark"), "pbrMetallicRoughness": {"baseColorFactor": col, "metallicFactor": metal, "roughnessFactor": rough}})
+buf = bytearray(); views = []; accs = []; materials = []; mat_id = {}; parts = {}
+for (pt, name), (pos, nor) in soup.items():
+    if name not in mat_id:
+        col, metal, rough = mats[name]; mat_id[name] = len(materials)
+        materials.append({"name": name, "doubleSided": name in ("blue", "grey", "dark"), "pbrMetallicRoughness": {"baseColorFactor": col, "metallicFactor": metal, "roughnessFactor": rough}})
     ids = []
     for data in (pos, nor):
         raw = b"".join(struct.pack("<3f", *v) for v in data)
@@ -103,9 +125,10 @@ for name, (pos, nor) in soup.items():
         acc = {"bufferView": len(views) - 1, "componentType": 5126, "count": len(data), "type": "VEC3"}
         if data is pos: acc["min"] = [min(v[i] for v in data) for i in range(3)]; acc["max"] = [max(v[i] for v in data) for i in range(3)]
         accs.append(acc); ids.append(len(accs) - 1)
-    meshes.append({"attributes": {"POSITION": ids[0], "NORMAL": ids[1]}, "material": len(materials) - 1})
-gltf = {"asset": {"version": "2.0", "generator": "Lamma tools/make_plane.py"}, "scene": 0, "scenes": [{"nodes": [0]}], "nodes": [{"mesh": 0, "name": "airliner"}],
-        "meshes": [{"primitives": meshes}], "materials": materials, "accessors": accs, "bufferViews": views, "buffers": [{"byteLength": len(buf)}]}
+    parts.setdefault(pt, []).append({"attributes": {"POSITION": ids[0], "NORMAL": ids[1]}, "material": mat_id[name]})
+names = list(parts)
+gltf = {"asset": {"version": "2.0", "generator": "Lamma tools/make_plane.py"}, "scene": 0, "scenes": [{"nodes": list(range(len(names)))}], "nodes": [{"mesh": i, "name": n} for i, n in enumerate(names)],
+        "meshes": [{"name": n, "primitives": parts[n]} for n in names], "materials": materials, "accessors": accs, "bufferViews": views, "buffers": [{"byteLength": len(buf)}]}
 js = json.dumps(gltf, separators=(",", ":")).encode(); js += b" " * (-len(js) % 4); buf += b"\0" * (-len(buf) % 4)
 with open(out, "wb") as f:
     f.write(struct.pack("<4sII", b"glTF", 2, 12 + 8 + len(js) + 8 + len(buf))); f.write(struct.pack("<I4s", len(js), b"JSON")); f.write(js); f.write(struct.pack("<I4s", len(buf), b"BIN\0")); f.write(buf)

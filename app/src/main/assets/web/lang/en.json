@@ -548,8 +548,8 @@
   "fl_thr": "Engine",
   "fl_lvl": "⚖️ Auto-level",
   "fl_loc": "📍 Places",
-  "fl_mode_tilt": "📱 Steer by tilting the phone",
-  "fl_mode_stick": "🕹️ Back to the stick",
+  "fl_mode_tilt": "📱 Tilt the phone",
+  "fl_mode_stick": "🕹️ The stick",
   "fl_cal": "🎯 This is level",
   "fl_h_stick": "Move the stick: right and left to turn, up to climb",
   "fl_h_tilt": "Tilt the phone like a wheel, and raise its far edge to climb",
@@ -557,7 +557,7 @@
   "fl_m": "m",
   "fl_loading": "Loading…",
   "fl_back": "Back",
-  "fl_s0": "Queen Alia International Airport",
+  "fl_s0": "🛫 Queen Alia airport: take-off",
   "fl_s1": "Abdali towers and the Boulevard",
   "fl_s2": "Abdoun Bridge",
   "fl_s3": "The Citadel and downtown",
@@ -567,5 +567,10 @@
   "fl_e_start": "The flight screen could not be opened on the TV.",
   "fl_e_render": "3D drawing stopped on the TV. Try the \"light\" quality.",
   "fl_e_nolib": "The simulator's files did not load on the TV.",
-  "fl_e_undefined": ""
+  "fl_e_undefined": "",
+  "fl_s5": "🛬 Queen Alia airport: landing",
+  "fl_gear0": "🛞 Wheels down",
+  "fl_gear1": "🛞 Wheels up",
+  "fl_flap": "🪽 Flaps {0}",
+  "fl_brk": "🛑 Brakes"
 }

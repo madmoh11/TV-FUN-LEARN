@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.38
+
+- Flying over Amman now has **sound**: the engines rise and fall with the throttle, the wind grows with speed, a horn
+  warns of a stall, the wheel motors whirr, and the tyres thump and chirp on touchdown. It is all made on the TV from
+  noise and tones, with a mute button on the phone.
+- **A real runway.** Take-off starts lined up on Queen Alia's runway 08L, and a new "landing" place puts the plane
+  nine kilometres out on the approach. Coming in, the TV shows four approach lights (two white and two red is the
+  right height), which side the runway is, how far it is, and a green line down the three-degree path.
+- **Wheels, flaps and brakes** on the phone. Wheels and flaps slow the plane, flaps let it fly slower, the brakes stop
+  it on the runway and slow it in the air. The wheels fold into the body, and cannot be raised on the ground.
+- Every landing is judged: soft, good, firm or hard, on or off the runway. Landing with the wheels up scrapes to a
+  stop. The camera shakes and the phone buzzes on touchdown.
+
 ## 3.37
 
 - New: **flying over Amman**, a 3D flight simulator. The TV draws an airliner over the real city with a camera that

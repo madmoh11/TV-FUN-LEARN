@@ -69,4 +69,5 @@ The 3D world is drawn with [CesiumJS](https://cesium.com/cesiumjs/) 1.147 by Ces
 Depending on the keys entered, the land is Google's Photorealistic 3D Tiles (Google Map Tiles API), or satellite
 pictures and terrain from Esri's ArcGIS World Imagery and World Elevation services, each credited on the screen while
 it is shown. The map that ships with the app is Natural Earth II, public domain. The airliner is made by
-`tools/make_plane.py` and belongs to this project.
+`tools/make_plane.py` and belongs to this project. The runway's position is from [OurAirports](https://ourairports.com/data/), public domain.
+The sounds are made in the app from noise and tones.
