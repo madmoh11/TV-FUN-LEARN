@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.41
+
+- Flight simulator: on an older graphics chip the photographed 3D city is loaded more coarsely and with less memory,
+  and if the TV still cannot keep up it goes back to satellite pictures by itself and says so.
+
 ## 3.40
 
 - Flight simulator: a TV with an older graphics chip gets a plainer picture it can draw: a flat blue sky, no haze and

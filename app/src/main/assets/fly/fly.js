@@ -10,9 +10,9 @@
   var conf = {}; try { conf = JSON.parse(L.conf()); } catch (e) {}
   var AR = conf.lang !== 'en', Q = F.clamp(conf.q == null ? 1 : conf.q | 0, 0, 2);
   var T = AR ? { kmh: 'كم/س', m: 'م', load: 'جاري تحميل عمّان…', stall: 'السرعة قليلة! زِد قوة المحرك', hard: 'هبوط قاسي!', ground: 'على الأرض', spots: 'إلى أين نطير؟', thr: 'المحرك',
-      nogl: 'هذا التلفزيون لا يدعم الرسم ثلاثي الأبعاد، فالمحاكي لا يعمل عليه.', google: 'عمّان ثلاثية الأبعاد', sat: 'صور الأقمار', basic: 'خريطة بسيطة (لا يوجد إنترنت)', nokey: 'بدون مفتاح خرائط: أرض مصوّرة بلا مبانٍ', badkey: 'مفتاح الخرائط لم يعمل: أرض مصوّرة بلا مبانٍ', N: 'ش', E: 'ق', S: 'ج', W: 'غ', auto: 'توازن تلقائي', gear: 'العجلات', flaps: 'القلّابات', brake: 'فرامل', rwy: 'المدرج', km: 'كم', soft: 'هبوط ناعم 👏', good: 'هبوط جيد 👍', firm: 'هبوط قاسٍ شوي', belly: 'هبوط بدون عجلات!', onrw: 'على المدرج ✅', offrw: 'خارج المدرج', nogear: 'نزّل العجلات!' }
+      nogl: 'هذا التلفزيون لا يدعم الرسم ثلاثي الأبعاد، فالمحاكي لا يعمل عليه.', google: 'عمّان ثلاثية الأبعاد', sat: 'صور الأقمار', basic: 'خريطة بسيطة (لا يوجد إنترنت)', nokey: 'بدون مفتاح خرائط: أرض مصوّرة بلا مبانٍ', badkey: 'مفتاح الخرائط لم يعمل: أرض مصوّرة بلا مبانٍ', N: 'ش', E: 'ق', S: 'ج', W: 'غ', auto: 'توازن تلقائي', weak: 'التلفزيون ضعيف على المباني المجسّمة: رجعنا لصور الأقمار', gear: 'العجلات', flaps: 'القلّابات', brake: 'فرامل', rwy: 'المدرج', km: 'كم', soft: 'هبوط ناعم 👏', good: 'هبوط جيد 👍', firm: 'هبوط قاسٍ شوي', belly: 'هبوط بدون عجلات!', onrw: 'على المدرج ✅', offrw: 'خارج المدرج', nogear: 'نزّل العجلات!' }
     : { kmh: 'km/h', m: 'm', load: 'Loading Amman…', stall: 'Too slow! Add power', hard: 'Hard landing!', ground: 'On the ground', spots: 'Where to?', thr: 'Engine',
-      nogl: 'This TV cannot draw 3D, so the simulator does not run on it.', google: 'Amman in 3D', sat: 'Satellite pictures', basic: 'Simple map (no internet)', nokey: 'No map key: pictured ground without buildings', badkey: 'The map key did not work: pictured ground without buildings', N: 'N', E: 'E', S: 'S', W: 'W', auto: 'Auto-level', gear: 'Wheels', flaps: 'Flaps', brake: 'Brakes', rwy: 'Runway', km: 'km', soft: 'A soft landing 👏', good: 'A good landing 👍', firm: 'A firm landing', belly: 'Landed with the wheels up!', onrw: 'on the runway ✅', offrw: 'off the runway', nogear: 'Wheels down!' };
+      nogl: 'This TV cannot draw 3D, so the simulator does not run on it.', google: 'Amman in 3D', sat: 'Satellite pictures', basic: 'Simple map (no internet)', nokey: 'No map key: pictured ground without buildings', badkey: 'The map key did not work: pictured ground without buildings', N: 'N', E: 'E', S: 'S', W: 'W', auto: 'Auto-level', weak: 'This TV is too weak for the 3D buildings: back to satellite pictures', gear: 'Wheels', flaps: 'Flaps', brake: 'Brakes', rwy: 'Runway', km: 'km', soft: 'A soft landing 👏', good: 'A good landing 👍', firm: 'A firm landing', belly: 'Landed with the wheels up!', onrw: 'on the runway ✅', offrw: 'off the runway', nogear: 'Wheels down!' };
   /* The places of the quick-jump list. elev is the height of the land there above the sea. */
   var SPOTS = [
     { ar: 'مطار الملكة علياء: الإقلاع', en: 'Queen Alia airport: take-off', lat: 31.7225, lon: 35.9932, elev: 719, hdg: 80, land: true },
@@ -54,17 +54,18 @@
     var box = document.createElement('div'); box.appendChild(a); box.appendChild(b); $('msg').appendChild(box); tell('err|nogl|' + d + ' ' + why.slice(0, 160)); return; }
   var scene = viewer.scene, cam = viewer.camera, globe = scene.globe;
   /* An older graphics chip (the older kind of 3D, or no fine arithmetic in its pixel programs) gets a plainer picture that it can actually draw. */
-  var gl = scene.context._gl, glInfo = '', fine = true, lastErr = why ? 'first try: ' + why.slice(0, 60) : '', fps = 0, fpsN = 0, fpsAt = 0;
+  var gl = scene.context._gl, glInfo = '', fine = true, lastErr = why ? 'first try: ' + why.slice(0, 60) : '', fps = -1, fpsN = 0, fpsAt = performance.now(), slowAt = 0;
   try { var hp = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT); fine = !!hp && hp.precision > 0; var di = gl.getExtension('WEBGL_debug_renderer_info');
     glInfo = (scene.context.webgl2 ? 'GL2' : 'GL1') + ' ' + ('' + (di ? gl.getParameter(di.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER))).slice(0, 44) + (fine ? '' : ' no-highp') + (scene.context.depthTexture ? '' : ' no-depthtex') + ' tex' + gl.getParameter(gl.MAX_TEXTURE_SIZE); } catch (e) {}
   var compat = !scene.context.webgl2 || !fine;
+  resize(); addEventListener('resize', resize);
   addEventListener('error', function (e) { lastErr = ('' + (e.message || e)).slice(0, 90); });
   addEventListener('unhandledrejection', function (e) { lastErr = ('' + (e.reason && e.reason.message || e.reason)).slice(0, 90); });
   window.flyViewer = viewer;
   // the TV's graphics chip is small: no shadows, no extra smoothing, and a picture sized to the chosen quality
   viewer.shadows = false; scene.postProcessStages.fxaa.enabled = false; scene.highDynamicRange = false;
-  function resize() { var h = $('c').clientHeight || 540; viewer.resolutionScale = F.clamp([432, 540, 720][Q] / h, 0.4, 2); var hud = $('hud'); hud.width = Math.round(innerWidth); hud.height = Math.round(innerHeight); }
-  resize(); addEventListener('resize', resize);
+  function resize() { var h = $('c').clientHeight || 540; viewer.resolutionScale = F.clamp((compat ? 400 : [432, 540, 720][Q]) / h, 0.3, 2); var hud = $('hud'); hud.width = Math.round(innerWidth); hud.height = Math.round(innerHeight); }
+
   scene.screenSpaceCameraController.enableInputs = false;
   // a clear afternoon over Amman, with the sun lighting the land and haze melting the far hills into the sky
   viewer.clock.currentTime = C.JulianDate.fromIso8601('2025-05-15T12:20:00Z'); viewer.clock.shouldAnimate = false;
@@ -82,6 +83,7 @@
   var tileset = null, mode = '', note = '', flat = false, keyErr = '', stage = 'start';
   function within(p, ms) { return Promise.race([p, new Promise(function (_, no) { setTimeout(function () { no(new Error('timeout')); }, ms); })]); }
   var tileOpts = { showCreditsOnScreen: true, maximumScreenSpaceError: [32, 24, 16][Q], cacheBytes: 110e6, maximumCacheOverflowBytes: 60e6, dynamicScreenSpaceError: true, preloadFlightDestinations: false, skipLevelOfDetail: false };
+  if (compat) { tileOpts.maximumScreenSpaceError = 48; tileOpts.cacheBytes = 40e6; tileOpts.maximumCacheOverflowBytes = 20e6; }
   function useTiles(ts, name) { tileset = scene.primitives.add(ts); globe.show = false; mode = name; }
   async function ground() {
     // the pictured ground: a map that ships with the app underneath, satellite pictures over it when there is internet
@@ -173,6 +175,9 @@
     cam.lookAtTransform(enu, new C.HeadingPitchRange(camH + (Math.random() - 0.5) * shake * 0.012, -(11 * D) + camP * 0.35 + (Math.random() - 0.5) * shake * 0.02, camRange));
     cam.twistRight(camR * 0.22);
     cam.frustum.fov = (58 + F.clamp(s.v / F.VMAX, 0, 1) * 10) * D;
+    // a TV that cannot keep up with the photographed city is taken back to the pictured ground by itself
+    if (tileset && now - started > 25000 && fps >= 0 && fps < 4) { if (!slowAt) slowAt = now; else if (now - slowAt > 10000) { try { scene.primitives.remove(tileset); } catch (e) {} tileset = null; globe.show = true; note = T.weak; slowAt = 0;
+      ground().then(function () { if (flat) RW.elev = 0; }); } } else slowAt = 0;
     fpsN++; if (now - fpsAt > 1000) { fps = Math.round(fpsN * 1000 / (now - fpsAt)); fpsN = 0; fpsAt = now; }
     if (now - hudAt > (compat ? 160 : 80)) { hudAt = now; hud(); }
     if (now - tellAt > 500) { tellAt = now; tell('on|' + Math.round(s.v * 3.6) + '|' + Math.round(s.alt) + '|' + Math.round(s.hdg / D) + '|' + mode + '|' + spot + '|' + Math.round(s.thr * 100) + '|' + (s.onGround ? 1 : 0) + '|' + (ready ? 1 : 0) + '|' + (s.gearWant > 0.5 ? 1 : 0) + '|' + s.flaps + '|' + s.touch + '|' + (ap && ap.show ? Math.round(ap.dist) : '')); }
@@ -233,7 +238,7 @@
     f(13, false); g.fillStyle = 'rgba(255,255,255,.85)'; g.fillText(note || (mode === 'google' ? T.google : mode === 'sat' ? T.sat : mode === 'basic' ? T.basic : ''), AR ? lx - 6 * u : lx + 6 * u, 68 * u);
     var warn = now < touchUntil ? touchMsg : s.bump > 0 ? T.hard : (ap && ap.show && !s.onGround && ap.dist < 2500 && ap.dist > -400 && s.gearWant < 0.5 && s.alt - RW.elev < 400) ? T.nogear : s.stall ? T.stall : s.level > 0 ? T.auto : !ready ? T.load : (s.onGround && s.v < 3 ? T.ground : '');
     // for the first minute, one small line says what this TV is drawing with: it is what to photograph when the picture is wrong
-    if (now - started < 60000 || !ready) { var tl = 0; try { tl = globe._surface._tilesToRender.length; } catch (e) {}
+    if (now - started < 60000 || !ready || (fps >= 0 && fps < 8)) { var tl = 0; try { tl = globe._surface._tilesToRender.length; } catch (e) {}
       var dbg = glInfo + ' ' + cv.width + 'x' + cv.height + ' buf' + gl.drawingBufferWidth + 'x' + gl.drawingBufferHeight + ' ' + fps + 'fps ' + stage + ' ' + mode + ' L' + viewer.imageryLayers.length + ' T' + tl + (compat ? ' compat' : '') + (keyErr ? ' [' + keyErr.slice(0, 70) + ']' : '') + (lastErr ? ' ERR ' + lastErr : '');
       g.font = Math.round(12 * u) + 'px monospace'; g.textAlign = 'left'; var rows = dbg.match(/.{1,74}/g) || [];
       for (var ri = 0; ri < rows.length; ri++) { var ry = (300 + ri * 17) * u; g.fillStyle = 'rgba(0,0,0,.6)'; g.fillRect(190 * u, ry - 8 * u, 580 * u, 17 * u); g.fillStyle = '#d7e3ff'; g.fillText(rows[ri], 196 * u, ry); } }
