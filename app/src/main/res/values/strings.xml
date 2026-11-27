@@ -238,4 +238,16 @@
     <string name="pad_kids_learn">◀ ▶ cards   •   OK: hear it   •   ▲ play   •   Back: leave</string>
     <string name="pad_kids_ask">◀ / OK / ▶ : choose the answer   •   ▼ back to the cards</string>
     <string name="pad_kids_done">OK: play again   •   ▼ cards   •   Back: leave</string>
+    <string name="pad_hifz">📖 Memorising the Quran</string>
+    <string name="pad_hz_ayahs">Ayahs %1$s – %2$s</string>
+    <string name="pad_hz_m_listen">🎧 Listen and learn</string>
+    <string name="pad_hz_m_read">🎤 Recite to the remote\'s microphone</string>
+    <string name="pad_hz_m_test">✅ Test yourself</string>
+    <string name="pad_hz_listen">◀ next   ▶ previous   •   OK: again   •   ▲ hide words   •   ▼ keep going   •   Back: leave</string>
+    <string name="pad_hz_test">OK: I had it right   •   ▼ I slipped   •   Back: leave</string>
+    <string name="pad_hz_read_on">🎤 Listening, recite…   •   OK: the word was right   •   ▼ show the word   •   ▲ stop the microphone</string>
+    <string name="pad_hz_read_off">🎤 Microphone stopped   •   ▲ start it   •   OK: the word was right   •   ▼ show the word</string>
+    <string name="pad_hz_read_none">This TV cannot recognise speech. OK: the word was right   •   ▼ show the word   (or recite from the phone)</string>
+    <string name="pad_hz_read_denied">Lamma was not allowed to use the microphone. OK: the word was right   •   ▼ show the word</string>
+    <string name="pad_hz_done">OK: done   •   Back: leave</string>
 </resources>

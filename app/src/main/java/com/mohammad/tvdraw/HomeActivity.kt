@@ -176,6 +176,7 @@ class HomeActivity : Activity() {
         row(col, getString(R.string.app_name), listOf(
             tile(getString(R.string.home_phone), "", 0xFF5B3FA8.toInt(), 420f, 170f) { showPhone() }))
         row(col, getString(R.string.pad_row), listOf(
+            tile(getString(R.string.pad_hifz), "", 0xFF0F6B63.toInt(), 330f, 170f) { openHifz() },
             tile(getString(R.string.pad_fly), "", 0xFF14508A.toInt(), 330f, 170f) { Flight.command(this, listOf("fl", "on", "1"), TvPad.CID) },
             tile(getString(R.string.pad_snake), "", 0xFF1F7A3F.toInt(), 300f, 170f) { TvPad.start(this, TvPad.SNAKE) },
             tile(getString(R.string.pad_ar), "", 0xFF1F9D46.toInt(), 300f, 170f) { TvPad.start(this, TvPad.KIDS, KidsCore.AR) },
@@ -322,6 +323,30 @@ class HomeActivity : Activity() {
         box.addView(sc)
         showExtra(box); first?.requestFocus()
     }
+
+    /* ---- memorising with the remote: choose a surah, then a stretch of it, then what to do with it ---- */
+    private fun grid(title: String, cols: Int, tiles: List<View>) { val box = panel()
+        box.addView(label(title, 50f, Ui.GOLD).apply { setPadding(px(70f), px(34f), px(70f), px(8f)) })
+        val g = GridLayout(this); g.columnCount = cols; g.setPadding(px(50f), 0, px(50f), px(50f)); g.clipChildren = false
+        for (t in tiles) { val lp = t.layoutParams as LinearLayout.LayoutParams; g.addView(t, GridLayout.LayoutParams().apply { width = lp.width; height = lp.height; setMargins(px(15f), px(14f), px(15f), px(14f)) }) }
+        val sc = ScrollView(this); sc.isVerticalScrollBarEnabled = false; sc.clipChildren = false; sc.addView(g); box.addView(sc)
+        extra?.let { root.removeView(it) }; extra = null; showExtra(box); tiles.firstOrNull()?.requestFocus() }
+    private fun openHifz() { val names = surahNames()
+        grid(getString(R.string.pad_hifz), 6, (1..114).map { n -> tile(names[n - 1], n.toString(), 0xFF0F6B63.toInt(), 270f, 130f, true) { openHifzParts(n, names[n - 1]) } }) }
+    private fun openHifzParts(n: Int, name: String) { val q = quran ?: return; val parts = q.parts.filter { it.surah == n }
+        if (parts.size == 1) openHifzMode(parts[0], name)
+        else grid(name, 5, parts.map { p -> tile(str(R.string.pad_hz_ayahs, p.from, p.to), "", 0xFF14505C.toInt(), 330f, 130f) { openHifzMode(p, name) } }) }
+    private var pendingRead = ""
+    private fun openHifzMode(p: Quran.Part, name: String) {
+        fun go(mode: String) { closeExtra()
+            if (mode == "read" && checkSelfPermission(android.Manifest.permission.RECORD_AUDIO) != android.content.pm.PackageManager.PERMISSION_GRANTED) { pendingRead = p.id; requestPermissions(arrayOf(android.Manifest.permission.RECORD_AUDIO), 31) }
+            else TvPad.startHifz(this, p.id, mode) }
+        grid(name + "  •  " + str(R.string.pad_hz_ayahs, p.from, p.to), 3, listOf(
+            tile(getString(R.string.pad_hz_m_listen), "", 0xFF1F7A4D.toInt(), 520f, 200f) { go("listen") },
+            tile(getString(R.string.pad_hz_m_read), "", 0xFFB5651D.toInt(), 520f, 200f) { go("read") },
+            tile(getString(R.string.pad_hz_m_test), "", 0xFF2B3F8F.toInt(), 520f, 200f) { go("test") })) }
+    override fun onRequestPermissionsResult(code: Int, perms: Array<out String>, res: IntArray) { super.onRequestPermissionsResult(code, perms, res)
+        if (code == 31 && pendingRead.isNotEmpty()) { val id = pendingRead; pendingRead = ""; TvPad.startHifz(this, id, "read") } }      // without the permission the screen says so, and the keys still work
 
     private fun openSurah(n: Int) = openPages(surahNames()[n - 1], { Daily.surah(it, n) }, true)
     private fun openRuqyah() = openPages(getString(R.string.home_ruqyah), { Daily.ranges(it, Daily.RUQYAH) }, true)

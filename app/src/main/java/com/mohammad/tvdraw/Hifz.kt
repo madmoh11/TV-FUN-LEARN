@@ -50,6 +50,7 @@ class Hifz(private val view: View) {
     private var rec: Recite? = null                                    // read: follows the recitation word by word
     private var pages: List<IntRange> = emptyList()                    // read: the ayahs shown together on the TV
     val active get() = state != OFF
+    val phase get() = state
     /** Why the last recitation could not be played, or empty. Shown on the TV and the phone. */
     @Volatile var audioError = ""
     private var sound = true                                          // false when a phone plays the recitation itself

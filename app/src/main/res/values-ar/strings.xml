@@ -228,4 +228,16 @@
     <string name="pad_kids_learn">◀ ▶ البطاقات   •   OK: اسمعها   •   ▲ العب   •   رجوع: خروج</string>
     <string name="pad_kids_ask">◀ / OK / ▶ : اختر الجواب   •   ▼ ارجع للبطاقات</string>
     <string name="pad_kids_done">OK: العب مرة ثانية   •   ▼ البطاقات   •   رجوع: خروج</string>
+    <string name="pad_hifz">📖 رحلة الحافظ</string>
+    <string name="pad_hz_ayahs">الآيات %1$s – %2$s</string>
+    <string name="pad_hz_m_listen">🎧 استمع واحفظ</string>
+    <string name="pad_hz_m_read">🎤 سمّع بمايك الريموت</string>
+    <string name="pad_hz_m_test">✅ اختبر نفسك</string>
+    <string name="pad_hz_listen">◀ التالية   ▶ السابقة   •   OK: أعدها   •   ▲ أخفِ كلمات   •   ▼ متابعة تلقائية   •   رجوع: خروج</string>
+    <string name="pad_hz_test">OK: حفظتها صح   •   ▼ أخطأت   •   رجوع: خروج</string>
+    <string name="pad_hz_read_on">🎤 المايك يسمعك، اتلُ…   •   OK: الكلمة صح   •   ▼ أظهر الكلمة   •   ▲ أوقف المايك</string>
+    <string name="pad_hz_read_off">🎤 المايك متوقف   •   ▲ شغّله   •   OK: الكلمة صح   •   ▼ أظهر الكلمة</string>
+    <string name="pad_hz_read_none">هذا التلفزيون لا يتعرّف على الصوت. OK: الكلمة صح   •   ▼ أظهر الكلمة   (أو سمّع من التليفون)</string>
+    <string name="pad_hz_read_denied">لم يُسمح للمّة باستخدام المايك. OK: الكلمة صح   •   ▼ أظهر الكلمة</string>
+    <string name="pad_hz_done">OK: تم   •   رجوع: خروج</string>
 </resources>

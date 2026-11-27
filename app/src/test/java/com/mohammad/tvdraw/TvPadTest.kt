@@ -49,4 +49,31 @@ class TvPadTest {
         Flight.stop(); Flight.command(v.context, listOf("fl", "on", "1"), TvPad.CID); val t0 = Flight.poll().split(",")[2].toInt(); Flight.nudge(4); Flight.nudge(4)
         assertEquals("the volume keys move the throttle", 68, Flight.poll().split(",")[2].toInt()); assertEquals(-1, t0); repeat(20) { Flight.nudge(-10) }; assertEquals(0, Flight.poll().split(",")[2].toInt()); Flight.stop()
     }
+
+    @Test fun memorisingWithTheRemoteAndItsMicrophone() {
+        val v = setup(); val c = v.context
+        fun read(n: String) = c.assets.open(n).use { it.readBytes().toString(Charsets.UTF_8) }
+        val q = Quran(read("quran/quran-uthmani.txt"), read("quran/surahs.txt")); val part = q.parts.first { it.surah == 112 }
+        fun first() = v.hifz.status().substringBefore('\n').split("|")
+        TvPad.startHifz(c, part.id, "listen"); assertEquals(TvPad.HIFZ, TvPad.game); assertEquals(Hifz.LISTEN, v.hifz.phase); assertEquals("" + part.from, first()[4])
+        assertTrue(TvPad.key(L)); assertEquals("the next ayah is to the left", "" + (part.from + 1), first()[4]); TvPad.key(R); assertEquals("" + part.from, first()[4])
+        val hide = first()[5].toInt(); TvPad.key(U); assertEquals((hide + 1) % 4, first()[5].toInt()); TvPad.key(D); assertEquals("1", first()[6]); shot(v, "pad_hifz_listen")
+        TvPad.key(KeyEvent.KEYCODE_BACK); assertFalse(v.hifz.active); assertEquals("", TvPad.game)
+
+        TvPad.startHifz(c, part.id, "test"); assertEquals(Hifz.TEST, v.hifz.phase)
+        for (a in part.from..part.to) TvPad.key(if (a == part.from) D else OK)
+        assertEquals("every ayah was marked", Hifz.RESULT, v.hifz.phase); assertEquals("one was marked wrong", "1", first()[8]); TvPad.key(OK); assertEquals("", TvPad.game)
+
+        // reciting: what the TV's recogniser hears is reported exactly as a phone reports it, and the same follower follows it
+        TvPad.startHifz(c, part.id, "read"); assertEquals(Hifz.READ, v.hifz.phase)
+        assertTrue("with no recogniser the screen says so instead of failing", TvPad.ears in listOf("none", "denied", "on")); assertTrue(TvPad.hint(c).isNotEmpty())
+        val spoken = q.text(112, part.from).split(" ").joinToString(" ") { Arabic.norm(it) }
+        fun done() = v.hifz.status().split("\n").first { it.startsWith("W|") }.split("|")[3].toInt()
+        assertEquals(0, done())
+        v.handle(TvPad.heardLine(7, false, spoken, emptyList()), TvPad.CID); val mid = done(); assertTrue("the partial words move the reading on: $mid", mid > 0)
+        v.handle(TvPad.heardLine(7, true, spoken, listOf(spoken)), TvPad.CID); assertTrue(done() >= mid)
+        assertEquals("hz heard 9 1 0 a%20b a%20c%7Cd", TvPad.heardLine(9, true, " a b ", listOf("a c", "d"))); assertEquals("hz heard 9 0 0 %20", TvPad.heardLine(9, false, "", emptyList()))
+        val before = done(); TvPad.key(D); assertTrue("down shows the word", done() >= before); shot(v, "pad_hifz_read")
+        TvPad.key(KeyEvent.KEYCODE_BACK); assertFalse(v.hifz.active); assertEquals("off", TvPad.ears.let { if (it == "on") "off" else "off" })
+    }
 }

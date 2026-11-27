@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.46
+
+- **Memorising the Quran with the remote.** A tile on the home screen's remote row opens a surah, then a stretch of
+  its ayahs, then one of three ways: listen and learn, test yourself, or recite to the remote's microphone.
+- Reciting uses the TV's own speech recogniser, which on a TV listens through the remote's microphone. What it hears
+  goes to the same follower the phone's words go to, so the levels of leniency and the repeat-the-ayah rules are the
+  same. Where a TV has no speech recogniser the screen says so, and the keys still reveal or accept each word.
+- The app now asks for the microphone permission, the first time reciting to the remote is chosen.
+
 ## 3.45
 
 - **The flight simulator on a computer.** Open `http://<the TV's address>:8765/fly/tv.html` in a computer's browser on
