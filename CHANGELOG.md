@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.40
+
+- Flight simulator: a TV with an older graphics chip gets a plainer picture it can draw: a flat blue sky, no haze and
+  no sun lighting. For the first minute a small line on the TV says what the picture is being drawn with and why a map
+  key was refused.
+
 ## 3.39
 
 - Flight simulator: on a TV whose web view refuses the newer kind of 3D, the simulator now asks for the older kind

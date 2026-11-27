@@ -43,7 +43,7 @@
   }
   function make(old) {
     return new C.Viewer('c', { animation: false, baseLayerPicker: false, fullscreenButton: false, geocoder: false, homeButton: false, infoBox: false, sceneModePicker: false, selectionIndicator: false,
-      timeline: false, navigationHelpButton: false, navigationInstructionsInitiallyVisible: false, scene3DOnly: true, shadows: false, baseLayer: false, creditContainer: 'credits', showRenderLoopErrors: false,
+      timeline: false, navigationHelpButton: false, navigationInstructionsInitiallyVisible: false, scene3DOnly: true, shadows: false, baseLayer: false, creditContainer: 'credits', showRenderLoopErrors: false, orderIndependentTranslucency: false,
       msaaSamples: 1, requestRenderMode: false, contextOptions: old ? { requestWebgl1: true, webgl: { antialias: false, alpha: false, failIfMajorPerformanceCaveat: false } } : { webgl: { antialias: false, powerPreference: 'high-performance', alpha: false } } });
   }
   var viewer, why = '';
@@ -53,6 +53,13 @@
   if (!viewer) { var d = probe(); $('msg').innerHTML = ''; $('msg').hidden = false; var a = document.createElement('div'); a.textContent = T.nogl; var b = document.createElement('div'); b.style.cssText = 'font:2.2vh monospace;direction:ltr;margin-top:3vh;opacity:.8;word-break:break-word'; b.textContent = d + ' | ' + why.slice(0, 400);
     var box = document.createElement('div'); box.appendChild(a); box.appendChild(b); $('msg').appendChild(box); tell('err|nogl|' + d + ' ' + why.slice(0, 160)); return; }
   var scene = viewer.scene, cam = viewer.camera, globe = scene.globe;
+  /* An older graphics chip (the older kind of 3D, or no fine arithmetic in its pixel programs) gets a plainer picture that it can actually draw. */
+  var gl = scene.context._gl, glInfo = '', fine = true, lastErr = why ? 'first try: ' + why.slice(0, 60) : '', fps = 0, fpsN = 0, fpsAt = 0;
+  try { var hp = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT); fine = !!hp && hp.precision > 0; var di = gl.getExtension('WEBGL_debug_renderer_info');
+    glInfo = (scene.context.webgl2 ? 'GL2' : 'GL1') + ' ' + ('' + (di ? gl.getParameter(di.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER))).slice(0, 44) + (fine ? '' : ' no-highp') + (scene.context.depthTexture ? '' : ' no-depthtex') + ' tex' + gl.getParameter(gl.MAX_TEXTURE_SIZE); } catch (e) {}
+  var compat = !scene.context.webgl2 || !fine;
+  addEventListener('error', function (e) { lastErr = ('' + (e.message || e)).slice(0, 90); });
+  addEventListener('unhandledrejection', function (e) { lastErr = ('' + (e.reason && e.reason.message || e.reason)).slice(0, 90); });
   window.flyViewer = viewer;
   // the TV's graphics chip is small: no shadows, no extra smoothing, and a picture sized to the chosen quality
   viewer.shadows = false; scene.postProcessStages.fxaa.enabled = false; scene.highDynamicRange = false;
@@ -66,28 +73,32 @@
   scene.fog.enabled = true; scene.fog.density = 0.00028; scene.fog.minimumBrightness = 0.3;
   if (scene.skyAtmosphere) scene.skyAtmosphere.show = true;
   if (scene.sun) scene.sun.show = true; if (scene.moon) scene.moon.show = false; if (scene.skyBox) scene.skyBox.show = true;
+  if (compat) { scene.logarithmicDepthBuffer = false; globe.enableLighting = false; globe.dynamicAtmosphereLighting = false; globe.showGroundAtmosphere = false; scene.fog.enabled = false;
+    if (scene.skyAtmosphere) scene.skyAtmosphere.show = false; if (scene.sun) scene.sun.show = false; if (scene.skyBox) scene.skyBox.show = false;
+    scene.backgroundColor = C.Color.fromCssColorString('#8fc2ee'); globe.maximumScreenSpaceError = 6; cam.frustum.near = 2; }
   C.RequestScheduler.requestsByServer['tile.googleapis.com:443'] = 18;
 
   /* ---- the world: Google's photographed 3D city if there is a key, then Cesium ion's copy of it, then satellite pictures on real terrain, then a map that ships with the app ---- */
-  var tileset = null, mode = '', note = '', flat = false;
+  var tileset = null, mode = '', note = '', flat = false, keyErr = '', stage = 'start';
   function within(p, ms) { return Promise.race([p, new Promise(function (_, no) { setTimeout(function () { no(new Error('timeout')); }, ms); })]); }
   var tileOpts = { showCreditsOnScreen: true, maximumScreenSpaceError: [32, 24, 16][Q], cacheBytes: 110e6, maximumCacheOverflowBytes: 60e6, dynamicScreenSpaceError: true, preloadFlightDestinations: false, skipLevelOfDetail: false };
   function useTiles(ts, name) { tileset = scene.primitives.add(ts); globe.show = false; mode = name; }
   async function ground() {
     // the pictured ground: a map that ships with the app underneath, satellite pictures over it when there is internet
     try { viewer.imageryLayers.addImageryProvider(await C.TileMapServiceImageryProvider.fromUrl(C.buildModuleUrl('Assets/Textures/NaturalEarthII'))); } catch (e) {}
-    mode = 'basic';
+    mode = 'basic'; stage = 'map';
     try { var img = await within(C.ArcGisMapServerImageryProvider.fromUrl('https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer', { enablePickFeatures: false }), 15000);
-      viewer.imageryLayers.addImageryProvider(img); mode = 'sat'; } catch (e) {}
+      viewer.imageryLayers.addImageryProvider(img); mode = 'sat'; } catch (e) { keyErr += ' sat ' + (e && (e.statusCode || e.message) || e); }
+    stage = 'terrain';
     flat = true;
     try { if (conf.ion) { viewer.terrainProvider = await within(C.createWorldTerrainAsync(), 15000); flat = false; } } catch (e) {}
     if (flat && mode === 'sat') try { viewer.terrainProvider = await within(C.ArcGISTiledElevationTerrainProvider.fromUrl('https://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer'), 15000); flat = false; } catch (e) {}
-    globe.depthTestAgainstTerrain = true;
+    globe.depthTestAgainstTerrain = !compat; stage = 'done';
   }
   async function world() {
     if (conf.ion) C.Ion.defaultAccessToken = conf.ion;
-    if (conf.g) try { useTiles(await within(C.Cesium3DTileset.fromUrl('https://tile.googleapis.com/v1/3dtiles/root.json?key=' + encodeURIComponent(conf.g), tileOpts), 20000), 'google'); return; } catch (e) { note = T.badkey; }
-    if (conf.ion) try { useTiles(await within(C.Cesium3DTileset.fromIonAssetId(2275207, tileOpts), 20000), 'google'); note = ''; return; } catch (e) { note = T.badkey; }
+    if (conf.g) try { useTiles(await within(C.Cesium3DTileset.fromUrl('https://tile.googleapis.com/v1/3dtiles/root.json?key=' + encodeURIComponent(conf.g), tileOpts), 20000), 'google'); return; } catch (e) { note = T.badkey; keyErr = 'google ' + (e && (e.statusCode || e.message) || e); }
+    if (conf.ion) try { useTiles(await within(C.Cesium3DTileset.fromIonAssetId(2275207, tileOpts), 20000), 'google'); note = ''; return; } catch (e) { note = T.badkey; keyErr += ' ion ' + (e && (e.statusCode || e.message) || e); }
     if (!conf.g && !conf.ion) note = T.nokey;
     await ground();
   }
@@ -162,7 +173,8 @@
     cam.lookAtTransform(enu, new C.HeadingPitchRange(camH + (Math.random() - 0.5) * shake * 0.012, -(11 * D) + camP * 0.35 + (Math.random() - 0.5) * shake * 0.02, camRange));
     cam.twistRight(camR * 0.22);
     cam.frustum.fov = (58 + F.clamp(s.v / F.VMAX, 0, 1) * 10) * D;
-    if (now - hudAt > 80) { hudAt = now; hud(); }
+    fpsN++; if (now - fpsAt > 1000) { fps = Math.round(fpsN * 1000 / (now - fpsAt)); fpsN = 0; fpsAt = now; }
+    if (now - hudAt > (compat ? 160 : 80)) { hudAt = now; hud(); }
     if (now - tellAt > 500) { tellAt = now; tell('on|' + Math.round(s.v * 3.6) + '|' + Math.round(s.alt) + '|' + Math.round(s.hdg / D) + '|' + mode + '|' + spot + '|' + Math.round(s.thr * 100) + '|' + (s.onGround ? 1 : 0) + '|' + (ready ? 1 : 0) + '|' + (s.gearWant > 0.5 ? 1 : 0) + '|' + s.flaps + '|' + s.touch + '|' + (ap && ap.show ? Math.round(ap.dist) : '')); }
   }
 
@@ -220,6 +232,11 @@
     box(g, AR ? lx - nw : lx, 16 * u, nw, 38 * u, 10 * u); g.fill(); g.fillStyle = '#fff'; g.fillText(nm, AR ? lx - 14 * u : lx + 14 * u, 36 * u);
     f(13, false); g.fillStyle = 'rgba(255,255,255,.85)'; g.fillText(note || (mode === 'google' ? T.google : mode === 'sat' ? T.sat : mode === 'basic' ? T.basic : ''), AR ? lx - 6 * u : lx + 6 * u, 68 * u);
     var warn = now < touchUntil ? touchMsg : s.bump > 0 ? T.hard : (ap && ap.show && !s.onGround && ap.dist < 2500 && ap.dist > -400 && s.gearWant < 0.5 && s.alt - RW.elev < 400) ? T.nogear : s.stall ? T.stall : s.level > 0 ? T.auto : !ready ? T.load : (s.onGround && s.v < 3 ? T.ground : '');
+    // for the first minute, one small line says what this TV is drawing with: it is what to photograph when the picture is wrong
+    if (now - started < 60000 || !ready) { var tl = 0; try { tl = globe._surface._tilesToRender.length; } catch (e) {}
+      var dbg = glInfo + ' ' + cv.width + 'x' + cv.height + ' buf' + gl.drawingBufferWidth + 'x' + gl.drawingBufferHeight + ' ' + fps + 'fps ' + stage + ' ' + mode + ' L' + viewer.imageryLayers.length + ' T' + tl + (compat ? ' compat' : '') + (keyErr ? ' [' + keyErr.slice(0, 70) + ']' : '') + (lastErr ? ' ERR ' + lastErr : '');
+      g.font = Math.round(12 * u) + 'px monospace'; g.textAlign = 'left'; var rows = dbg.match(/.{1,74}/g) || [];
+      for (var ri = 0; ri < rows.length; ri++) { var ry = (300 + ri * 17) * u; g.fillStyle = 'rgba(0,0,0,.6)'; g.fillRect(190 * u, ry - 8 * u, 580 * u, 17 * u); g.fillStyle = '#d7e3ff'; g.fillText(rows[ri], 196 * u, ry); } }
     if (warn) { f(24, true); g.textAlign = 'center'; var ww = g.measureText(warn).width + 44 * u; g.fillStyle = (now >= touchUntil && s.bump > 0) || s.stall || warn === T.nogear || warn.indexOf(T.belly) === 0 ? 'rgba(190,30,40,.88)' : glass; box(g, W / 2 - ww / 2, 194 * u, ww, 46 * u, 12 * u); g.fill(); g.fillStyle = '#fff'; g.fillText(warn, W / 2, 218 * u); }
   }
 
@@ -261,7 +278,7 @@
   say(T.load);
   go(conf.spot == null ? 1 : conf.spot);
   scene.preUpdate.addEventListener(frame);
-  scene.renderError.addEventListener(function () { say(T.nogl); tell('err|render'); });
+  scene.renderError.addEventListener(function (sc, e) { lastErr = 'render: ' + ('' + (e && e.message || e)).slice(0, 80); say(T.nogl + ' ' + lastErr); tell('err|render|' + glInfo + ' ' + lastErr); });
   C.Model.fromGltfAsync({ url: 'plane.glb', scale: 1, minimumPixelSize: 0, incrementallyLoadTextures: false }).then(function (m) { plane = scene.primitives.add(m); }).catch(function () {});
   world().then(function () {
     var p = SPOTS[spot]; if (flat && s) { s.alt += -p.elev; groundH = 0; RW.elev = 0; }        // no terrain: the land is at sea level everywhere
