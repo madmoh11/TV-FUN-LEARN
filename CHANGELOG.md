@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.36
+
+- News studio: the TV now shows **the person only, and their whole body**. Anything else the cut-out used to let
+  through (a lamp, a chair, a patch of wall) is dropped, the picture is cut to the presenter's own outline from head to
+  feet, and they stand on the floor above the ticker with a soft shadow instead of being hidden behind it. The name
+  caption sits beside the presenter, never over them.
+- The presenter is sharper, because the whole picture sent to the TV is now the person.
+- The phone says when part of the body is outside the camera's view, and when nobody is in front of it.
+
 ## 3.35
 
 - New: **news studio**. The phone's camera films the presenter, the phone cuts the person out of the room, and the TV

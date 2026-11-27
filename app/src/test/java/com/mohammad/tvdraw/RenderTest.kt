@@ -364,9 +364,11 @@ class RenderTest {
         fill = { v.measure(View.MeasureSpec.makeMeasureSpec(1920, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(1080, View.MeasureSpec.EXACTLY)); v.layout(0, 0, 1920, 1080) }
         fill()
         /** A stand-in for the presenter: a figure on a clear background, as a phone sends it. */
-        fun figure(): Bitmap { val b = Bitmap.createBitmap(270, 480, Bitmap.Config.ARGB_8888); val c = Canvas(b); val q = Paint(Paint.ANTI_ALIAS_FLAG)
-            q.color = 0xFFE0AC8A.toInt(); c.drawCircle(135f, 90f, 56f, q); q.color = 0xFF2B2B2B.toInt(); c.drawArc(android.graphics.RectF(76f, 26f, 194f, 130f), 180f, 180f, true, q)
-            q.color = 0xFF1F4E9E.toInt(); c.drawRoundRect(android.graphics.RectF(40f, 150f, 230f, 480f), 60f, 60f, q); return b }
+        fun figure(): Bitmap { val b = Bitmap.createBitmap(200, 520, Bitmap.Config.ARGB_8888); val c = Canvas(b); val q = Paint(Paint.ANTI_ALIAS_FLAG)
+            q.color = 0xFFE0AC8A.toInt(); c.drawCircle(100f, 52f, 40f, q); q.color = 0xFF2B2B2B.toInt(); c.drawArc(android.graphics.RectF(58f, 8f, 142f, 84f), 180f, 180f, true, q)
+            q.color = 0xFF1F4E9E.toInt(); c.drawRoundRect(android.graphics.RectF(30f, 96f, 170f, 290f), 40f, 40f, q)
+            q.color = 0xFF30343C.toInt(); c.drawRect(52f, 280f, 96f, 500f, q); c.drawRect(104f, 280f, 148f, 500f, q)
+            q.color = 0xFF6B4226.toInt(); c.drawRoundRect(android.graphics.RectF(40f, 496f, 98f, 520f), 8f, 8f, q); c.drawRoundRect(android.graphics.RectF(102f, 496f, 160f, 520f), 8f, 8f, q); return b }
         assertFalse(v.studio.active); assertEquals(listOf("a", "b"), Studio.ticker("a • b\n\n")); assertEquals("x y", Studio.clean(" x \n|  y ", 9))
         v.handle("st on 2", "a"); v.handle("st name " + java.net.URLEncoder.encode("خالد الجاعوني", "UTF-8"), "a"); v.handle("st title " + java.net.URLEncoder.encode("مراسل الطقس من عمّان", "UTF-8"), "a")
         v.handle("st tick " + java.net.URLEncoder.encode("أمطار غزيرة متوقعة مساء اليوم • المدارس تبدأ الساعة التاسعة • فوز فريق العيلة بكأس الحارة", "UTF-8"), "a")

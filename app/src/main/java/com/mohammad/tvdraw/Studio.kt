@@ -154,19 +154,24 @@ class Studio(private val view: View) {
         weatherFx(cv, w, h, k, t)
 
         val barTop = h * 0.9f
-        if (scene != NEWS && cards) forecast(cv, if (pos == 2) w * 0.05f else w * 0.5f, h * 0.2f, w * 0.45f, k)
+        if (scene != NEWS && cards) forecast(cv, if (pos == 2) w * 0.05f else if (pos == 1) w * 0.585f else w * 0.5f, h * 0.2f, if (pos == 1) w * 0.385f else w * 0.45f, k)
 
-        // the presenter, standing on the bottom edge so the caption and the ticker hide where the picture ends
+        // the presenter: the phone sends the person only, cut to their outline, so the whole body stands on the floor above the ticker
         val per = person
         if (per != null && now - personAt < STALE_MS) {
-            val ph = h * (0.5f + 0.12f * size); val pw = ph * per.width / per.height
+            val floor = barTop - 14f * k
+            var ph = h * (0.5f + 0.1f * size); var pw = ph * per.width / per.height
+            if (pw > w * 0.46f) { pw = w * 0.46f; ph = pw * per.height / per.width }
             val cx = w * (if (pos == 0) 0.25f else if (pos == 1) 0.5f else 0.75f)
-            cv.drawBitmap(per, null, RectF(cx - pw / 2, barTop - ph + 6f * k, cx + pw / 2, barTop + 6f * k), bp)
+            if (per.hasAlpha()) { val sw = minOf(pw, ph * 0.5f) * 0.62f      // a soft shadow where the feet meet the floor
+                p.shader = RadialGradient(0f, 0f, 1f, Color.argb(115, 0, 0, 0), Color.TRANSPARENT, Shader.TileMode.CLAMP)
+                cv.save(); cv.translate(cx, floor - 4f * k); cv.scale(sw, 20f * k); cv.drawCircle(0f, 0f, 1f, p); cv.restore(); p.shader = null }
+            cv.drawBitmap(per, null, RectF(cx - pw / 2, floor - ph, cx + pw / 2, floor), bp)
         }
 
         // the caption with the presenter's name
         if (name.isNotEmpty() || title.isNotEmpty()) {
-            val cw = w * 0.4f; val l = if (pos == 2) w * 0.56f else if (pos == 1) w * 0.3f else w * 0.04f; val top = h * 0.775f
+            val cw = if (pos == 1) w * 0.33f else w * 0.4f; val l = if (pos == 0) w * 0.56f else w * 0.04f; val top = h * 0.75f      // beside the presenter, never over the body
             val slide = minOf(1f, t / 0.6f); cv.save(); cv.clipRect(l, top - 10f * k, l + cw * slide, barTop)
             p.color = Color.rgb(198, 22, 34); cv.drawRect(l, top, l + cw, top + 64f * k, p)
             p.color = Color.argb(240, 250, 250, 252); cv.drawRect(l, top + 64f * k, l + cw, top + 112f * k, p)
