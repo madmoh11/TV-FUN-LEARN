@@ -577,6 +577,7 @@ class OverlayService : Service() {
                     else if (path.startsWith("/y")) view.hifz.status()
                     else if (path.startsWith("/m")) view.move.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/x")) view.kids.status()
+                    else if (path.startsWith("/zp")) Flight.poll()
                     else if (path.startsWith("/z")) Flight.status(this)
                     else if (path.startsWith("/k")) view.rps.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/n")) view.quiz.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))

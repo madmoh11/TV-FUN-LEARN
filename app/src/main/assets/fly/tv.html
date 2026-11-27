@@ -9,14 +9,34 @@ html,body{margin:0;height:100%;background:#0a1220;overflow:hidden;font-family:L,
 #menu[dir=ltr]{direction:ltr}#menu h2{margin:0 0 8px;font-size:3.6vh;color:#f2c14e}
 #menu{top:6%;max-height:88%;overflow:hidden}#menu div{font-size:3vh;padding:.75vh 1.6vh;border-radius:12px;margin:.4vh 0;background:rgba(255,255,255,.07)}#menu div.on{background:#1f6fd6}
 #menu div b{display:inline-block;width:1.6em;color:#f2c14e}
-#msg[hidden]{display:none}.cesium-widget-errorPanel{display:none!important}#msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:4.4vh;padding:0 10%;background:#0a1220;direction:rtl;line-height:1.6}</style></head>
+#pc[hidden]{display:none}#pc{position:absolute;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;background:#0a1220;direction:rtl}#pc>div{width:min(560px,92vw)}#pc h1{margin:0 0 6px;font-size:30px;color:#f2c14e}#pc p{margin:6px 0 14px;line-height:1.7;color:#cdd7f2}#pc p.k{font-size:13px;color:#93a1c9;margin-top:14px}#pc label{display:block;margin:10px 0;font-size:15px}#pc input,#pc select{display:block;width:100%;box-sizing:border-box;margin-top:5px;padding:11px;border-radius:10px;border:1px solid #33487e;background:#141f3a;color:#fff;font:inherit;direction:ltr}#pc select{direction:rtl}#pc button{width:100%;margin-top:12px;padding:15px;border:0;border-radius:12px;background:#1f8f47;color:#fff;font:inherit;font-size:20px;font-weight:700;cursor:pointer}#msg[hidden]{display:none}.cesium-widget-errorPanel{display:none!important}#msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:4.4vh;padding:0 10%;background:#0a1220;direction:rtl;line-height:1.6}</style></head>
 <body><div id=c></div><canvas id=hud></canvas><div id=credits></div><div id=menu hidden></div><div id=msg>✈️</div>
-<script src=core.js></script><script src=sim.js></script>
-<script>/* Choose the engine: the full one (CesiumJS) needs a modern graphics chip; an old one gets the light engine. Whatever fails falls back to the light one. */
-(function () { var conf = FlySim.conf, eng = conf.eng | 0, went = false;
+<div id=pc hidden><div><h1>✈️ الطيران فوق عمّان</h1>
+<p>على الكمبيوتر الصورة بدقة الشاشة الكاملة. مع مفتاح خرائط بتطلع مباني عمّان مجسّمة.</p>
+<label>مفتاح Google Map Tiles<input id=pcg type=password autocomplete=off></label><label>أو رمز Cesium ion<input id=pci type=password autocomplete=off></label>
+<label>الدقة<select id=pcq><option value=3>دقة الشاشة الكاملة<option value=2>عالية<option value=1>متوسطة</select></label>
+<label>المحرّك<select id=pce><option value=0>تلقائي<option value=2>كامل (CesiumJS)<option value=1>خفيف</select></label>
+<button id=pcgo>🛫 ابدأ الطيران</button>
+<p class=k>بالتليفون: افتح لمّة، بطاقة الطيران، وفعّل «العرض على الكمبيوتر» ثم ابدأ.<br>بلوحة المفاتيح: الأسهم للتوجيه • W و S للمحرك • G العجلات • F القلّابات • B فرامل • Enter القائمة • F11 ملء الشاشة</p>
+<p class=k>المفاتيح بتنحفظ بهذا المتصفح فقط.</p></div></div>
+<script>/* The page runs in the TV app, or in a computer's browser opened on the TV's address. On a computer it asks a few things first, and the phone still flies it by way of the TV. */
+(function () {
   function load(src, then, bad) { var s = document.createElement('script'); s.src = src; s.onload = then || null; s.onerror = bad || null; document.body.appendChild(s); }
-  function strong() { try { var g = document.createElement('canvas').getContext('webgl2'); if (!g) return false; var hp = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.HIGH_FLOAT); return !!hp && hp.precision > 0; } catch (e) { return false; } }
-  window.flyBoot = { why: '', light: function (why) { if (went) return; went = true; flyBoot.why = why || ''; load('light.js'); } };
-  if (eng === 1 || (eng === 0 && !strong())) flyBoot.light(eng === 1 ? 'chosen' : 'old chip');
-  else { window.CESIUM_BASE_URL = 'cesium/'; load('cesium/Cesium.js', function () { load('cz.js', null, function () { flyBoot.light('no engine file'); }); }, function () { flyBoot.light('no library'); }); }
+  function boot() { load('core.js', function () { load('sim.js', function () { var conf = FlySim.conf, eng = conf.eng | 0, went = false;
+    function strong() { try { var g = document.createElement('canvas').getContext('webgl2'); if (!g) return false; var hp = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.HIGH_FLOAT); return !!hp && hp.precision > 0; } catch (e) { return false; } }
+    window.flyBoot = { why: '', light: function (why) { if (went) return; went = true; flyBoot.why = why || ''; load('light.js'); } };
+    if (eng === 1 || (eng === 0 && !strong())) flyBoot.light(eng === 1 ? 'chosen' : 'old chip');
+    else { window.CESIUM_BASE_URL = 'cesium/'; load('cesium/Cesium.js', function () { load('cz.js', null, function () { flyBoot.light('no engine file'); }); }, function () { flyBoot.light('no library'); }); } }); }); }
+  if (window.Lamma || /[?&]auto=1/.test(location.search)) { boot(); return; }
+  var $ = function (i) { return document.getElementById(i); }, st = {}; try { st = JSON.parse(localStorage.flyPc || '{}'); } catch (e) {}
+  $('pcg').value = st.g || ''; $('pci').value = st.ion || ''; if (st.q) $('pcq').value = st.q; if (st.eng != null) $('pce').value = st.eng;
+  $('msg').hidden = true; $('pc').hidden = false;
+  $('pcgo').onclick = function () { st = { g: $('pcg').value.trim(), ion: $('pci').value.trim(), q: +$('pcq').value, eng: +$('pce').value }; try { localStorage.flyPc = JSON.stringify(st); } catch (e) {}
+    $('pc').hidden = true; $('msg').hidden = false;
+    // the TV relays the phone: its stick is asked for 25 times a second, and what the instruments read goes back for the phone to show
+    var last = '0,0,-1,0,0,0,0,0,0,-1,-1,0,1', busy = false, relay = location.protocol === 'http:' && location.port !== '8791';
+    if (relay) setInterval(function () { if (busy) return; busy = true; fetch('/zp', { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) { if (t.split(',').length >= 13) last = t; busy = false; }).catch(function () { busy = false; }); }, 40);
+    window.Lamma = { pc: true, conf: function () { var p = last.split(','); return JSON.stringify({ g: st.g, ion: st.ion, q: st.q, eng: st.eng, lang: 'ar', spot: 1 }); }, poll: function () { return last; },
+      tell: function (s) { if (relay) fetch('/e?c=pc', { method: 'POST', body: 'fl rep ' + encodeURIComponent(s) }).catch(function () {}); }, quit: function () { location.reload(); } };
+    boot(); };
 })();</script></body></html>

@@ -34,12 +34,12 @@
   window.flyViewer = viewer;
   // the TV's graphics chip is small: no shadows, no extra smoothing, and a picture sized to the chosen quality
   viewer.shadows = false; scene.postProcessStages.fxaa.enabled = false; scene.highDynamicRange = false;
-  function resize() { var h = $('c').clientHeight || 540; viewer.resolutionScale = F.clamp((compat ? 400 : [432, 540, 720][Q]) / h, 0.3, 2); }
+  function resize() { var h = $('c').clientHeight || 540; viewer.resolutionScale = Q === 3 && !compat ? Math.min(2, window.devicePixelRatio || 1) : F.clamp((compat ? 400 : [432, 540, 720][Q]) / h, 0.3, 2); }
   scene.screenSpaceCameraController.enableInputs = false;
   // a clear afternoon over Amman, with the sun lighting the land and haze melting the far hills into the sky
   viewer.clock.currentTime = C.JulianDate.fromIso8601('2025-05-15T12:20:00Z'); viewer.clock.shouldAnimate = false;
   globe.enableLighting = true; globe.dynamicAtmosphereLighting = true; globe.showGroundAtmosphere = true; globe.baseColor = C.Color.fromCssColorString('#6b6a5c');
-  globe.maximumScreenSpaceError = [4, 3, 2][Q]; globe.tileCacheSize = 80;
+  globe.maximumScreenSpaceError = [4, 3, 2, 1.5][Q]; globe.tileCacheSize = 80;
   scene.fog.enabled = true; scene.fog.density = 0.00028; scene.fog.minimumBrightness = 0.3;
   if (scene.skyAtmosphere) scene.skyAtmosphere.show = true;
   if (scene.sun) scene.sun.show = true; if (scene.moon) scene.moon.show = false; if (scene.skyBox) scene.skyBox.show = true;
@@ -51,7 +51,7 @@
   /* ---- the world: Google's photographed 3D city if there is a key, then Cesium ion's copy of it, then satellite pictures on real terrain, then a map that ships with the app ---- */
   var tileset = null, mode = '', note = '', flat = false, keyErr = '', stage = 'start';
   function within(p, ms) { return Promise.race([p, new Promise(function (_, no) { setTimeout(function () { no(new Error('timeout')); }, ms); })]); }
-  var tileOpts = { showCreditsOnScreen: true, maximumScreenSpaceError: [32, 24, 16][Q], cacheBytes: 110e6, maximumCacheOverflowBytes: 60e6, dynamicScreenSpaceError: true, preloadFlightDestinations: false, skipLevelOfDetail: false };
+  var tileOpts = { showCreditsOnScreen: true, maximumScreenSpaceError: [32, 24, 16, 12][Q], cacheBytes: Q === 3 ? 500e6 : 110e6, maximumCacheOverflowBytes: Q === 3 ? 250e6 : 60e6, dynamicScreenSpaceError: true, preloadFlightDestinations: false, skipLevelOfDetail: false };
   if (compat) { tileOpts.maximumScreenSpaceError = 48; tileOpts.cacheBytes = 40e6; tileOpts.maximumCacheOverflowBytes = 20e6; }
   function useTiles(ts, name) { tileset = scene.primitives.add(ts); globe.show = false; mode = name; }
   async function ground() {

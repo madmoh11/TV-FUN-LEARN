@@ -35,6 +35,9 @@ class FlightTest {
         org.robolectric.shadows.ShadowSystemClock.advanceBy(java.time.Duration.ofMillis(Flight.STALE_MS * 2))
         cmd("fl c -30 0 10", "b"); assertEquals("then another phone may take over", "-30", Flight.poll().split(",")[0])
         cmd("fl off"); assertFalse(Flight.active); assertEquals("0", Flight.poll().split(",")[7])
+        cmd("fl on 1 pc", "p"); assertTrue("for a computer the TV relays and opens nothing", Flight.active && Flight.pc); cmd("fl c 10 20 30", "p"); assertEquals(listOf("10", "20", "30"), Flight.poll().split(",").take(3))
+        cmd("fl rep " + java.net.URLEncoder.encode("on|300|1500|90|google|1|50|0|1|0|0|0|", "UTF-8"), "pc"); assertTrue(Flight.status(c).contains("rep=on|300|1500|90|google"))
+        cmd("fl off", "p"); assertFalse(Flight.pc); cmd("fl rep x", "pc"); assertFalse("a report means nothing when no computer is flying", Flight.status(c).contains("rep=x"))
     }
 
     @Test fun mapKeysAreKeptButNeverShownBack() {

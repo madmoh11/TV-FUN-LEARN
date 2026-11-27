@@ -14,7 +14,7 @@
   try { gl = cv.getContext('webgl', { antialias: false, alpha: false, depth: true, stencil: false, powerPreference: 'high-performance', preserveDrawingBuffer: false }) || cv.getContext('experimental-webgl'); } catch (e) {}
   if (!gl) { S.say(T.nogl); S.tell('err|nogl|light: no webgl'); return; }
   var glName = ''; try { var di = gl.getExtension('WEBGL_debug_renderer_info'); glName = ('' + (di ? gl.getParameter(di.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER))).slice(0, 30); } catch (e) {}
-  function resize() { var h = [288, 360, 480][Q], w = Math.round(h * innerWidth / Math.max(1, innerHeight) / 2) * 2; if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; } }
+  function resize() { var h = Q === 3 ? Math.round(innerHeight * Math.min(2, window.devicePixelRatio || 1)) : [360, 540, 720][Q], w = Math.round(h * innerWidth / Math.max(1, innerHeight) / 2) * 2; if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; } }
   resize(); addEventListener('resize', resize);
   $('credits').textContent = 'Imagery: Esri, Maxar, Earthstar Geographics  ·  Terrain: Mapzen, AWS Terrain Tiles';
 

@@ -21,7 +21,7 @@ import java.io.ByteArrayInputStream
 class FlightActivity : Activity() {
     private var web: WebView? = null
     private val ui = Handler(Looper.getMainLooper())
-    private val watch = object : Runnable { override fun run() { if (!Flight.active) finish() else ui.postDelayed(this, 400) } }
+    private val watch = object : Runnable { override fun run() { if (!Flight.active || Flight.pc) finish() else ui.postDelayed(this, 400) } }
 
     inner class Bridge {
         @JavascriptInterface fun conf(): String = Flight.conf(this@FlightActivity)

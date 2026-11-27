@@ -9,6 +9,7 @@ import org.json.JSONObject
     The page itself (assets/fly) does all the flying; this only carries messages. */
 object Flight {
     const val PLACES = 6
+    @Volatile var pc = false; private set
     @Volatile var port = 0                       // the app's own web server, a second way to serve the page
     @Volatile private var sound = true
     const val STALE_MS = 1200L                  // a phone that has been silent this long is no longer holding the stick
@@ -27,8 +28,10 @@ object Flight {
         when (p.getOrNull(1)) {
             "on" -> { x = 0; y = 0; thr = -1; menu = false; gear = -1; flaps = -1; brake = false; owner = cid; inputAt = 0L; report = ""; reportAt = 0L
                 p.getOrNull(2)?.toIntOrNull()?.let { goIdx = it.coerceIn(0, PLACES - 1) }
-                if (!active) { active = true; try { c.startActivity(Intent(c, FlightActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) } catch (e: Throwable) { active = false; report = "err|start" } } }
+                pc = p.getOrNull(3) == "pc"               // the picture is on a computer's browser: the TV only relays the phone
+                if (pc) active = true else if (!active) { active = true; try { c.startActivity(Intent(c, FlightActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) } catch (e: Throwable) { active = false; report = "err|start" } } }
             "off" -> stop()
+            "rep" -> if (pc && active) tell(try { java.net.URLDecoder.decode(p.getOrNull(2) ?: "", "UTF-8") } catch (e: Throwable) { "" })
             "c" -> if (p.size >= 5 && pilot(cid)) { x = (p[2].toIntOrNull() ?: 0).coerceIn(-100, 100); y = (p[3].toIntOrNull() ?: 0).coerceIn(-100, 100); thr = (p[4].toIntOrNull() ?: 0).coerceIn(0, 100); inputAt = now() }
             "lvl" -> if (pilot(cid)) level++
             "go" -> if (pilot(cid)) { goIdx = (p.getOrNull(2)?.toIntOrNull() ?: 1).coerceIn(0, PLACES - 1); goSeq++; menu = false; gear = -1; flaps = -1; brake = false }      // a new place sets its own wheels and flaps
@@ -52,7 +55,7 @@ object Flight {
         return false }
     /** The TV remote's volume keys move the throttle a step. */
     fun nudge(d: Int) { thr = ((if (thr < 0) 60 else thr) + d).coerceIn(0, 100) }
-    fun stop() { active = false; owner = null; menu = false; brake = false }
+    fun stop() { pc = false; active = false; owner = null; menu = false; brake = false }
 
     /** What the page asks for every frame: stick x, stick y, throttle (-1 while no phone has set it), then counters and flags. */
     fun poll(): String = "$x,$y,$thr,$level,$goSeq,$goIdx,${if (menu) 1 else 0},${if (active) 1 else 0},${if (now() - inputAt < STALE_MS) 1 else 0},$gear,$flaps,${if (brake) 1 else 0},${if (sound) 1 else 0}"

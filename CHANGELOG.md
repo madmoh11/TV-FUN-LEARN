@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.45
+
+- **The flight simulator on a computer.** Open `http://<the TV's address>:8765/fly/tv.html` in a computer's browser on
+  the same Wi-Fi: the picture is drawn by the computer at the screen's full sharpness, with Google's 3D buildings when
+  a map key is entered there. The phone still flies it, by way of the TV, when "show the flight on a computer" is
+  ticked on the phone; the keyboard flies it too.
+- On the TV the light engine's picture is sharper: 540 lines by default and 720 on "high", up from 360 and 480.
+
 ## 3.44
 
 - New: **play with the remote**, with no phone. A row on the TV's home screen starts flying over Amman, the snake,

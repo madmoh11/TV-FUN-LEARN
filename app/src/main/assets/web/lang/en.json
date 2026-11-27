@@ -536,7 +536,7 @@
   "fl_q": "Picture quality",
   "fl_q0": "Light (fastest)",
   "fl_q1": "Medium",
-  "fl_q2": "High",
+  "fl_q2": "High (sharper)",
   "fl_kg": "Google Map Tiles key (for Amman's 3D buildings)",
   "fl_ki": "Cesium ion token (alternative)",
   "fl_kph": "Paste the key here",
@@ -576,5 +576,7 @@
   "fl_eng": "Drawing engine",
   "fl_eng0": "Automatic (by the TV)",
   "fl_eng1": "Light: satellite pictures and terrain",
-  "fl_eng2": "Full: with Google's buildings"
+  "fl_eng2": "Full: with Google's buildings",
+  "fl_pc": "🖥️ Show the flight on a computer instead of the TV",
+  "fl_pc_how": "Open this link in the computer's browser (on the same Wi-Fi) and press \"Start flying\" there, then start from here: {0}"
 }
