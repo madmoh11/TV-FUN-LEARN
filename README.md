@@ -48,6 +48,7 @@ or Apple.
 | 🔴 **Screen recording** | Record what the TV shows for up to three minutes and download the video to your phone. |
 | 🔤 **Letters and numbers** | For ages four and five: the Arabic letters, the English letters and the numbers one to ten, each as a big card with a word and a picture, then a gentle game with three choices and no clock. |
 | 📺 **News studio** | Present the news or the weather: the phone's camera films you, and the TV puts you in front of a moving newsroom or a summer, winter, spring or autumn sky, with a ticker you write yourself and the real forecast. |
+| ✈️ **Flying over Amman** | A 3D flight simulator: an airliner over the real city on the TV, with the phone as the stick and throttle. Jump to the airport, Abdali, Abdoun Bridge, the Citadel or the Dead Sea. A Google Map Tiles key adds the real 3D buildings. |
 | 📱 **A phone app and a remote** | A small phone app finds the TV by itself and opens the control page without a browser, with a TV remote and a recorder for the TV screen. |
 | 🎮 **Games** | Nine games played on the TV with phones as controllers: see [the games](#the-games) below. |
 | ✏️ **Drawing** | Several phones draw at once. Pen, brush, highlighter, neon, eraser, shapes and an Arabic calligraphy nib. |

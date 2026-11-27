@@ -1,0 +1,14 @@
+<!doctype html><html lang=ar><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
+<title>Lamma flight</title><link rel=stylesheet href=cesium/Widgets/widgets.css>
+<style>@font-face{font-family:L;src:url(font.ttf)}
+html,body{margin:0;height:100%;background:#0a1220;overflow:hidden;font-family:L,sans-serif;color:#fff}
+#c{position:absolute;inset:0}#hud{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#credits{position:absolute;left:50%;bottom:2px;transform:translateX(-50%);font-size:10px;opacity:.85;text-align:center;white-space:nowrap;direction:ltr}
+#credits img{max-height:16px}.cesium-credit-lightbox-overlay{display:none}
+#menu{position:absolute;right:4%;top:16%;width:38%;background:rgba(8,16,36,.88);border:2px solid #f2c14e;border-radius:18px;padding:14px 16px;direction:rtl}
+#menu[dir=ltr]{direction:ltr}#menu h2{margin:0 0 8px;font-size:3.6vh;color:#f2c14e}
+#menu div{font-size:3.4vh;padding:1.1vh 1.6vh;border-radius:12px;margin:.5vh 0;background:rgba(255,255,255,.07)}#menu div.on{background:#1f6fd6}
+#menu div b{display:inline-block;width:1.6em;color:#f2c14e}
+#msg[hidden]{display:none}#msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:4.4vh;padding:0 10%;background:#0a1220;direction:rtl;line-height:1.6}</style></head>
+<body><div id=c></div><canvas id=hud></canvas><div id=credits></div><div id=menu hidden></div><div id=msg>✈️</div>
+<script>window.CESIUM_BASE_URL='cesium/'</script><script src=cesium/Cesium.js></script><script src=core.js></script><script src=fly.js></script></body></html>

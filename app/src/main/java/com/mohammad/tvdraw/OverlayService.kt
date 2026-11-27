@@ -428,6 +428,9 @@ class DrawView(c: Context) : View(c) {
                 "h" -> { if (p[1] == "join") { if (game.active) game.stopNow(); if (snake.active) snake.stopNow(); if (tug.active) tug.stopNow(); if (space.active) space.stopNow() }; hockey.command(p, cid) }
                 "tug" -> { if (p[1] == "join") { if (game.active) game.stopNow(); if (snake.active) snake.stopNow(); if (hockey.active) hockey.stopNow(); if (space.active) space.stopNow() }; tug.command(p, cid) }
                 "sr" -> { if (p[1] == "join") { if (game.active) game.stopNow(); if (snake.active) snake.stopNow(); if (hockey.active) hockey.stopNow(); if (tug.active) tug.stopNow() }; space.command(p, cid) }
+                "fl" -> { if (p.getOrNull(1) == "on") { if (game.active) game.stopNow(); if (snake.active) snake.stopNow(); if (hockey.active) hockey.stopNow(); if (tug.active) tug.stopNow(); if (space.active) space.stopNow()
+                    if (quiz.active) quiz.stopNow(); if (move.active) move.stopNow(); if (rps.active) rps.stopNow(); if (hifz.active) hifz.stopNow(); if (kids.active) kids.stopNow(); if (studio.active) studio.stopNow() }
+                    Flight.command(context, p, cid) }
                 "kd" -> { if (p[1] == "open") { if (game.active) game.stopNow(); if (snake.active) snake.stopNow(); if (hockey.active) hockey.stopNow(); if (tug.active) tug.stopNow(); if (space.active) space.stopNow()
                     if (quiz.active) quiz.stopNow(); if (move.active) move.stopNow(); if (rps.active) rps.stopNow(); if (hifz.active) hifz.stopNow() }; kids.command(p) }
                 "rps" -> { if (p[1] == "join") { if (game.active) game.stopNow(); if (snake.active) snake.stopNow(); if (hockey.active) hockey.stopNow(); if (tug.active) tug.stopNow(); if (space.active) space.stopNow() }; rps.command(p, cid) }
@@ -571,6 +574,7 @@ class OverlayService : Service() {
                     else if (path.startsWith("/y")) view.hifz.status()
                     else if (path.startsWith("/m")) view.move.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/x")) view.kids.status()
+                    else if (path.startsWith("/z")) Flight.status(this)
                     else if (path.startsWith("/k")) view.rps.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/n")) view.quiz.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))
                     else if (path.startsWith("/q")) view.space.status(path.substringAfter("c=", "x").filter { it.isLetterOrDigit() }.take(12))

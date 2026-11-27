@@ -61,3 +61,12 @@ Weather data by [Open-Meteo](https://open-meteo.com/), licensed [CC BY 4.0](http
 The five studio backdrops were generated for this app with an AI image model. The presenter is cut out of the camera
 picture with [MediaPipe Tasks Vision](https://github.com/google-ai-edge/mediapipe) 0.10.14 and its selfie segmentation
 model, both by Google, licensed [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+
+## Flight simulator
+
+The 3D world is drawn with [CesiumJS](https://cesium.com/cesiumjs/) 1.147 by Cesium GS, licensed
+[Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0); its own notices are in `assets/fly/cesium/LICENSE.md`.
+Depending on the keys entered, the land is Google's Photorealistic 3D Tiles (Google Map Tiles API), or satellite
+pictures and terrain from Esri's ArcGIS World Imagery and World Elevation services, each credited on the screen while
+it is shown. The map that ships with the app is Natural Earth II, public domain. The airliner is made by
+`tools/make_plane.py` and belongs to this project.

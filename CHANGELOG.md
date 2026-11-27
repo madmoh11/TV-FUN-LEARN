@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.37
+
+- New: **flying over Amman**, a 3D flight simulator. The TV draws an airliner over the real city with a camera that
+  follows behind it, and shows the speed, the height above the sea, the compass and an artificial horizon. The phone is
+  the cockpit, held sideways: a stick or the phone's own tilt, a throttle, auto-level, and a list of places to jump to:
+  Queen Alia airport, the Abdali towers, Abdoun Bridge, the Citadel and the Dead Sea.
+- With a Google Map Tiles key (entered on the phone, kept on the TV) the city is Google's photographed 3D buildings.
+  With a Cesium ion token it is Cesium's copy of them. With neither it is satellite pictures on real terrain, and with
+  no internet a simple map that ships with the app, so the flight always starts.
+- The plane banks into turns, loses height in a steep bank, stalls when it is too slow, and can land and take off
+  again. A hard landing is only announced.
+- The simulator needs a TV that can draw 3D in its system web view. The app is about 5 MB larger for it.
+
 ## 3.36
 
 - News studio: the TV now shows **the person only, and their whole body**. Anything else the cut-out used to let

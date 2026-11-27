@@ -29,6 +29,10 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
+
+      - name: Flight physics test
+        run: node app/src/test/js/flight.test.js
+
       - name: Run tests
         run: ./gradlew testDebugUnitTest
 
