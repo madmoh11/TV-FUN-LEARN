@@ -22,7 +22,7 @@ object Flight {
     private fun sp(c: Context) = c.getSharedPreferences("fly", 0)
     private fun now() = SystemClock.uptimeMillis()
 
-    /** "fl on [place]", "fl off", "fl c X Y THROTTLE" (hundredths), "fl lvl", "fl go n", "fl menu 0|1", "fl gear 0|1", "fl flap 0..2", "fl brk 0|1", "fl snd 0|1", "fl q 0..2", "fl key g|i VALUE". */
+    /** "fl on [place]", "fl off", "fl c X Y THROTTLE" (hundredths), "fl lvl", "fl go n", "fl menu 0|1", "fl gear 0|1", "fl flap 0..2", "fl brk 0|1", "fl snd 0|1", "fl q 0..2", "fl eng 0..2", "fl key g|i VALUE". */
     fun command(c: Context, p: List<String>, cid: String) {
         when (p.getOrNull(1)) {
             "on" -> { x = 0; y = 0; thr = -1; menu = false; gear = -1; flaps = -1; brake = false; owner = cid; inputAt = 0L; report = ""; reportAt = 0L
@@ -38,6 +38,7 @@ object Flight {
             "snd" -> sp(c).edit().putBoolean("snd", p.getOrNull(2) != "0").apply().also { sound = p.getOrNull(2) != "0" }
             "menu" -> if (pilot(cid)) menu = p.getOrNull(2) == "1"
             "q" -> sp(c).edit().putInt("q", (p.getOrNull(2)?.toIntOrNull() ?: 1).coerceIn(0, 2)).apply()
+            "eng" -> sp(c).edit().putInt("eng", (p.getOrNull(2)?.toIntOrNull() ?: 0).coerceIn(0, 2)).apply()      // 0: the TV chooses, 1: the light engine, 2: the full one
             "key" -> { val which = if (p.getOrNull(2) == "i") "ion" else "g"
                 val v = try { java.net.URLDecoder.decode(p.getOrNull(3) ?: "", "UTF-8").trim() } catch (e: Throwable) { "" }
                 // a key is letters, digits and a few signs; anything else is not one
@@ -56,9 +57,9 @@ object Flight {
     fun tell(s: String) { report = s.take(480).filter { it >= ' ' && it != '&' }; reportAt = now() }
 
     /** Settings for the page. The keys go to the page and nowhere else. */
-    fun conf(c: Context): String = JSONObject().also { sound = sp(c).getBoolean("snd", true) }.put("g", sp(c).getString("g", "")).put("ion", sp(c).getString("ion", "")).put("q", sp(c).getInt("q", 1)).put("spot", goIdx)
+    fun conf(c: Context): String = JSONObject().also { sound = sp(c).getBoolean("snd", true) }.put("g", sp(c).getString("g", "")).put("ion", sp(c).getString("ion", "")).put("q", sp(c).getInt("q", 1)).put("eng", sp(c).getInt("eng", 0)).put("spot", goIdx)
         .put("lang", if (c.resources.configuration.locales[0].language == "ar") "ar" else "en").toString()
     /** For the phone. It learns whether a key is saved, never the key. */
     fun status(c: Context): String = "on=" + (if (active) 1 else 0) + "|g=" + (if (sp(c).getString("g", "").isNullOrEmpty()) 0 else 1) + "|i=" + (if (sp(c).getString("ion", "").isNullOrEmpty()) 0 else 1) +
-        "|q=" + sp(c).getInt("q", 1) + "|snd=" + (if (sp(c).getBoolean("snd", true)) 1 else 0) + "|rep=" + (if (now() - reportAt < 3000) report else "")
+        "|q=" + sp(c).getInt("q", 1) + "|eng=" + sp(c).getInt("eng", 0) + "|snd=" + (if (sp(c).getBoolean("snd", true)) 1 else 0) + "|rep=" + (if (now() - reportAt < 3000) report else "")
 }

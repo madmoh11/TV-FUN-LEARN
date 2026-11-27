@@ -11,4 +11,12 @@ html,body{margin:0;height:100%;background:#0a1220;overflow:hidden;font-family:L,
 #menu div b{display:inline-block;width:1.6em;color:#f2c14e}
 #msg[hidden]{display:none}.cesium-widget-errorPanel{display:none!important}#msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:4.4vh;padding:0 10%;background:#0a1220;direction:rtl;line-height:1.6}</style></head>
 <body><div id=c></div><canvas id=hud></canvas><div id=credits></div><div id=menu hidden></div><div id=msg>✈️</div>
-<script>window.CESIUM_BASE_URL='cesium/'</script><script src=cesium/Cesium.js></script><script src=core.js></script><script src=fly.js></script></body></html>
+<script src=core.js></script><script src=sim.js></script>
+<script>/* Choose the engine: the full one (CesiumJS) needs a modern graphics chip; an old one gets the light engine. Whatever fails falls back to the light one. */
+(function () { var conf = FlySim.conf, eng = conf.eng | 0, went = false;
+  function load(src, then, bad) { var s = document.createElement('script'); s.src = src; s.onload = then || null; s.onerror = bad || null; document.body.appendChild(s); }
+  function strong() { try { var g = document.createElement('canvas').getContext('webgl2'); if (!g) return false; var hp = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.HIGH_FLOAT); return !!hp && hp.precision > 0; } catch (e) { return false; } }
+  window.flyBoot = { why: '', light: function (why) { if (went) return; went = true; flyBoot.why = why || ''; load('light.js'); } };
+  if (eng === 1 || (eng === 0 && !strong())) flyBoot.light(eng === 1 ? 'chosen' : 'old chip');
+  else { window.CESIUM_BASE_URL = 'cesium/'; load('cesium/Cesium.js', function () { load('cz.js', null, function () { flyBoot.light('no engine file'); }); }, function () { flyBoot.light('no library'); }); }
+})();</script></body></html>

@@ -39,7 +39,7 @@ class FlightTest {
 
     @Test fun mapKeysAreKeptButNeverShownBack() {
         val key = "AIzaSyD-EXAMPLE_ONLY_0123456789abcdefghij"
-        cmd("fl key g $key"); cmd("fl q 2")
+        cmd("fl key g $key"); cmd("fl q 2"); cmd("fl eng 1"); assertEquals(1, org.json.JSONObject(Flight.conf(c)).getInt("eng")); assertTrue(Flight.status(c).contains("eng=1")); cmd("fl eng 0")
         val st = Flight.status(c); assertTrue(st, st.contains("g=1") && st.contains("i=0") && st.contains("q=2")); assertFalse("the phone never gets the key back", st.contains(key))
         assertEquals(key, org.json.JSONObject(Flight.conf(c)).getString("g")); assertEquals("ar", org.json.JSONObject(Flight.conf(c)).getString("lang"))
         cmd("fl key g <script>alert(1)</script>aaaaaaaaaaaaaaaaaaaaa"); assertTrue("something that is not a key is not kept", Flight.status(c).contains("g=0"))
@@ -50,6 +50,6 @@ class FlightTest {
     @Test fun pageFilesHaveTheRightTypes() {
         assertEquals("text/javascript", FlightActivity.mime("fly/cesium/Cesium.js")); assertEquals("application/wasm", FlightActivity.mime("fly/cesium/ThirdParty/draco_decoder.wasm"))
         assertEquals("model/gltf-binary", FlightActivity.mime("fly/plane.glb")); assertEquals("text/html", FlightActivity.mime("fly/tv.html"))
-        for (f in listOf("fly/tv.html", "fly/fly.js", "fly/core.js", "fly/plane.glb", "fly/cesium/Cesium.js", "fly/cesium/Widgets/widgets.css", "fonts/BalooBhaijaan2-Bold.ttf")) c.assets.open(f).use { assertTrue(f, it.read() >= 0) }
+        for (f in listOf("fly/tv.html", "fly/sim.js", "fly/cz.js", "fly/light.js", "fly/core.js", "fly/plane.glb", "fly/cesium/Cesium.js", "fly/cesium/Widgets/widgets.css", "fonts/BalooBhaijaan2-Bold.ttf")) c.assets.open(f).use { assertTrue(f, it.read() >= 0) }
     }
 }

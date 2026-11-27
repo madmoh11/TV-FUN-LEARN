@@ -208,6 +208,7 @@ main{padding:10px 16px 20px;padding-inline-start:104px}
 <p class=cd><span data-i=fl_desc>x</span></p>
 <button class=go id=flgo style="width:100%"><span data-i=fl_start>x</span></button>
 <div class=row2 style="margin-top:10px"><span data-i=fl_q>x</span><select id=flq><option value=0 data-i=fl_q0>x<option value=1 selected data-i=fl_q1>x<option value=2 data-i=fl_q2>x</select></div>
+<div class=row2 style="margin-top:8px"><span data-i=fl_eng>x</span><select id=fleng><option value=0 data-i=fl_eng0>x<option value=1 data-i=fl_eng1>x<option value=2 data-i=fl_eng2>x</select></div>
 <p class=hint id=flkst></p>
 <label style="margin-top:10px"><span data-i=fl_kg>x</span></label><input type=password id=flkg autocomplete=off autocapitalize=off spellcheck=false maxlength=300 data-ip=fl_kph>
 <label><span data-i=fl_ki>x</span></label><input type=password id=flki autocomplete=off autocapitalize=off spellcheck=false maxlength=2000 data-ip=fl_kph>
@@ -1174,11 +1175,11 @@ send('fl q '+E('flq').value);send('fl on 1');let t=false;try{t=localStorage.flti
 flT=setInterval(()=>{const l='fl c '+Math.round(flX*100)+' '+Math.round(flY*100)+' '+Math.round(flThr*100),n=Date.now();if(l!==flSent||n-flSentAt>300){flSent=l;flSentAt=n;send(l)}},40);flP=setInterval(flPoll,500)}
 function flOut(msg){if(!flIn)return;flIn=false;clearInterval(flT);clearInterval(flP);removeEventListener('devicemotion',flMotion);send('fl off');try{if(screen.orientation&&screen.orientation.unlock)screen.orientation.unlock()}catch(e){}
 fs(false);E('flplay').hidden=true;document.body.classList.remove('playing');if(msg)E('flkst').textContent=msg}
-function flKeys(){fetch('/z').then(r=>r.text()).then(t=>{const g=t.includes('|g=1'),i=t.includes('|i=1'),q=(t.match(/\|q=(\d)/)||[])[1];if(q!=null&&!flIn)E('flq').value=q;
+function flKeys(){fetch('/z').then(r=>r.text()).then(t=>{const g=t.includes('|g=1'),i=t.includes('|i=1'),q=(t.match(/\|q=(\d)/)||[])[1];if(q!=null&&!flIn)E('flq').value=q;const en=(t.match(/\|eng=(\d)/)||[])[1];if(en!=null&&!flIn)E('fleng').value=en;
 flSnd=!t.includes('|snd=0');E('flkst').textContent=T(g?'fl_k_g':i?'fl_k_i':'fl_k_none')}).catch(()=>{})}
 E('flgo').onclick=flStart;E('flx').onclick=()=>flOut('');E('fllvl').onclick=()=>{send('fl lvl');if(flTilt){flBase=null}else{flX=flY=0;flDraw()}};E('flloc').onclick=()=>flList(true);
 E('flmode').onclick=()=>flTiltSet(!flTilt);E('flgear').onclick=()=>{flGear=flGear?0:1;flBtnAt=Date.now();flBtn();send('fl gear '+flGear)};E('flflap').onclick=()=>{flFlap=(flFlap+1)%3;flBtnAt=Date.now();flBtn();send('fl flap '+flFlap)};
-E('flsnd').onclick=()=>{flSnd=!flSnd;flBtn();send('fl snd '+(flSnd?1:0))};{const bk=E('flbrk'),on=v=>{bk.classList.toggle('on',v);send('fl brk '+(v?1:0))};bk.addEventListener('pointerdown',e=>{bk.setPointerCapture(e.pointerId);on(true)});bk.addEventListener('pointerup',()=>on(false));bk.addEventListener('pointercancel',()=>on(false))}E('flcal').onclick=()=>{flBase=null};E('flq').onchange=()=>send('fl q '+E('flq').value);
+E('flsnd').onclick=()=>{flSnd=!flSnd;flBtn();send('fl snd '+(flSnd?1:0))};{const bk=E('flbrk'),on=v=>{bk.classList.toggle('on',v);send('fl brk '+(v?1:0))};bk.addEventListener('pointerdown',e=>{bk.setPointerCapture(e.pointerId);on(true)});bk.addEventListener('pointerup',()=>on(false));bk.addEventListener('pointercancel',()=>on(false))}E('flcal').onclick=()=>{flBase=null};E('flq').onchange=()=>send('fl q '+E('flq').value);E('fleng').onchange=()=>send('fl eng '+E('fleng').value);
 E('flksave').onclick=()=>{const g=E('flkg').value.trim(),i=E('flki').value.trim();if(g)send('fl key g '+enc(g));if(i)send('fl key i '+enc(i));if(!g&&!i){send('fl key g');send('fl key i')}E('flkg').value=E('flki').value='';setTimeout(flKeys,700)};
 {const st=E('flst'),th=E('flthr');st.addEventListener('pointerdown',e=>{st.setPointerCapture(e.pointerId);flStick(e)});st.addEventListener('pointermove',e=>{if(e.buttons||e.pointerType==='touch')flStick(e)});
 const up=()=>{if(!flTilt){flX=flY=0;flDraw()}};st.addEventListener('pointerup',up);st.addEventListener('pointercancel',up);

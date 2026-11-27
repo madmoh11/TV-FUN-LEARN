@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.43
+
+- Flight simulator: a **light engine** for TVs with an old graphics chip (OpenGL ES 2.0, such as the Mali-450 in the
+  Mi Box), where CesiumJS cannot run. It is a small renderer written for those chips: satellite pictures draped over
+  real terrain heights, the same airliner, sky and haze, the approach lines, and all the instruments, sound and
+  physics as before. It has no 3D buildings and needs no map key.
+- The TV chooses the engine by itself: the full one where the chip can run it, the light one otherwise, and the light
+  one whenever the full one fails to start. The phone can force either.
+
 ## 3.42
 
 - Flight simulator: the page checks that the web view can start the 3D library's background workers, and if it cannot

@@ -534,7 +534,7 @@
   "fl_desc": "A 3D flight simulator on the TV: an airliner over the real Amman, with the phone as the stick.",
   "fl_start": "🛫 Start flying",
   "fl_q": "Picture quality",
-  "fl_q0": "Light (for weak TVs)",
+  "fl_q0": "Light (fastest)",
   "fl_q1": "Medium",
   "fl_q2": "High",
   "fl_kg": "Google Map Tiles key (for Amman's 3D buildings)",
@@ -572,5 +572,9 @@
   "fl_gear0": "🛞 Wheels down",
   "fl_gear1": "🛞 Wheels up",
   "fl_flap": "🪽 Flaps {0}",
-  "fl_brk": "🛑 Brakes"
+  "fl_brk": "🛑 Brakes",
+  "fl_eng": "Drawing engine",
+  "fl_eng0": "Automatic (by the TV)",
+  "fl_eng1": "Light: satellite pictures and terrain",
+  "fl_eng2": "Full: with Google's buildings"
 }
