@@ -52,7 +52,7 @@ object Flight {
 
     /** What the page asks for every frame: stick x, stick y, throttle (-1 while no phone has set it), then counters and flags. */
     fun poll(): String = "$x,$y,$thr,$level,$goSeq,$goIdx,${if (menu) 1 else 0},${if (active) 1 else 0},${if (now() - inputAt < STALE_MS) 1 else 0},$gear,$flaps,${if (brake) 1 else 0},${if (sound) 1 else 0}"
-    fun tell(s: String) { report = s.take(200).filter { it >= ' ' && it != '&' }; reportAt = now() }
+    fun tell(s: String) { report = s.take(480).filter { it >= ' ' && it != '&' }; reportAt = now() }
 
     /** Settings for the page. The keys go to the page and nowhere else. */
     fun conf(c: Context): String = JSONObject().also { sound = sp(c).getBoolean("snd", true) }.put("g", sp(c).getString("g", "")).put("ion", sp(c).getString("ion", "")).put("q", sp(c).getInt("q", 1)).put("spot", goIdx)

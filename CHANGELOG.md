@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.39
+
+- Flight simulator: on a TV whose web view refuses the newer kind of 3D, the simulator now asks for the older kind
+  before giving up. If neither works, the TV and the phone say exactly what the web view can and cannot draw, in place
+  of the library's English error box.
+
 ## 3.38
 
 - Flying over Amman now has **sound**: the engines rise and fall with the throttle, the wind grows with speed, a horn

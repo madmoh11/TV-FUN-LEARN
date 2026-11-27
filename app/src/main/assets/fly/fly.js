@@ -31,12 +31,27 @@
   function tell(extra) { try { L.tell(extra); } catch (e) {} }
 
   if (!C || !F) { say(T.nogl); tell('err|nolib'); return; }
-  var viewer;
-  try {
-    viewer = new C.Viewer('c', { animation: false, baseLayerPicker: false, fullscreenButton: false, geocoder: false, homeButton: false, infoBox: false, sceneModePicker: false, selectionIndicator: false,
-      timeline: false, navigationHelpButton: false, navigationInstructionsInitiallyVisible: false, scene3DOnly: true, shadows: false, baseLayer: false, creditContainer: 'credits',
-      msaaSamples: 1, requestRenderMode: false, contextOptions: { webgl: { antialias: false, powerPreference: 'high-performance', alpha: false } } });
-  } catch (e) { say(T.nogl); tell('err|nogl'); return; }
+  /** What this TV's web view can draw, in one line, for when it cannot run the simulator. */
+  function probe() {
+    var out = [], info = '';
+    ['webgl2', 'webgl', 'experimental-webgl'].forEach(function (n) { var g = null; try { g = document.createElement('canvas').getContext(n); } catch (e) {}
+      out.push(n + ':' + (g ? 'yes' : 'no'));
+      if (g && !info) try { var d = g.getExtension('WEBGL_debug_renderer_info'), hp = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.HIGH_FLOAT);
+        info = (d ? g.getParameter(d.UNMASKED_RENDERER_WEBGL) : g.getParameter(g.RENDERER)) + ' tex' + g.getParameter(g.MAX_TEXTURE_SIZE) + ' vtex' + g.getParameter(g.MAX_VERTEX_TEXTURE_IMAGE_UNITS) + ' highp' + (hp ? hp.precision : '?'); } catch (e) {} });
+    var m = navigator.userAgent.match(/Chrome\/(\d+)/), a = navigator.userAgent.match(/Android ([\d.]+)/);
+    return 'WebView ' + (m ? m[1] : '?') + ' Android ' + (a ? a[1] : '?') + ' ' + out.join(' ') + ' ' + info;
+  }
+  function make(old) {
+    return new C.Viewer('c', { animation: false, baseLayerPicker: false, fullscreenButton: false, geocoder: false, homeButton: false, infoBox: false, sceneModePicker: false, selectionIndicator: false,
+      timeline: false, navigationHelpButton: false, navigationInstructionsInitiallyVisible: false, scene3DOnly: true, shadows: false, baseLayer: false, creditContainer: 'credits', showRenderLoopErrors: false,
+      msaaSamples: 1, requestRenderMode: false, contextOptions: old ? { requestWebgl1: true, webgl: { antialias: false, alpha: false, failIfMajorPerformanceCaveat: false } } : { webgl: { antialias: false, powerPreference: 'high-performance', alpha: false } } });
+  }
+  var viewer, why = '';
+  try { viewer = make(false); } catch (e) { why = '' + (e && e.message || e);
+    $('c').innerHTML = '';
+    try { viewer = make(true); } catch (e2) { why += ' / ' + (e2 && e2.message || e2); } }          // an older graphics chip: ask for the older kind of 3D
+  if (!viewer) { var d = probe(); $('msg').innerHTML = ''; $('msg').hidden = false; var a = document.createElement('div'); a.textContent = T.nogl; var b = document.createElement('div'); b.style.cssText = 'font:2.2vh monospace;direction:ltr;margin-top:3vh;opacity:.8;word-break:break-word'; b.textContent = d + ' | ' + why.slice(0, 400);
+    var box = document.createElement('div'); box.appendChild(a); box.appendChild(b); $('msg').appendChild(box); tell('err|nogl|' + d + ' ' + why.slice(0, 160)); return; }
   var scene = viewer.scene, cam = viewer.camera, globe = scene.globe;
   window.flyViewer = viewer;
   // the TV's graphics chip is small: no shadows, no extra smoothing, and a picture sized to the chosen quality
