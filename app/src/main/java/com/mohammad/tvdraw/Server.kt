@@ -15,7 +15,7 @@ import kotlin.concurrent.thread
 class Server(private val page: () -> String, private val words: () -> ByteArray, private val font: () -> ByteArray, private val keyDir: java.io.File, private val onLines: (List<String>, String) -> Unit, private val onAudio: (ByteArray) -> Unit,
              private val onImage: (ByteArray) -> Unit, private val onFace: (ByteArray, String) -> Unit, private val onVideo: (ByteArray, String) -> Unit, private val status: (String) -> String,
              private val extra: (String) -> ByteArray? = { null }, private val onWall: (ByteArray) -> Unit = { },
-             private val file: (String) -> java.io.File? = { null }) {
+             private val file: (String) -> java.io.File? = { null }, private val asset: (String) -> InputStream? = { null }) {
     var httpPort = 0; private set
     var httpsPort = 0; private set
 
@@ -67,6 +67,14 @@ class Server(private val page: () -> String, private val words: () -> ByteArray,
                     else { out.write(("HTTP/1.1 200 OK\r\nContent-Type: video/mp4\r\nContent-Length: ${f.length()}\r\nContent-Disposition: attachment; filename=\"lamma-tv.mp4\"\r\nCache-Control: no-store\r\n\r\n").toByteArray())
                         f.inputStream().use { it.copyTo(out) } }
                     out.flush(); if (close) break; continue
+                }
+                if (parts[0] == "GET" && path.startsWith("/mp/")) {           // the person-segmentation library: megabytes, sent straight from the app's files
+                    val name = path.substring(4).substringBefore('?').filter { it.isLetterOrDigit() || it == '.' || it == '_' || it == '-' }
+                    val inp2 = asset(name)
+                    if (inp2 == null) { out.write("HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n".toByteArray()); out.flush(); if (close) break; continue }
+                    val mime = if (name.endsWith(".wasm")) "application/wasm" else if (name.endsWith(".js") || name.endsWith(".mjs")) "text/javascript" else "application/octet-stream"
+                    out.write(("HTTP/1.1 200 OK\r\nContent-Type: $mime\r\nCache-Control: max-age=604800\r\nConnection: close\r\n\r\n").toByteArray())      // its length is not known up front, so the end of the connection ends it
+                    inp2.use { it.copyTo(out) }; out.flush(); break
                 }
                 var type = "text/plain"; var resp = ByteArray(0); var cache = false
                 if (parts[0] == "POST" && path.startsWith("/a")) onAudio(body)

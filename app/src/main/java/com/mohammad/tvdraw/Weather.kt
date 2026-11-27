@@ -7,7 +7,7 @@ object Weather {
     class Now(val temp: Int, val code: Int, val day: Boolean, val high: Int, val low: Int)
 
     fun url(lat: Double, lon: Double) = "https://api.open-meteo.com/v1/forecast?latitude=" + String.format(java.util.Locale.US, "%.4f", lat) + "&longitude=" +
-        String.format(java.util.Locale.US, "%.4f", lon) + "&current=temperature_2m,weather_code,is_day&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1"
+        String.format(java.util.Locale.US, "%.4f", lon) + "&current=temperature_2m,weather_code,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=3"
 
     /** Null when the answer is not a forecast. */
     fun parse(json: String): Now? = try {
@@ -15,6 +15,13 @@ object Weather {
         Now(Math.round(c.getDouble("temperature_2m")).toInt(), c.getInt("weather_code"), c.optInt("is_day", 1) == 1,
             Math.round(d.getJSONArray("temperature_2m_max").getDouble(0)).toInt(), Math.round(d.getJSONArray("temperature_2m_min").getDouble(0)).toInt())
     } catch (e: Throwable) { null }
+
+    class Day(val code: Int, val high: Int, val low: Int)
+    /** The days the forecast covers, today first. Empty when the answer has none. */
+    fun days(json: String): List<Day> = try {
+        val d = JSONObject(json).getJSONObject("daily"); val hi = d.getJSONArray("temperature_2m_max"); val lo = d.getJSONArray("temperature_2m_min"); val code = d.optJSONArray("weather_code")
+        (0 until hi.length()).map { Day(code?.optInt(it, 2) ?: 2, Math.round(hi.getDouble(it)).toInt(), Math.round(lo.getDouble(it)).toInt()) }
+    } catch (e: Throwable) { emptyList() }
 
     /** A small picture for a WMO weather code. */
     fun icon(code: Int, day: Boolean) = when (code) {

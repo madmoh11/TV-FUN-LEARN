@@ -206,4 +206,12 @@
     <string name="kids_yes">برافو! 🎉</string>
     <string name="kids_done">أحسنت! 👏</string>
     <string name="kids_score">%1$d نجوم من %2$d</string>
+    <string name="st_channel">لمّة نيوز</string>
+    <string name="st_live">مباشر</string>
+    <string name="st_news">الأخبار</string>
+    <string name="st_breaking">عاجل</string>
+    <string name="st_today">اليوم</string>
+    <string name="st_high">العظمى</string>
+    <string name="st_low">الصغرى</string>
+    <string name="st_tick_default">أهلاً بكم في نشرة أخبار العيلة</string>
 </resources>

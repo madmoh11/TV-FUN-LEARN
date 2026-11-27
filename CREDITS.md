@@ -55,3 +55,9 @@ The four background pictures were generated for this app with an AI image model.
 ## Weather
 
 Weather data by [Open-Meteo](https://open-meteo.com/), licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+
+## News studio
+
+The five studio backdrops were generated for this app with an AI image model. The presenter is cut out of the camera
+picture with [MediaPipe Tasks Vision](https://github.com/google-ai-edge/mediapipe) 0.10.14 and its selfie segmentation
+model, both by Google, licensed [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0).

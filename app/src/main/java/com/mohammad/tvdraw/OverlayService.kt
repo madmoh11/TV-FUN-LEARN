@@ -27,6 +27,7 @@ class DrawView(c: Context) : View(c) {
     val move = MoveGame(this)
     val rps = RpsGame(this)
     val kids = KidsGame(this)
+    val studio = Studio(this)
     val hifz = Hifz(this)
     init { val give: (List<GameResult>) -> Unit = { family.award(it) }; game.onEnd = give; hockey.onEnd = give; snake.onEnd = give; tug.onEnd = give; space.onEnd = give; quiz.onEnd = give; move.onEnd = give; rps.onEnd = give; quiz.onBonus = { n, pts -> family.bonus(n, pts) }
         quiz.quranQuestions = { n -> HifzQuiz.questions(hifz.quran, hifz.quizScope(), n, java.util.Random()) } }
@@ -459,6 +460,7 @@ class DrawView(c: Context) : View(c) {
                 "rec" -> when (p.getOrNull(1)) { "start" -> Recorder.ask(context); "stop" -> Recorder.stop(); "forget" -> Recorder.forget(context) }
                 "i" -> { if (p[1] == "0") showImage(null) else if (p[1] == "d") { imgDim = p[2] == "1"; invalidate() } }
                 "f" -> cam.command(p, cid)
+                "st" -> if (p.size > 1) studio.command(p)
                 "fx" -> sfx?.voiceEffect(p[1])
                 "vol" -> sfx?.volume(p[1])
                 "s" -> { sfx?.muted = p[1] == "0"; if (p[1] == "0") sfx?.buzz(false, false) }
@@ -468,6 +470,7 @@ class DrawView(c: Context) : View(c) {
 
     override fun onDraw(cv: Canvas) {
         val now = SystemClock.uptimeMillis()
+        studio.draw(cv, now)                                     // the broadcast is a backdrop: drawing, comments and games go on top of it
         val gaming = game.draw(cv, now) or hockey.draw(cv, now) or snake.draw(cv, now) or tug.draw(cv, now) or space.draw(cv, now) or quiz.draw(cv, now) or move.draw(cv, now) or rps.draw(cv, now) or kids.draw(cv, now) or hifz.draw(cv, now)
         ink.draw(cv)
         val s = sc()
@@ -559,7 +562,7 @@ class OverlayService : Service() {
                 } catch (e: Throwable) { } },
                 { bytes, cid -> if (camBusy.compareAndSet(false, true)) try {            // live camera frame; frames that arrive too fast are dropped
                     val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                    ui.post { if (bmp != null) view.cam.frame(cid, bmp); camBusy.set(false) }
+                    ui.post { if (bmp != null) { if (view.studio.active) view.studio.frame(cid, bmp) else view.cam.frame(cid, bmp) }; camBusy.set(false) }
                 } catch (e: Throwable) { camBusy.set(false) } },
                 { path -> if (path.startsWith("/p")) prayer.status() + "|http=" + ports[0] + "|https=" + ports[1] + "|acc=" + (if (KeysService.on) 1 else 0) + "|sdk=" + android.os.Build.VERSION.SDK_INT +
                     "|rec=" + Recorder.state + "|recs=" + Recorder.seconds + "|recb=" + (if (Recorder.state == Recorder.READY) Recorder.file(this).length() else 0) + "|rece=" + java.net.URLEncoder.encode(Recorder.error, "UTF-8")
@@ -580,7 +583,8 @@ class OverlayService : Service() {
                     val o = BitmapFactory.Options().apply { inJustDecodeBounds = true }; BitmapFactory.decodeByteArray(bytes, 0, bytes.size, o)
                     if (o.outWidth > 0 && o.outHeight > 0) { val f = File(filesDir, "wallpaper.jpg"); val part = File(f.path + ".part"); part.writeBytes(bytes); part.renameTo(f)
                         getSharedPreferences("prayer", 0).edit().putString("bg", "c" + System.currentTimeMillis() % 100000000).apply() }
-                } catch (e: Throwable) { } }, { name -> if (name == "rec.mp4" && Recorder.state == Recorder.READY) Recorder.file(this) else null })
+                } catch (e: Throwable) { } }, { name -> if (name == "rec.mp4" && Recorder.state == Recorder.READY) Recorder.file(this) else null },
+                { name -> if (name in MP_FILES) try { assets.open("web/mp/$name") } catch (e: Throwable) { null } else null })
             server.start(); ports[0] = server.httpPort; ports[1] = server.httpsPort
             val ok = server.httpPort != 0
             val msg = if (ok) "http://" + localIp() + ":" + server.httpPort else getString(R.string.no_port)
@@ -606,8 +610,9 @@ class OverlayService : Service() {
 
     /** What lets a phone keep the page as an icon on its home screen. */
     private val webFiles = HashMap<String, ByteArray?>()
+    private val MP_FILES = setOf("vision_bundle.mjs", "vision_wasm_internal.js", "vision_wasm_internal.wasm", "selfie.tflite")
     private fun webFile(name: String): ByteArray? {
-        val path = when (name) { "manifest.json", "icon-192.png", "icon-512.png", "bg1.jpg", "bg2.jpg", "bg3.jpg", "bg4.jpg" -> "web/$name"; "AmiriQuran.ttf" -> "fonts/$name"; "surahs.txt" -> "quran/$name"; else -> return null }
+        val path = when (name) { "manifest.json", "icon-192.png", "icon-512.png", "bg1.jpg", "bg2.jpg", "bg3.jpg", "bg4.jpg", "st0.jpg", "st1.jpg", "st2.jpg", "st3.jpg", "st4.jpg" -> "web/$name"; "AmiriQuran.ttf" -> "fonts/$name"; "surahs.txt" -> "quran/$name"; else -> return null }
         return synchronized(webFiles) { webFiles.getOrPut(name) { try { assets.open(path).use { it.readBytes() } } catch (e: Throwable) { null } } }
     }
 

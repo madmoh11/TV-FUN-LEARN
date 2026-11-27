@@ -356,6 +356,31 @@ class RenderTest {
         v.handle("rps leave", "a"); v.handle("kd open 0", "a"); assertTrue(v.kids.active); tick(21000); shot("kids_step"); assertFalse(v.kids.active)
     }
 
+    @Test fun newsStudio() {
+        val act = org.robolectric.Robolectric.buildActivity(android.app.Activity::class.java).setup().get()
+        act.getSharedPreferences("prayer", 0).edit().putLong("weather_at", System.currentTimeMillis()).putString("weather",
+            """{"current":{"temperature_2m":17.6,"weather_code":2,"is_day":1},"daily":{"weather_code":[2,61,0],"temperature_2m_max":[19.4,15.2,21.0],"temperature_2m_min":[9.5,7.1,10.8]}}""").commit()
+        v = DrawView(act); act.window.setContentView(v)
+        fill = { v.measure(View.MeasureSpec.makeMeasureSpec(1920, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(1080, View.MeasureSpec.EXACTLY)); v.layout(0, 0, 1920, 1080) }
+        fill()
+        /** A stand-in for the presenter: a figure on a clear background, as a phone sends it. */
+        fun figure(): Bitmap { val b = Bitmap.createBitmap(270, 480, Bitmap.Config.ARGB_8888); val c = Canvas(b); val q = Paint(Paint.ANTI_ALIAS_FLAG)
+            q.color = 0xFFE0AC8A.toInt(); c.drawCircle(135f, 90f, 56f, q); q.color = 0xFF2B2B2B.toInt(); c.drawArc(android.graphics.RectF(76f, 26f, 194f, 130f), 180f, 180f, true, q)
+            q.color = 0xFF1F4E9E.toInt(); c.drawRoundRect(android.graphics.RectF(40f, 150f, 230f, 480f), 60f, 60f, q); return b }
+        assertFalse(v.studio.active); assertEquals(listOf("a", "b"), Studio.ticker("a • b\n\n")); assertEquals("x y", Studio.clean(" x \n|  y ", 9))
+        v.handle("st on 2", "a"); v.handle("st name " + java.net.URLEncoder.encode("خالد الجاعوني", "UTF-8"), "a"); v.handle("st title " + java.net.URLEncoder.encode("مراسل الطقس من عمّان", "UTF-8"), "a")
+        v.handle("st tick " + java.net.URLEncoder.encode("أمطار غزيرة متوقعة مساء اليوم • المدارس تبدأ الساعة التاسعة • فوز فريق العيلة بكأس الحارة", "UTF-8"), "a")
+        assertTrue(v.studio.active); assertTrue(v.studio.status().contains("scene=2")); assertTrue(v.studio.status().contains("live=0"))
+        v.studio.frame("a", figure()); tick(2000); v.studio.frame("a", figure()); shot("studio_winter"); assertTrue(v.studio.status().contains("live=1"))
+        v.studio.frame("b", figure()); assertTrue("a second camera does not cut in", v.studio.status().contains("live=1"))
+        for ((n, sc) in listOf("news" to 0, "summer" to 1, "spring" to 3, "autumn" to 4)) { v.handle("st scene $sc", "a"); v.studio.frame("a", figure()); tick(1500); v.studio.frame("a", figure()); shot("studio_$n") }
+        v.handle("st scene 1", "a"); v.handle("st pos 2", "a"); v.handle("st size 3", "a"); v.handle("st brk 1", "a"); v.studio.frame("a", figure()); tick(300); v.studio.frame("a", figure()); shot("studio_right")
+        tick(3000); shot("studio_no_camera"); assertTrue("the studio stays up when the camera stops", v.studio.active); assertTrue(v.studio.status().contains("live=0"))
+        v.handle("st off", "a"); assertFalse(v.studio.active)
+        assertEquals(3, Weather.days(act.getSharedPreferences("prayer", 0).getString("weather", "")!!).size); assertEquals(15, Weather.days(act.getSharedPreferences("prayer", 0).getString("weather", "")!!)[1].high)
+        assertTrue(Weather.days("{}").isEmpty())
+    }
+
     @Test fun quiz() {
         val act = org.robolectric.Robolectric.buildActivity(android.app.Activity::class.java).setup().get()
         act.getSharedPreferences("family", 0).edit().clear().commit()

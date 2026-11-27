@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.35
+
+- New: **news studio**. The phone's camera films the presenter, the phone cuts the person out of the room, and the TV
+  puts them in front of a moving backdrop: a newsroom, or summer, winter, spring or autumn weather with sun haze, rain
+  and lightning, petals or falling leaves. The TV adds a channel badge with a live dot and the clock, the presenter's
+  name and title, a news ticker with your own lines (or a red "breaking" one), and three forecast cards with Amman's
+  real weather. Backdrop, texts, the presenter's side and size all change from the phone while on air.
+- The cut-out runs on the phone itself with files that ship inside the app; no picture leaves the home network. There
+  is a green-screen mode and a mode without cut-out for phones that are too slow.
+
 ## 3.34
 
 - New for children of four and five: **letters and numbers**. The 28 Arabic letters, the 26 English letters and the

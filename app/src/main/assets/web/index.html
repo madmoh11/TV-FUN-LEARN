@@ -46,7 +46,9 @@ select{flex:1;min-width:0;font-size:16px;padding:12px 8px;border-radius:12px;bor
 #rmsg{margin:0;min-height:64px;text-align:center;font-size:24px;font-weight:700;color:#ffd60a;display:flex;align-items:center;justify-content:center}#rmsg.ok{color:#5ee08a}#rmsg.no{color:#ff9d8a}
 #rhands{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;direction:ltr}#rhands button{padding:22px 0 14px;font-size:min(17vw,84px);line-height:1.1;background:#2c2358;display:flex;flex-direction:column;align-items:center;gap:6px;touch-action:manipulation}
 #rhands button small{font-size:16px;font-weight:600;color:#c8bfee}#rhands button.on{background:#e0780a;outline:3px solid #ffd60a}#rhands.off button:not(.on){opacity:.35}#rstart{padding:16px;font-size:20px;font-weight:700}
-body.napp #homecard{display:none}#rcpad{display:grid;grid-template-areas:". u ." "l o r" ". d .";grid-template-columns:repeat(3,1fr);gap:10px;max-width:330px;margin:4px auto 0;direction:ltr}#rcpad button{padding:22px 0;font-size:26px;background:#2c2358;touch-action:manipulation}#rcpad button.go{background:#7a3fd8;font-size:22px}#tabs button{min-width:0}#bgpick{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}#bgpick button{aspect-ratio:16/9;padding:0;background:#0b3c44 center/cover;font-size:12px;border:2px solid transparent}#bgpick button.on{border-color:#ffd60a}#hzplay{background:#0e1e1a;touch-action:auto;user-select:auto;-webkit-user-select:auto}#hzbody{flex:1;min-height:0;overflow-y:auto;touch-action:pan-y;padding-top:6px;grid-column:1/3}
+body.napp #homecard{display:none}#stpick{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}#stpick button{aspect-ratio:16/9;padding:0;background:#0b3c44 center/cover;border:2px solid transparent}#stpick button.on{border-color:#ffd60a}
+#stlive{margin-top:10px}#stcv{display:block;width:100%;max-height:46vh;object-fit:contain;border-radius:12px;margin-bottom:8px;background:repeating-conic-gradient(#2a2350 0% 25%,#1c1640 0% 50%) 50%/24px 24px}#sttick{font:inherit;padding:10px;border-radius:12px;border:1px solid #3b2f73;background:#1c1640;color:#fff;resize:vertical}
+#rcpad{display:grid;grid-template-areas:". u ." "l o r" ". d .";grid-template-columns:repeat(3,1fr);gap:10px;max-width:330px;margin:4px auto 0;direction:ltr}#rcpad button{padding:22px 0;font-size:26px;background:#2c2358;touch-action:manipulation}#rcpad button.go{background:#7a3fd8;font-size:22px}#tabs button{min-width:0}#bgpick{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}#bgpick button{aspect-ratio:16/9;padding:0;background:#0b3c44 center/cover;font-size:12px;border:2px solid transparent}#bgpick button.on{border-color:#ffd60a}#hzplay{background:#0e1e1a;touch-action:auto;user-select:auto;-webkit-user-select:auto}#hzbody{flex:1;min-height:0;overflow-y:auto;touch-action:pan-y;padding-top:6px;grid-column:1/3}
 #hzplay h4{margin:16px 0 8px;font-size:16px;color:#ffd60a}#hzplay input[type=number]{width:74px;flex:none;text-align:center}#hzplay select{flex:1;min-width:0}
 #hzdue button{display:flex;width:100%;gap:8px;align-items:center;justify-content:space-between;margin:0 0 8px;padding:10px 14px;background:#16352d;font-family:"Mushaf","Lamma",serif;font-size:21px}#hzdue button small{font-family:"Lamma",system-ui;font-size:13px;color:#ffd60a;flex:none}
 #hzjuz{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}#hzjuz button{padding:10px 0;background:#16352d;font-size:16px}#hzjuz button.on{background:#ffd60a;color:#111}
@@ -243,6 +245,25 @@ main{padding:10px 16px 20px;padding-inline-start:104px}
 <p class=hint id=mich><span data-i=mic_hint>Your voice comes out of the TV speakers. Keep the phone away from the TV to avoid echo.</span></p></div>
 <div id=micno hidden><p class=hint style="margin-top:0"><span data-i=mic_secure>The browser allows the microphone only on the secure link. Open it, and when the “connection is not private” warning appears choose “Advanced”, then “Proceed”.</span></p>
 <a id=sec class=btn><span data-i=open_secure>🔒 Open the secure link</span></a></div></div>
+<div class=card id=stcard><h3><span data-i=st_title>x</span></h3>
+<p class=cd><span data-i=st_desc>x</span></p>
+<div id=stbox>
+<label><span data-i=st_scene>x</span></label>
+<div id=stpick><button data-s=0 style="background-image:url(/app/st0.jpg)"></button><button data-s=1 style="background-image:url(/app/st1.jpg)"></button><button data-s=2 style="background-image:url(/app/st2.jpg)"></button><button data-s=3 style="background-image:url(/app/st3.jpg)"></button><button data-s=4 style="background-image:url(/app/st4.jpg)"></button></div>
+<button class=go id=stgo style="width:100%;padding:20px;font-size:19px;margin-top:10px"></button>
+<div id=stlive hidden><canvas id=stcv width=8 height=8></canvas><button class=g id=stflip style="width:100%"><span data-i=cam_flip>x</span></button></div>
+<p class=hint id=sth></p>
+<div class=row2><span data-i=st_name>x</span><input type=text id=stname maxlength=28></div>
+<div class=row2><span data-i=st_role>x</span><input type=text id=strole maxlength=44></div>
+<label><span data-i=st_tick>x</span></label><textarea id=sttick rows=4 maxlength=900 style="width:100%"></textarea>
+<button class=g id=stsend style="width:100%;margin-top:8px"><span data-i=st_send>x</span></button>
+<label class=ck><input type=checkbox id=stbrk><span data-i=st_brk>x</span></label>
+<label class=ck><input type=checkbox id=stcards checked><span data-i=st_cards>x</span></label>
+<div class=row2><span data-i=st_where>x</span><select id=stpos><option value=0 data-i=st_left>x<option value=1 data-i=st_mid>x<option value=2 data-i=st_right>x</select><select id=stsize><option value=0 data-i=st_sz0>x<option value=1 data-i=st_sz1>x<option value=2 data-i=st_sz2>x<option value=3 data-i=st_sz3>x</select></div>
+<div class=row2><span data-i=st_cut>x</span><select id=stcut><option value=ai data-i=st_cut_ai>x<option value=green data-i=st_cut_green>x<option value=none data-i=st_cut_none>x</select></div>
+<div class=row2><span data-i=st_chan>x</span><input type=text id=stchan maxlength=16></div>
+<p class=hint><span data-i=st_tips>x</span></p></div>
+<div id=stno hidden><p class=hint style="margin-top:0"><span data-i=cam_secure>x</span></p><a id=sec3 class=btn><span data-i=open_secure>x</span></a></div></div>
 <div class=card><h3><span data-i=cam_title>x</span></h3>
 <div id=cambox><button class=go id=cam style="width:100%;padding:22px;font-size:19px"></button>
 <div class=row3><button class=g id=camflip><span data-i=cam_flip>x</span></button></div>
@@ -602,6 +623,35 @@ E('zon').onchange=()=>zs('z on '+(E('zon').checked?1:0));E('zat').onchange=()=>z
 E('zbef').onchange=()=>zs('z before '+E('zbef').value);
 E('zcity').onchange=()=>zs('z city '+E('zcity').value+' '+enc(E('zcity').selectedOptions[0].textContent));
 E('ztest').onclick=()=>send('z test');if(window.LammaNative){document.body.classList.add('napp');E('napp').hidden=false;E('napp').onclick=()=>LammaNative.pickTv()}
+/* ---- the news studio: this phone films a person, cuts them out of their background and sends them to the TV ---- */
+let stOn=false,stS=null,stSeg=null,stScene=0,stFace='environment',stPrev=null,stN=0,stT0=0;const stV=document.createElement('video');stV.playsInline=true;stV.muted=true;const stC=E('stcv');
+try{const o=JSON.parse(localStorage.studio||'{}');E('stname').value=o.name||'';E('strole').value=o.role||'';E('sttick').value=o.tick||'';E('stchan').value=o.chan||'';stScene=+o.scene||0;E('stpos').value=o.pos||0;E('stsize').value=o.size==null?1:o.size;E('stcut').value=o.cut||'ai';E('stcards').checked=o.cards!==false;E('stbrk').checked=!!o.brk}catch(e){}
+function stSave(){try{localStorage.studio=JSON.stringify({name:E('stname').value,role:E('strole').value,tick:E('sttick').value,chan:E('stchan').value,scene:stScene,pos:E('stpos').value,size:E('stsize').value,cut:E('stcut').value,cards:E('stcards').checked,brk:E('stbrk').checked})}catch(e){}}
+function stUI(){document.querySelectorAll('#stpick button').forEach(b=>b.classList.toggle('on',+b.dataset.s===stScene));E('stgo').textContent=T(stOn?'st_stop':'st_start');E('stgo').style.background=stOn?'#b3261e':'';E('stlive').hidden=!stOn}
+function stPush(){stSave();if(!stOn)return;send('st scene '+stScene);send('st name '+(enc(E('stname').value.trim())||'%20'));send('st title '+(enc(E('strole').value.trim())||'%20'));send('st tick '+(enc(E('sttick').value.trim())||'%20'));send('st chan '+(enc(E('stchan').value.trim())||'%20'));
+send('st pos '+E('stpos').value);send('st size '+E('stsize').value);send('st brk '+(E('stbrk').checked?1:0));send('st cards '+(E('stcards').checked?1:0))}
+async function stModel(){if(stSeg)return stSeg;E('sth').textContent=T('st_loading');const m=await import('/mp/vision_bundle.mjs'),fs=await m.FilesetResolver.forVisionTasks('/mp');
+const mk=d=>m.ImageSegmenter.createFromOptions(fs,{baseOptions:{modelAssetPath:'/mp/selfie.tflite',delegate:d},runningMode:'VIDEO',outputCategoryMask:false,outputConfidenceMasks:true});try{stSeg=await mk('GPU')}catch(e){stSeg=await mk('CPU')}return stSeg}
+async function stCam(){if(stS)stS.getTracks().forEach(t=>t.stop());stS=await navigator.mediaDevices.getUserMedia({video:{facingMode:stFace,width:{ideal:960},height:{ideal:720}},audio:false});stV.srcObject=stS;await stV.play()}
+/* One picture: drawn small, the person kept and everything else made clear, then sent. A little of the picture before is mixed in so the edge does not flicker. */
+function stFrame(){if(!stOn)return;const t0=Date.now(),vw=stV.videoWidth,vh=stV.videoHeight;if(!vw){setTimeout(stFrame,200);return}
+const k=Math.min(1,420/Math.max(vw,vh)),W=Math.round(vw*k/2)*2,H=Math.round(vh*k/2)*2;if(stC.width!==W||stC.height!==H){stC.width=W;stC.height=H;stPrev=null}
+const x=stC.getContext('2d',{willReadFrequently:true});x.drawImage(stV,0,0,W,H);const cut=E('stcut').value;let type='image/webp';
+try{if(cut==='ai'&&stSeg){const res=stSeg.segmentForVideo(stC,performance.now()),m=res.confidenceMasks[res.confidenceMasks.length-1],mw=m.width,mh=m.height,f=m.getAsFloat32Array(),im=x.getImageData(0,0,W,H),d=im.data,n=W*H;
+if(!stPrev||stPrev.length!==n)stPrev=new Float32Array(n);
+for(let y=0;y<H;y++){const my=Math.min(mh-1,(y*mh/H)|0)*mw;for(let i=0;i<W;i++){const p=f[my+Math.min(mw-1,(i*mw/W)|0)],j=y*W+i;let a=p<=.42?0:p>=.72?1:(p-.42)/.3;a=stPrev[j]=a*.65+stPrev[j]*.35;d[j*4+3]=a*255|0}}
+x.putImageData(im,0,0);if(res.close)res.close()}
+else if(cut==='green'){const im=x.getImageData(0,0,W,H),d=im.data;for(let j=0;j<d.length;j+=4){const r=d[j],g=d[j+1],b=d[j+2],o=g-Math.max(r,b)*1.18;if(g>70&&o>0){d[j+3]=o>34?0:255-o*7.5|0;d[j+1]=Math.max(r,b)}}x.putImageData(im,0,0)}
+else type='image/jpeg'}catch(e){}
+stC.toBlob(b=>{if(!stOn||!b)return;fetch('/v?c='+CID,{method:'POST',body:b}).then(()=>{stN++}).catch(()=>{}).then(()=>{if(stN%20===0&&stOn){E('sth').textContent=T('st_on_air',Math.round(stN*1000/(Date.now()-stT0)))}setTimeout(stFrame,Math.max(0,90-(Date.now()-t0)))})},type,type==='image/webp'?.78:.6)}
+async function stStart(){try{await stCam()}catch(e){E('sth').textContent=T('cam_denied');return}
+stOn=true;stN=0;stT0=Date.now();stUI();send('st on '+stScene);stPush();if(navigator.wakeLock)navigator.wakeLock.request('screen').then(l=>{wl=l}).catch(()=>{});
+if(E('stcut').value==='ai'){try{await stModel();E('sth').textContent=T('st_ready')}catch(e){E('stcut').value='none';E('sth').textContent=T('st_no_ai')}}stFrame()}
+function stStop(){stOn=false;send('st off');if(stS){stS.getTracks().forEach(t=>t.stop());stS=null}stV.srcObject=null;stUI();E('sth').textContent=''}
+if(!(window.isSecureContext&&navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)){E('stbox').hidden=true;E('stno').hidden=false;if(HP==='0')E('sec3').hidden=true;else E('sec3').href='https://'+location.hostname+':'+HP+'/'}
+E('stgo').onclick=()=>{stOn?stStop():stStart()};E('stflip').onclick=async()=>{stFace=stFace==='user'?'environment':'user';if(stOn)try{await stCam()}catch(e){}};E('stsend').onclick=()=>{stPush();E('sth').textContent=T('st_sent')};
+document.querySelectorAll('#stpick button').forEach(b=>b.onclick=()=>{stScene=+b.dataset.s;stUI();stPush()});['stpos','stsize','stbrk','stcards'].forEach(i=>E(i).onchange=stPush);
+E('stcut').onchange=async()=>{stSave();stPrev=null;if(stOn&&E('stcut').value==='ai'&&!stSeg){try{await stModel();E('sth').textContent=T('st_ready')}catch(e){E('stcut').value='none';E('sth').textContent=T('st_no_ai')}}};stUI();
 /* ---- the phone as a remote, and recording what the TV shows ---- */
 document.querySelectorAll('[data-rc]').forEach(b=>b.onclick=()=>{send('rc '+b.dataset.rc);if(navigator.vibrate)navigator.vibrate(12)});
 let recSt=0,recT=0;function recShow(o){recSt=+o.rec||0;const lab=E('recb').firstChild;lab.textContent=T(recSt===2?'rec_stop':'rec_start');E('recb').style.background=recSt===2?'#444':'#b3261e';

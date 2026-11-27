@@ -216,4 +216,12 @@
     <string name="kids_yes">Well done! 🎉</string>
     <string name="kids_done">Great job! 👏</string>
     <string name="kids_score">%1$d stars out of %2$d</string>
+    <string name="st_channel">Lamma News</string>
+    <string name="st_live">LIVE</string>
+    <string name="st_news">NEWS</string>
+    <string name="st_breaking">BREAKING</string>
+    <string name="st_today">Today</string>
+    <string name="st_high">High</string>
+    <string name="st_low">Low</string>
+    <string name="st_tick_default">Welcome to the family news</string>
 </resources>
