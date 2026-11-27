@@ -68,6 +68,13 @@ class Server(private val page: () -> String, private val words: () -> ByteArray,
                         f.inputStream().use { it.copyTo(out) } }
                     out.flush(); if (close) break; continue
                 }
+                if (parts[0] == "GET" && path.startsWith("/fly/")) {          // the flight simulator's page and its 3D library, for a TV whose web view cannot load them the other way
+                    val name = path.substring(1).substringBefore('?').filter { it.isLetterOrDigit() || it in "/._-" }
+                    val inp3 = if (name.contains("..")) null else asset(name)
+                    if (inp3 == null) { out.write("HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n".toByteArray()); out.flush(); if (close) break; continue }
+                    out.write(("HTTP/1.1 200 OK\r\nContent-Type: ${FlightActivity.mime(name)}\r\nCache-Control: no-cache\r\nConnection: close\r\n\r\n").toByteArray())
+                    inp3.use { it.copyTo(out) }; out.flush(); break
+                }
                 if (parts[0] == "GET" && path.startsWith("/mp/")) {           // the person-segmentation library: megabytes, sent straight from the app's files
                     val name = path.substring(4).substringBefore('?').filter { it.isLetterOrDigit() || it == '.' || it == '_' || it == '-' }
                     val inp2 = asset(name)

@@ -27,6 +27,7 @@ class FlightActivity : Activity() {
         @JavascriptInterface fun conf(): String = Flight.conf(this@FlightActivity)
         @JavascriptInterface fun poll(): String = Flight.poll()
         @JavascriptInterface fun tell(s: String?) { Flight.tell(s ?: "") }
+        @JavascriptInterface fun alt(): String = if (Flight.port > 0) "http://127.0.0.1:${Flight.port}/fly/tv.html" else ""
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -42,7 +43,7 @@ class FlightActivity : Activity() {
             w.webViewClient = object : WebViewClient() {
                 override fun shouldInterceptRequest(view: WebView, req: WebResourceRequest): WebResourceResponse? = if (req.url.host == HOST) open(req.url) else null
                 // the bridge is for our own page only: the view never leaves it
-                override fun shouldOverrideUrlLoading(view: WebView, req: WebResourceRequest): Boolean = req.url.host != HOST
+                override fun shouldOverrideUrlLoading(view: WebView, req: WebResourceRequest): Boolean = req.url.host != HOST && !(req.url.host == "127.0.0.1" && req.url.port == Flight.port)
             }
             setContentView(w)
             w.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY

@@ -9,6 +9,7 @@ import org.json.JSONObject
     The page itself (assets/fly) does all the flying; this only carries messages. */
 object Flight {
     const val PLACES = 6
+    @Volatile var port = 0                       // the app's own web server, a second way to serve the page
     @Volatile private var sound = true
     const val STALE_MS = 1200L                  // a phone that has been silent this long is no longer holding the stick
     @Volatile var active = false; private set

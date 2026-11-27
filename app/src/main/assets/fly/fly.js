@@ -31,6 +31,15 @@
   function tell(extra) { try { L.tell(extra); } catch (e) {} }
 
   if (!C || !F) { say(T.nogl); tell('err|nolib'); return; }
+  /* The 3D library does its heavy work in background workers. A web view that cannot start them draws no land at all, so this is checked first:
+     a worker made on the spot, and one of the library's own files. If only the file fails, the page is fetched again through the app's own web server. */
+  var ua = navigator.userAgent.match(/Chrome\/(\d+)/), wk = { v: ua ? +ua[1] : 0, blob: '?', file: '?', via: location.protocol === 'http:' ? 'http' : 'app' };
+  function tryWorker(url, key, done) { var w, t; try { w = new Worker(url, { type: 'module' }); } catch (e) { wk[key] = 'no'; done && done(); return; }
+    w.onmessage = function () { wk[key] = 'ok'; clearTimeout(t); w.terminate(); done && done(); }; w.onerror = function () { wk[key] = 'fail'; clearTimeout(t); try { w.terminate(); } catch (e) {} done && done(); };
+    t = setTimeout(function () { if (wk[key] === '?') wk[key] = key === 'file' ? 'ok?' : 'slow'; try { w.terminate(); } catch (e) {} done && done(); }, 5000); }
+  try { tryWorker(URL.createObjectURL(new Blob(['postMessage(1)'], { type: 'text/javascript' })), 'blob'); } catch (e) { wk.blob = 'no'; }
+  tryWorker(C.buildModuleUrl('Workers/createVerticesFromHeightmap.js'), 'file', function () {
+    if (wk.file === 'fail' && wk.via === 'app') { var alt = ''; try { alt = L.alt ? L.alt() : ''; } catch (e) {} if (alt) location.replace(alt); } });
   /** What this TV's web view can draw, in one line, for when it cannot run the simulator. */
   function probe() {
     var out = [], info = '';
@@ -54,7 +63,7 @@
     var box = document.createElement('div'); box.appendChild(a); box.appendChild(b); $('msg').appendChild(box); tell('err|nogl|' + d + ' ' + why.slice(0, 160)); return; }
   var scene = viewer.scene, cam = viewer.camera, globe = scene.globe;
   /* An older graphics chip (the older kind of 3D, or no fine arithmetic in its pixel programs) gets a plainer picture that it can actually draw. */
-  var gl = scene.context._gl, glInfo = '', fine = true, lastErr = why ? 'first try: ' + why.slice(0, 60) : '', fps = -1, fpsN = 0, fpsAt = performance.now(), slowAt = 0;
+  var gl = scene.context._gl, glInfo = '', fine = true, lastErr = why ? 'first try: ' + why.slice(0, 60) : '', cpu = 0, f0 = 0, fps = -1, fpsN = 0, fpsAt = performance.now(), slowAt = 0;
   try { var hp = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT); fine = !!hp && hp.precision > 0; var di = gl.getExtension('WEBGL_debug_renderer_info');
     glInfo = (scene.context.webgl2 ? 'GL2' : 'GL1') + ' ' + ('' + (di ? gl.getParameter(di.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER))).slice(0, 44) + (fine ? '' : ' no-highp') + (scene.context.depthTexture ? '' : ' no-depthtex') + ' tex' + gl.getParameter(gl.MAX_TEXTURE_SIZE); } catch (e) {}
   var compat = !scene.context.webgl2 || !fine;
@@ -152,7 +161,7 @@
 
   /* ---- one frame: fly, place the plane, swing the camera after it ---- */
   function frame() {
-    var now = performance.now(), dt = Math.min(0.1, (now - (last || now)) / 1000); last = now;
+    var now = performance.now(), dt = Math.min(0.1, (now - (last || now)) / 1000); last = now; f0 = now;
     if (!s) return;
     var inp = input(dt);
     if (ready) { sampleGround(now); F.step(s, inp, dt, groundH); }
@@ -239,7 +248,7 @@
     var warn = now < touchUntil ? touchMsg : s.bump > 0 ? T.hard : (ap && ap.show && !s.onGround && ap.dist < 2500 && ap.dist > -400 && s.gearWant < 0.5 && s.alt - RW.elev < 400) ? T.nogear : s.stall ? T.stall : s.level > 0 ? T.auto : !ready ? T.load : (s.onGround && s.v < 3 ? T.ground : '');
     // for the first minute, one small line says what this TV is drawing with: it is what to photograph when the picture is wrong
     if (now - started < 60000 || !ready || (fps >= 0 && fps < 8)) { var tl = 0; try { tl = globe._surface._tilesToRender.length; } catch (e) {}
-      var dbg = glInfo + ' ' + cv.width + 'x' + cv.height + ' buf' + gl.drawingBufferWidth + 'x' + gl.drawingBufferHeight + ' ' + fps + 'fps ' + stage + ' ' + mode + ' L' + viewer.imageryLayers.length + ' T' + tl + (compat ? ' compat' : '') + (keyErr ? ' [' + keyErr.slice(0, 70) + ']' : '') + (lastErr ? ' ERR ' + lastErr : '');
+      var dbg = 'Chrome' + wk.v + ' wk:' + wk.blob + '/' + wk.file + ' ' + wk.via + ' P' + (plane ? (plane.ready ? 2 : 1) : 0) + ' ' + cpu + 'ms ' + glInfo + ' ' + cv.width + 'x' + cv.height + ' buf' + gl.drawingBufferWidth + 'x' + gl.drawingBufferHeight + ' ' + fps + 'fps ' + stage + ' ' + mode + ' L' + viewer.imageryLayers.length + ' T' + tl + (compat ? ' compat' : '') + (keyErr ? ' [' + keyErr.slice(0, 70) + ']' : '') + (lastErr ? ' ERR ' + lastErr : '');
       g.font = Math.round(12 * u) + 'px monospace'; g.textAlign = 'left'; var rows = dbg.match(/.{1,74}/g) || [];
       for (var ri = 0; ri < rows.length; ri++) { var ry = (300 + ri * 17) * u; g.fillStyle = 'rgba(0,0,0,.6)'; g.fillRect(190 * u, ry - 8 * u, 580 * u, 17 * u); g.fillStyle = '#d7e3ff'; g.fillText(rows[ri], 196 * u, ry); } }
     if (warn) { f(24, true); g.textAlign = 'center'; var ww = g.measureText(warn).width + 44 * u; g.fillStyle = (now >= touchUntil && s.bump > 0) || s.stall || warn === T.nogear || warn.indexOf(T.belly) === 0 ? 'rgba(190,30,40,.88)' : glass; box(g, W / 2 - ww / 2, 194 * u, ww, 46 * u, 12 * u); g.fill(); g.fillStyle = '#fff'; g.fillText(warn, W / 2, 218 * u); }
@@ -283,6 +292,7 @@
   say(T.load);
   go(conf.spot == null ? 1 : conf.spot);
   scene.preUpdate.addEventListener(frame);
+  scene.postRender.addEventListener(function () { cpu = Math.round(cpu * 0.7 + (performance.now() - f0) * 0.3); });
   scene.renderError.addEventListener(function (sc, e) { lastErr = 'render: ' + ('' + (e && e.message || e)).slice(0, 80); say(T.nogl + ' ' + lastErr); tell('err|render|' + glInfo + ' ' + lastErr); });
   C.Model.fromGltfAsync({ url: 'plane.glb', scale: 1, minimumPixelSize: 0, incrementallyLoadTextures: false }).then(function (m) { plane = scene.primitives.add(m); }).catch(function () {});
   world().then(function () {

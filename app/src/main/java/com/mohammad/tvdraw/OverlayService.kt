@@ -588,8 +588,8 @@ class OverlayService : Service() {
                     if (o.outWidth > 0 && o.outHeight > 0) { val f = File(filesDir, "wallpaper.jpg"); val part = File(f.path + ".part"); part.writeBytes(bytes); part.renameTo(f)
                         getSharedPreferences("prayer", 0).edit().putString("bg", "c" + System.currentTimeMillis() % 100000000).apply() }
                 } catch (e: Throwable) { } }, { name -> if (name == "rec.mp4" && Recorder.state == Recorder.READY) Recorder.file(this) else null },
-                { name -> if (name in MP_FILES) try { assets.open("web/mp/$name") } catch (e: Throwable) { null } else null })
-            server.start(); ports[0] = server.httpPort; ports[1] = server.httpsPort
+                { name -> if (name in MP_FILES) try { assets.open("web/mp/$name") } catch (e: Throwable) { null } else if (name.startsWith("fly/")) try { assets.open(if (name == "fly/font.ttf") "fonts/BalooBhaijaan2-Bold.ttf" else name) } catch (e: Throwable) { null } else null })
+            server.start(); ports[0] = server.httpPort; ports[1] = server.httpsPort; Flight.port = server.httpPort
             val ok = server.httpPort != 0
             val msg = if (ok) "http://" + localIp() + ":" + server.httpPort else getString(R.string.no_port)
             ui.post { view.setUrl(msg, ok) }

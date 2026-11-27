@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.42
+
+- Flight simulator: the page checks that the web view can start the 3D library's background workers, and if it cannot
+  load them from the app's files it fetches the page again through the app's own web server. The diagnostic line now
+  also shows the web view's version, the workers, the plane and the time one frame takes.
+
 ## 3.41
 
 - Flight simulator: on an older graphics chip the photographed 3D city is loaded more coarsely and with less memory,
