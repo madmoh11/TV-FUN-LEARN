@@ -214,4 +214,18 @@
     <string name="st_high">العظمى</string>
     <string name="st_low">الصغرى</string>
     <string name="st_tick_default">أهلاً بكم في نشرة أخبار العيلة</string>
+    <string name="pad_row">🎮 العب بالريموت (بدون تليفون)</string>
+    <string name="pad_fly">✈️ الطيران فوق عمّان</string>
+    <string name="pad_snake">🐍 الثعبان</string>
+    <string name="pad_ar">🔤 حروف عربية</string>
+    <string name="pad_rps">✊ حجرة ورقة مقص</string>
+    <string name="pad_name">الريموت</string>
+    <string name="pad_snake_start">OK: ابدأ   •   رجوع: خروج</string>
+    <string name="pad_snake_play">الأسهم: وجّه الثعبان   •   رجوع: خروج</string>
+    <string name="pad_rps_start">OK: ابدأ   •   رجوع: خروج</string>
+    <string name="pad_rps_pick">◀ حجر   ▲ ورقة   ▶ مقص</string>
+    <string name="pad_wait">…</string>
+    <string name="pad_kids_learn">◀ ▶ البطاقات   •   OK: اسمعها   •   ▲ العب   •   رجوع: خروج</string>
+    <string name="pad_kids_ask">◀ / OK / ▶ : اختر الجواب   •   ▼ ارجع للبطاقات</string>
+    <string name="pad_kids_done">OK: العب مرة ثانية   •   ▼ البطاقات   •   رجوع: خروج</string>
 </resources>

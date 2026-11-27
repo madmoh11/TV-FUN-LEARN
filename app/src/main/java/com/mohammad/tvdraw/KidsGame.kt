@@ -15,6 +15,7 @@ class KidsGame(private val view: View) {
     var sfx: Sfx? = null
     private val core = KidsCore()
     private var state = OFF
+    val phase get() = state
     private var stateAt = 0L; private var lastSeen = 0L; private var shake = 0L
     val active get() = state != OFF
     private val arabic get() = Locale.getDefault().language == "ar"

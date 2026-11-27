@@ -50,6 +50,8 @@ object Flight {
         if (owner == cid) return true
         if (now() - inputAt > STALE_MS * 2) { owner = cid; return true }
         return false }
+    /** The TV remote's volume keys move the throttle a step. */
+    fun nudge(d: Int) { thr = ((if (thr < 0) 60 else thr) + d).coerceIn(0, 100) }
     fun stop() { active = false; owner = null; menu = false; brake = false }
 
     /** What the page asks for every frame: stick x, stick y, throttle (-1 while no phone has set it), then counters and flags. */

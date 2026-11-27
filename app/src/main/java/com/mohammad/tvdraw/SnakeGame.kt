@@ -16,6 +16,7 @@ class SnakeGame(private val view: View) {
     var onEnd: ((List<GameResult>) -> Unit)? = null
     private var core: SnakeCore? = null
     private var state = OFF
+    val phase get() = state
     private val seat = arrayOfNulls<String>(2)
     private val faces = HashMap<String, Bitmap>()                // selfie heads, by phone
     private var level = 0

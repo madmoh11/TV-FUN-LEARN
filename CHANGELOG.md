@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.44
+
+- New: **play with the remote**, with no phone. A row on the TV's home screen starts flying over Amman, the snake,
+  the Arabic letters, the English letters, the numbers, and rock-paper-scissors against the TV. The remote joins the
+  game as a player, and a line at the bottom of the screen says what the keys do.
+- In the flight simulator the arrows steer, the volume keys are the throttle, and OK opens a list with auto-level,
+  wheels, flaps, brakes, the places and leaving.
+- In the letters game the TV reads each card aloud when it has a voice for the language.
+
 ## 3.43
 
 - Flight simulator: a **light engine** for TVs with an old graphics chip (OpenGL ES 2.0, such as the Mali-450 in the

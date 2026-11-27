@@ -10,9 +10,9 @@
   var conf = {}; try { conf = JSON.parse(L.conf()); } catch (e) {}
   var AR = conf.lang !== 'en', Q = F.clamp(conf.q == null ? 1 : conf.q | 0, 0, 2);
   var T = AR ? { kmh: 'كم/س', m: 'م', load: 'جاري تحميل عمّان…', stall: 'السرعة قليلة! زِد قوة المحرك', hard: 'هبوط قاسي!', ground: 'على الأرض', spots: 'إلى أين نطير؟', thr: 'المحرك',
-      nogl: 'هذا التلفزيون لا يدعم الرسم ثلاثي الأبعاد، فالمحاكي لا يعمل عليه.', google: 'عمّان ثلاثية الأبعاد', sat: 'صور الأقمار', light: 'صور الأقمار على تضاريس حقيقية', basic: 'خريطة بسيطة (لا يوجد إنترنت)', nokey: 'بدون مفتاح خرائط: أرض مصوّرة بلا مبانٍ', badkey: 'مفتاح الخرائط لم يعمل: أرض مصوّرة بلا مبانٍ', N: 'ش', E: 'ق', S: 'ج', W: 'غ', auto: 'توازن تلقائي', weak: 'التلفزيون ضعيف على المباني المجسّمة: رجعنا لصور الأقمار', gear: 'العجلات', flaps: 'القلّابات', brake: 'فرامل', rwy: 'المدرج', km: 'كم', soft: 'هبوط ناعم 👏', good: 'هبوط جيد 👍', firm: 'هبوط قاسٍ شوي', belly: 'هبوط بدون عجلات!', onrw: 'على المدرج ✅', offrw: 'خارج المدرج', nogear: 'نزّل العجلات!' }
+      nogl: 'هذا التلفزيون لا يدعم الرسم ثلاثي الأبعاد، فالمحاكي لا يعمل عليه.', google: 'عمّان ثلاثية الأبعاد', sat: 'صور الأقمار', light: 'صور الأقمار على تضاريس حقيقية', basic: 'خريطة بسيطة (لا يوجد إنترنت)', nokey: 'بدون مفتاح خرائط: أرض مصوّرة بلا مبانٍ', badkey: 'مفتاح الخرائط لم يعمل: أرض مصوّرة بلا مبانٍ', N: 'ش', E: 'ق', S: 'ج', W: 'غ', auto: 'توازن تلقائي', weak: 'التلفزيون ضعيف على المباني المجسّمة: رجعنا لصور الأقمار', gear: 'العجلات', flaps: 'القلّابات', brake: 'فرامل', rwy: 'المدرج', km: 'كم', soft: 'هبوط ناعم 👏', good: 'هبوط جيد 👍', firm: 'هبوط قاسٍ شوي', belly: 'هبوط بدون عجلات!', onrw: 'على المدرج ✅', offrw: 'خارج المدرج', nogear: 'نزّل العجلات!', close: '↩ كمّل الطيران', gearUp: 'ارفع العجلات', gearDn: 'نزّل العجلات', exit: 'اخرج من الطيران', keys: 'الأسهم: التوجيه   •   OK: القائمة   •   الصوت + −: المحرك   •   رجوع: خروج' }
     : { kmh: 'km/h', m: 'm', load: 'Loading Amman…', stall: 'Too slow! Add power', hard: 'Hard landing!', ground: 'On the ground', spots: 'Where to?', thr: 'Engine',
-      nogl: 'This TV cannot draw 3D, so the simulator does not run on it.', google: 'Amman in 3D', sat: 'Satellite pictures', light: 'Satellite pictures on real terrain', basic: 'Simple map (no internet)', nokey: 'No map key: pictured ground without buildings', badkey: 'The map key did not work: pictured ground without buildings', N: 'N', E: 'E', S: 'S', W: 'W', auto: 'Auto-level', weak: 'This TV is too weak for the 3D buildings: back to satellite pictures', gear: 'Wheels', flaps: 'Flaps', brake: 'Brakes', rwy: 'Runway', km: 'km', soft: 'A soft landing 👏', good: 'A good landing 👍', firm: 'A firm landing', belly: 'Landed with the wheels up!', onrw: 'on the runway ✅', offrw: 'off the runway', nogear: 'Wheels down!' };
+      nogl: 'This TV cannot draw 3D, so the simulator does not run on it.', google: 'Amman in 3D', sat: 'Satellite pictures', light: 'Satellite pictures on real terrain', basic: 'Simple map (no internet)', nokey: 'No map key: pictured ground without buildings', badkey: 'The map key did not work: pictured ground without buildings', N: 'N', E: 'E', S: 'S', W: 'W', auto: 'Auto-level', weak: 'This TV is too weak for the 3D buildings: back to satellite pictures', gear: 'Wheels', flaps: 'Flaps', brake: 'Brakes', rwy: 'Runway', km: 'km', soft: 'A soft landing 👏', good: 'A good landing 👍', firm: 'A firm landing', belly: 'Landed with the wheels up!', onrw: 'on the runway ✅', offrw: 'off the runway', nogear: 'Wheels down!', close: '↩ Keep flying', gearUp: 'Wheels up', gearDn: 'Wheels down', exit: 'Leave the flight', keys: 'Arrows: steer   •   OK: the list   •   Volume + −: engine   •   Back: leave' };
   /* The places of the quick-jump list. elev is the height of the land there above the sea. */
   var SPOTS = [
     { ar: 'مطار الملكة علياء: الإقلاع', en: 'Queen Alia airport: take-off', lat: 31.7225, lon: 35.9932, elev: 719, hdg: 80, land: true },
@@ -53,11 +53,25 @@
   }
 
   /* ---- what the pilot asks for: the phone first, the TV remote or a keyboard when no phone is flying ---- */
-  addEventListener('keydown', function (e) { if (!keys[e.key] && s) { if (e.key === 'g') kgear = !(s.gearWant > 0.5); if (e.key === 'f') kflap = (s.flaps + 1) % 3; } keys[e.key] = 1; audio(); if (menu) { if (e.key === 'ArrowDown') menuAt = (menuAt + 1) % SPOTS.length; else if (e.key === 'ArrowUp') menuAt = (menuAt + SPOTS.length - 1) % SPOTS.length; else if (e.key === 'Enter') { go(menuAt); menu = false; } showMenu(); }
-    else if (e.key === 'Enter') { menu = true; menuAt = spot; showMenu(); } });
-  addEventListener('keyup', function (e) { delete keys[e.key]; });
-  function showMenu() { var el = $('menu'); el.hidden = !menu; if (!menu) return; el.dir = AR ? 'rtl' : 'ltr';
-    el.innerHTML = '<h2>' + T.spots + '</h2>' + SPOTS.map(function (p, i) { return '<div class="' + (i === menuAt ? 'on' : '') + '"><b>' + (i + 1) + '</b>' + (AR ? p.ar : p.en) + '</div>'; }).join(''); }
+  /* A key from a keyboard, or from the TV remote by way of the app. With the list open the arrows move in it; otherwise they fly the plane. */
+  var kbrake = false, klevel = false, phone = false;
+  function items() { var a = [{ t: T.close, f: function () {} }, { t: '⚖️ ' + T.auto, f: function () { klevel = true; } },
+      { t: '🛞 ' + (s.gearWant > 0.5 ? T.gearUp : T.gearDn), f: function () { kgear = !(s.gearWant > 0.5); } }, { t: '🪽 ' + T.flaps + ' ' + (s.flaps + 1) % 3, f: function () { kflap = (s.flaps + 1) % 3; } },
+      { t: '🛑 ' + T.brake + (kbrake ? ' ✓' : ''), f: function () { kbrake = !kbrake; } }];
+    SPOTS.forEach(function (p, i) { a.push({ t: '📍 ' + (AR ? p.ar : p.en), f: function () { go(i); kgear = kflap = null; kbrake = false; } }); });
+    a.push({ t: '✕ ' + T.exit, f: function () { try { L.quit && L.quit(); } catch (e) {} } }); return a; }
+  function key(k, down) {
+    if (!down) { delete keys[k]; return; }
+    if (!keys[k] && s) { if (k === 'g') kgear = !(s.gearWant > 0.5); if (k === 'f') kflap = (s.flaps + 1) % 3; }
+    keys[k] = 1; audio();
+    if (menu) { var n = items().length; if (k === 'ArrowDown') menuAt = (menuAt + 1) % n; else if (k === 'ArrowUp') menuAt = (menuAt + n - 1) % n; else if (k === 'Enter') { var it = items()[menuAt]; menu = false; if (it) it.f(); } showMenu(); }
+    else if (k === 'Enter') { menu = true; menuAt = 1; showMenu(); }
+  }
+  window.flyKey = function (k, down) { key(k, !!down); };
+  addEventListener('keydown', function (e) { key(e.key, true); });
+  addEventListener('keyup', function (e) { key(e.key, false); });
+  function showMenu() { var el = $('menu'); el.hidden = !menu; if (!menu) return; el.dir = AR ? 'rtl' : 'ltr'; var a = items(); if (menuAt >= a.length) menuAt = 0;
+    el.innerHTML = '<h2>' + T.spots + '</h2>' + a.map(function (it, i) { return '<div class="' + (i === menuAt ? 'on' : '') + '">' + it.t + '</div>'; }).join(''); }
   function input(dt) {
     var p = ('' + L.poll()).split(','), inp = { x: 0, y: 0, thr: null, level: false, gear: null, flaps: null, brake: false };
     if (p[8] === '1') { inp.x = p[0] / 100; inp.y = p[1] / 100; }
@@ -68,10 +82,11 @@
     if (inp.thr == null && kthr != null) inp.thr = kthr;
     if (+p[9] >= 0) inp.gear = p[9] === '1'; else if (kgear != null) inp.gear = kgear;
     if (+p[10] >= 0) inp.flaps = +p[10]; else if (kflap != null) inp.flaps = kflap;
-    inp.brake = p[11] === '1' || !!keys.b; sndOn = p[12] !== '0';
+    inp.brake = p[11] === '1' || !!keys.b || kbrake; sndOn = p[12] !== '0'; phone = p[8] === '1';
+    if (klevel) { klevel = false; inp.level = true; }
     if (p[3] !== lvlSeq) { lvlSeq = p[3]; inp.level = true; }
     if (p[4] !== goSeq) { goSeq = p[4]; go(+p[5]); menu = false; showMenu(); kgear = kflap = null; inp.gear = inp.flaps = null; }
-    var m = p[6] === '1'; if (p[8] === '1' && m !== menu) { menu = m; menuAt = spot; showMenu(); }
+    var m = p[6] === '1'; if (p[8] === '1' && m !== menu) { menu = m; menuAt = 5 + spot; showMenu(); }
     return inp;
   }
 
@@ -158,6 +173,7 @@
       var dbg = B.name + ' ' + fps + 'fps ' + cpu + 'ms ' + B.info() + (lastErr ? ' ERR ' + lastErr : '');
       g.font = Math.round(12 * u) + 'px monospace'; g.textAlign = 'left'; var rows = dbg.match(/.{1,74}/g) || [];
       for (var ri = 0; ri < rows.length; ri++) { var ry = (300 + ri * 17) * u; g.fillStyle = 'rgba(0,0,0,.6)'; g.fillRect(190 * u, ry - 8 * u, 580 * u, 17 * u); g.fillStyle = '#d7e3ff'; g.fillText(rows[ri], 196 * u, ry); } }
+    if (!phone && ready && now - started < 22000) { f(15, true); g.textAlign = 'center'; var kw = g.measureText(T.keys).width + 36 * u; g.fillStyle = glass; box(g, W / 2 - kw / 2, H - 116 * u, kw, 32 * u, 10 * u); g.fill(); g.fillStyle = '#fff'; g.fillText(T.keys, W / 2, H - 99 * u); }
     if (warn) { f(24, true); g.textAlign = 'center'; var ww = g.measureText(warn).width + 44 * u; g.fillStyle = (now >= touchUntil && s.bump > 0) || s.stall || warn === T.nogear || warn.indexOf(T.belly) === 0 ? 'rgba(190,30,40,.88)' : glass; box(g, W / 2 - ww / 2, 194 * u, ww, 46 * u, 12 * u); g.fill(); g.fillStyle = '#fff'; g.fillText(warn, W / 2, 218 * u); }
   }
 

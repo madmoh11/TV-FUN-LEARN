@@ -27,6 +27,7 @@ class FlightActivity : Activity() {
         @JavascriptInterface fun conf(): String = Flight.conf(this@FlightActivity)
         @JavascriptInterface fun poll(): String = Flight.poll()
         @JavascriptInterface fun tell(s: String?) { Flight.tell(s ?: "") }
+        @JavascriptInterface fun quit() { Flight.stop() }
         @JavascriptInterface fun alt(): String = if (Flight.port > 0) "http://127.0.0.1:${Flight.port}/fly/tv.html" else ""
     }
 
@@ -51,6 +52,16 @@ class FlightActivity : Activity() {
             w.loadUrl("https://$HOST/fly/tv.html")
         } catch (e: Throwable) { Flight.tell("err|noweb"); Flight.stop(); finish(); return }      // a TV without a system web view
         ui.postDelayed(watch, 400)
+    }
+
+    /** The remote flies the plane when no phone does: the arrows and OK go to the page by name, and the volume keys are the throttle. */
+    override fun dispatchKeyEvent(e: android.view.KeyEvent): Boolean {
+        val name = when (e.keyCode) { android.view.KeyEvent.KEYCODE_DPAD_LEFT -> "ArrowLeft"; android.view.KeyEvent.KEYCODE_DPAD_RIGHT -> "ArrowRight"; android.view.KeyEvent.KEYCODE_DPAD_UP -> "ArrowUp"
+            android.view.KeyEvent.KEYCODE_DPAD_DOWN -> "ArrowDown"; android.view.KeyEvent.KEYCODE_DPAD_CENTER, android.view.KeyEvent.KEYCODE_ENTER, android.view.KeyEvent.KEYCODE_NUMPAD_ENTER -> "Enter"; else -> null }
+        if (name != null) { if (e.repeatCount == 0) web?.evaluateJavascript("window.flyKey&&flyKey('$name'," + (if (e.action == android.view.KeyEvent.ACTION_DOWN) 1 else 0) + ")", null); return true }
+        if (e.keyCode == android.view.KeyEvent.KEYCODE_VOLUME_UP || e.keyCode == android.view.KeyEvent.KEYCODE_VOLUME_DOWN) {
+            if (e.action == android.view.KeyEvent.ACTION_DOWN) Flight.nudge(if (e.keyCode == android.view.KeyEvent.KEYCODE_VOLUME_UP) 4 else -4); return true }
+        return super.dispatchKeyEvent(e)
     }
 
     /** A file of the page, straight from the app's assets. */

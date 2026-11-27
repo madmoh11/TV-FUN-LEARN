@@ -224,4 +224,18 @@
     <string name="st_high">High</string>
     <string name="st_low">Low</string>
     <string name="st_tick_default">Welcome to the family news</string>
+    <string name="pad_row">🎮 Play with the remote (no phone)</string>
+    <string name="pad_fly">✈️ Flying over Amman</string>
+    <string name="pad_snake">🐍 Snake</string>
+    <string name="pad_ar">🔤 Arabic letters</string>
+    <string name="pad_rps">✊ Rock, paper, scissors</string>
+    <string name="pad_name">Remote</string>
+    <string name="pad_snake_start">OK: start   •   Back: leave</string>
+    <string name="pad_snake_play">Arrows: steer the snake   •   Back: leave</string>
+    <string name="pad_rps_start">OK: start   •   Back: leave</string>
+    <string name="pad_rps_pick">◀ rock   ▲ paper   ▶ scissors</string>
+    <string name="pad_wait">…</string>
+    <string name="pad_kids_learn">◀ ▶ cards   •   OK: hear it   •   ▲ play   •   Back: leave</string>
+    <string name="pad_kids_ask">◀ / OK / ▶ : choose the answer   •   ▼ back to the cards</string>
+    <string name="pad_kids_done">OK: play again   •   ▼ cards   •   Back: leave</string>
 </resources>

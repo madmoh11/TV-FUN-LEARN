@@ -497,6 +497,9 @@ class DrawView(c: Context) : View(c) {
                 cv.drawText(f.text, x, f.y0, txt)
             }
         }
+        if (TvPad.game != "") { val t = TvPad.hint(context)          // playing with the remote: one line says what the keys do
+            if (t.isNotEmpty()) { val tw = Ui.width(this, t, 26f * s) + 56f * s; val hb = height.toFloat(); pill.alpha = 225; cv.drawRoundRect(RectF((getWidth() - tw) / 2, hb - 48f * s, (getWidth() + tw) / 2, hb - 4f * s), 22f * s, 22f * s, pill); pill.alpha = 170
+                Ui.text(cv, this, t, getWidth() / 2f, hb - 17f * s, 26f * s, Color.WHITE, false) } }
         val pranking = drawPranks(cv, now)
         val u = url
         if (u != null && now < infoUntil) {
@@ -536,7 +539,7 @@ class OverlayService : Service() {
         startForeground(1, Notification.Builder(this, "d").setContentTitle(getString(R.string.running))
             .setSmallIcon(android.R.drawable.ic_menu_edit).build())
 
-        view = DrawView(this)
+        view = DrawView(this); TvPad.view = view; TvPad.speak = { t, lang -> sayIn(t, lang) }
         val lp = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
@@ -626,11 +629,20 @@ class OverlayService : Service() {
     // English speech for the review board. Not every TV box has a speech engine, so this is best effort.
     private var tts: android.speech.tts.TextToSpeech? = null
     private var ttsReady = false
+    /** Says words in their own language, if this TV has a voice for it; otherwise stays silent. */
+    private fun sayIn(text: String, lang: String) {
+        try {
+            val go = { val t = tts; if (t != null) { val r = t.setLanguage(java.util.Locale.forLanguageTag(lang))
+                if (r != android.speech.tts.TextToSpeech.LANG_MISSING_DATA && r != android.speech.tts.TextToSpeech.LANG_NOT_SUPPORTED) t.speak(text, android.speech.tts.TextToSpeech.QUEUE_FLUSH, null, "k") } }
+            if (tts == null) tts = android.speech.tts.TextToSpeech(this) { status -> if (status == android.speech.tts.TextToSpeech.SUCCESS) { ttsReady = true; go() } }
+            else if (ttsReady) go()
+        } catch (e: Throwable) { }
+    }
     private fun say(text: String) {
         try {
             if (tts == null) tts = android.speech.tts.TextToSpeech(this) { status ->
                 if (status == android.speech.tts.TextToSpeech.SUCCESS) { tts?.language = java.util.Locale.US; ttsReady = true; tts?.speak(text, android.speech.tts.TextToSpeech.QUEUE_ADD, null, "w") } }
-            else if (ttsReady) tts?.speak(text, android.speech.tts.TextToSpeech.QUEUE_ADD, null, "w")
+            else if (ttsReady) { tts?.language = java.util.Locale.US; tts?.speak(text, android.speech.tts.TextToSpeech.QUEUE_ADD, null, "w") }
         } catch (e: Throwable) { }
     }
 

@@ -106,7 +106,7 @@ class HomeActivity : Activity() {
     }
 
     override fun onResume() { super.onResume(); ui.removeCallbacks(tick); ui.post(tick) }
-    override fun onPause() { super.onPause(); ui.removeCallbacks(tick); page?.let { closeExtra() } }
+    override fun onPause() { super.onPause(); ui.removeCallbacks(tick); page?.let { closeExtra() }; if (!Flight.active) TvPad.stop() }
 
     // ---- building blocks ----
     private fun label(t: String, size: Float, color: Int = Color.WHITE): TextView = TextView(this).apply {
@@ -175,6 +175,13 @@ class HomeActivity : Activity() {
             tile(getString(R.string.home_kursi), "", 0xFF1F7A4D.toInt(), 300f, 170f) { openPages(getString(R.string.home_kursi), { Daily.ranges(it, listOf(intArrayOf(2, 255, 255))) }, true) }))
         row(col, getString(R.string.app_name), listOf(
             tile(getString(R.string.home_phone), "", 0xFF5B3FA8.toInt(), 420f, 170f) { showPhone() }))
+        row(col, getString(R.string.pad_row), listOf(
+            tile(getString(R.string.pad_fly), "", 0xFF14508A.toInt(), 330f, 170f) { Flight.command(this, listOf("fl", "on", "1"), TvPad.CID) },
+            tile(getString(R.string.pad_snake), "", 0xFF1F7A3F.toInt(), 300f, 170f) { TvPad.start(this, TvPad.SNAKE) },
+            tile(getString(R.string.pad_ar), "", 0xFF1F9D46.toInt(), 300f, 170f) { TvPad.start(this, TvPad.KIDS, KidsCore.AR) },
+            tile("A B C", "", 0xFF1F6FFF.toInt(), 240f, 170f) { TvPad.start(this, TvPad.KIDS, KidsCore.EN) },
+            tile("1 2 3", "", 0xFFD9308A.toInt(), 240f, 170f) { TvPad.start(this, TvPad.KIDS, KidsCore.NUM) },
+            tile(getString(R.string.pad_rps), "", 0xFF8A4B14.toInt(), 330f, 170f) { TvPad.start(this, TvPad.RPS) }))
         row(col, getString(R.string.home_apps) + "   •   " + getString(R.string.home_app_tip), appTiles())
         // which version is running, so an update that did not go in is easy to spot
         val ver = try { packageManager.getPackageInfo(packageName, 0).versionName } catch (e: Throwable) { "" }
@@ -341,6 +348,8 @@ class HomeActivity : Activity() {
     }
 
     override fun dispatchKeyEvent(e: KeyEvent): Boolean {
+        if (TvPad.game != "") { if (e.keyCode == KeyEvent.KEYCODE_VOLUME_UP || e.keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || e.keyCode == KeyEvent.KEYCODE_VOLUME_MUTE) return super.dispatchKeyEvent(e)
+            if (e.action == KeyEvent.ACTION_DOWN && e.repeatCount == 0) TvPad.key(e.keyCode); return true }        // a game is being played with the remote: the keys are the game's
         val p = page
         if (p != null && e.action == KeyEvent.ACTION_DOWN && p.key(e.keyCode)) return true
         return super.dispatchKeyEvent(e)

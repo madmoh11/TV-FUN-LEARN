@@ -15,6 +15,7 @@ class RpsGame(private val view: View) {
     var onEnd: ((List<GameResult>) -> Unit)? = null
     private val core = RpsCore()
     private var state = OFF
+    val phase get() = state
     private var stateAt = 0L; private var beat = -1
     private val seen = java.util.concurrent.ConcurrentHashMap<String, Long>()
     val active get() = state != OFF
